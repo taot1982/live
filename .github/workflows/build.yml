@@ -1,0 +1,25 @@
+name: Build IPTV
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run python
+        run: python3 fetch_and_check.py
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "taot1982"
+          git config --global user.email "taot1982@example.com"
+          git add live.txt
+          git commit -m "auto update live.txt" || echo "no change"
+          git push --force-with-lease
