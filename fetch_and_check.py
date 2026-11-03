@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 DONG_URL = "http://a.u9c.cn/5P1He0"
-OUTPUT_FILE = "live/live.txt"
+OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
 READ_BYTES = 2048
@@ -58,6 +58,8 @@ def fetch_text(url):
 
 
 def parse_txt_content(content):
+    if not content.strip():
+        return []
     groups_out = []
     current_group = None
     lines = content.splitlines()
@@ -79,6 +81,8 @@ def parse_txt_content(content):
 
 
 def parse_m3u_to_group(content, group_name):
+    if not content.strip():
+        return []
     items = []
     lines = content.splitlines()
     pending_name = None
@@ -162,7 +166,7 @@ def main():
     print("1.拉取主上游源：{}".format(SOURCE_URL))
     main_text = fetch_text(SOURCE_URL)
     print("2.拉取iptasd.txt：{}".format(EXTRA_URL))
-    extra_text = fetch_text(extra_text)
+    extra_text = fetch_text(EXTRA_URL)
     print("3.拉取M3U东方有线源：{}".format(DONG_URL))
     dong_text = fetch_text(DONG_URL)
 
