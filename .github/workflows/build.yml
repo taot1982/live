@@ -23,24 +23,21 @@ jobs:
       - name: Install requests
         run: pip install requests
 
-      # 先拉取远程最新，此时还没有脚本产生的改动，工作区干净
       - name: Pull latest
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin main --autostash
 
-      # 再运行脚本，生成 live.txt
       - name: Run script
         run: python fetch_and_check.py
 
-      # 判断有没有改动，有就提交推送
       - name: Commit & Push
         run: |
           git add live.txt
           if git diff --cached --quiet; then
             echo "live.txt 无变更，跳过提交"
           else
-            git commit -m "auto update live.txt"
-            git push origin main
+            git commit -m "auto update source"
+            git push --force-with-lease origin main
           fi
