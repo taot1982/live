@@ -49,12 +49,11 @@ def fetch_text(url):
             text = raw_bytes.decode("utf-8", errors="replace")
         return text
     except Exception as e:
-        print(f"⚠️ 获取源失败 {url} , error:{e}")
+        print("获取源失败 {} , error:{}".format(url, e))
         return ""
 
 
 def parse_txt_content(content):
-    """解析 #genre# tvbox txt格式"""
     groups_out = []
     current_group = None
     lines = content.splitlines()
@@ -63,12 +62,12 @@ def parse_txt_content(content):
         if not s:
             continue
         if s.endswith(",#genre#"):
-            gname = s.rsplit(",#genre#",1)[0].strip()
+            gname = s.rsplit(",#genre#", 1)[0].strip()
             current_group = {"group_name": gname, "items": []}
             groups_out.append(current_group)
             continue
         if current_group is not None and "," in s:
-            name, url = s.split(",",1)
+            name, url = s.split(",", 1)
             name = name.strip()
             url = url.strip()
             current_group["items"].append((name, url))
@@ -76,7 +75,6 @@ def parse_txt_content(content):
 
 
 def parse_m3u_to_group(content, group_name):
-    """解析M3U，全部频道封装成指定分组，输出[(name,url)]"""
     items = []
     lines = content.splitlines()
     pending_name = None
@@ -87,13 +85,11 @@ def parse_m3u_to_group(content, group_name):
         if s.startswith("#EXTM3U"):
             continue
         if s.startswith("#EXTINF"):
-            # 逗号后面是频道名称
             if "," in s:
-                pending_name = s.split(",",1)[1].strip()
+                pending_name = s.split(",", 1)[1].strip()
             else:
                 pending_name = None
             continue
-        # 不是注释，视为流地址
         if not s.startswith("#") and s.startswith("http"):
             if pending_name:
                 items.append((pending_name, s))
@@ -104,18 +100,13 @@ def parse_m3u_to_group(content, group_name):
 
 
 def process_all_content(main_text, extra_text, dong_text):
-    # M3U解析东方有线
     dong_groups = parse_m3u_to_group(dong_text, DONG_GROUP_NAME)
-    # 解析主源txt
     main_groups = parse_txt_content(main_text)
-    # 解析iptasd.txt，只选取指定分组
     extra_groups = parse_txt_content(extra_text)
-    pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"])>0]
+    pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"]) > 0]
 
-    # 顺序：东方有线【第一位】→主源全部分组→4K频道、轮播剧场
     all_groups = dong_groups + main_groups + pick_extra
 
-    # 收集全部待测速url
     all_tasks = []
     for g in all_groups:
         for _name, url in g["items"]:
@@ -137,26 +128,30 @@ def process_all_content(main_text, extra_text, dong_text):
             if ok:
                 alive_items.append((d, name, url))
         if not alive_items:
-            print(f"ℹ️分组【{g['group_name']}】全部失效，跳过输出")
+            print("分组【{}】全部失效，跳过输出".format(g["group_name"]))
             continue
-        alive_items.sort(key=lambda x:x[0])
-        final_lines.append(f'{g["group_name"]},#genre#')
+        alive_items.sort(key=lambda x: x[0])
+        final_lines.append("{},#genre#".format(g["group_name"]))
         for d, name, url in alive_items:
-            final_lines.append(f"{name},{url}")
+            final_lines.append("{},{}".format(name, url))
     return "\n".join(final_lines)
 
 
 def main():
-    print(f"1.拉取主上游源：{SOURCE_URL}")
+    print("1.拉取主上游源：{}".format(SOURCE_URL))
     main_text = fetch_text(SOURCE_URL)
-    print(f"2.拉取iptasd.txt：{EXTRA_URL}")
+    print("2.拉取iptasd.txt：{}".format(EXTRA_URL))
     extra_text = fetch_text(EXTRA_URL)
-    print(f"3.拉取M3U东方有线源：{DONG_URL}")
+    print("3.拉取M3U东方有线源：{}".format(DONG_URL))
     dong_text = fetch_text(DONG_URL)
 
-    print("🚀全部频道测速，过滤失效源，组内延迟排序")
+    print("全部频道测速，过滤失效源，组内延迟排序")
     result_text = process_all_content(main_text, extra_text, dong_text)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(result_text)
-    print(f"✅处理完毕，输出：{OUTPUT_FILE}
+    print("处理完毕，输出：{}".format(OUTPUT_FILE))
+
+
+if __name__ == "__main__":
+    main()
