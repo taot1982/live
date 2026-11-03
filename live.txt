@@ -1,5 +1,5 @@
 更新时间,#genre#
-📅 2026-11-04 00:31:42 星期三,https://lotus.stingray.com/manifest/cmusic-cme004-montreal/samsungtvplus/dee3e3af-2706-3e77-a952-91b99f6d1819/5711200/manifest.m3u8
+📅 2026-11-04 00:49:36 星期三,https://lotus.stingray.com/manifest/cmusic-cme004-montreal/samsungtvplus/dee3e3af-2706-3e77-a952-91b99f6d1819/5711200/manifest.m3u8
 
 央视频道,#genre#
 CCTV1,http://1mv3n3493d.apps.bot-hosting.cloud/cctv1.m3u8
@@ -1248,6 +1248,7 @@ CGTN,http://112.64.108.59:7788/609017205
 农林卫视,http://42.94.209.140:7788/956904896
 农林卫视,http://119.119.63.189:8095/956904896
 农林卫视,http://116.52.173.39:1234/956904896
+三沙卫视,http://ott.mobaibox.com/PLTV/3/224/3221228626/index.m3u8
 三沙卫视,http://59.172.50.58:7788/961023778
 三沙卫视,http://42.94.209.140:7788/961023778
 三沙卫视,http://119.119.63.189:8095/961023778
@@ -1262,7 +1263,6 @@ CGTN,http://112.64.108.59:7788/609017205
 香港卫视,http://cctvtxyh5c.liveplay.myqcloud.com/cstv/xianggangweishi_2/index.m3u8
 香港卫视,http://anren.live/HK/BSJDUFpB.m3u8
 香港卫视,https://hls-gateway.vpstv.net/streams/708918.m3u8
-香港卫视,http://webcast.hkstv.tv/livestream/mutfysrq/playlist.m3u8
 香港卫视,http://bak.dou.ddns-ip.net/api.php?n=HKTV&id=tB4TWd&tk=guR8JwEV2mvb
 浙江卫视,http://218.13.139.26:9901/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&authid=0
 浙江卫视,http://111.59.24.227:8181/tsfile/live/0124_2.m3u8?key=txiptv&playlive=1&authid=0
@@ -1381,7 +1381,6 @@ CGTN,http://112.64.108.59:7788/609017205
 三沙卫视,http://110.40.170.5:8890/diai/live_iptv.php?id=18&token=sfjfd78tfk
 三沙卫视,https://mgtv.ottiptv.cc/mg/961023778.m3u8?userid=5559462299&sign=460ac5ca44bcab808beac56bed45088abe393365b8d473a135fbbcd56549107a18414fd8e66079c6012bb0b0a125c6e4b683b732e66c481bf965bc703f844fe333ce79df20a4f856d180f2905e76d7fe92&auth_token=1b99577efa5a3442ca4c7820d6e0b4e8
 三沙卫视,http://wouu.net:9977/udp/239.93.42.58:5140
-三沙卫视,http://ott.mobaibox.com/PLTV/3/224/3221228626/index.m3u8
 天津卫视,http://111.59.24.227:8181/tsfile/live/0135_1.m3u8?key=txiptv&playlive=1&authid=0
 天津卫视,http://110.72.87.129:8181/tsfile/live/0135_1.m3u8?key=txiptv&playlive=1&authid=0
 天津卫视,http://218.13.139.26:9901/tsfile/live/0135_1.m3u8?key=txiptv&playlive=1&authid=0
@@ -1863,6 +1862,7 @@ HOY TV,https://cc.123.rr.kg/163189/hoy
 凤凰中文,http://218.206.193.218:8888/hls/110/index.m3u8
 🇰🇷韩国AriangTV,http://amdlive-ch01.ctnd.com.edgesuite.net:80/arirang_1ch/smil:arirang_1ch.smil/chunklist_b2256000_sleng.m3u8
 中天新闻,http://xiangxiws.vip:6777/qlw.php?key=qq%E7%BE%A4746405779&id=ztxw
+香港卫视,http://webcast.hkstv.tv/livestream/mutfysrq/playlist.m3u8
 凤凰资讯,http://www.negative.top:50000/udp/233.50.202.36:5140
 TVB 开,https://vdm6-hw.nbgdsygs.com/live/h6-2.flv
 香港C+,http://ottproxy2.ist.ooo/livehls/MOB-U1-NO/index.m3u8
