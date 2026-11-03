@@ -1,8 +1,10 @@
 name: Auto IPTV Update & Check
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 */4 * * *'
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   run:
@@ -10,25 +12,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          persist-credentials: true
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
+        run: pip install requests
 
-      - name: Run fetch & filter script
-        run: |
-          python script/fetch_and_check.py
+      - name: Run script
+        run: python script/fetch_and_check.py
 
-      - name: Commit and push
+      - name: Commit & Push
         run: |
-          git config user.name "IPTV-AutoBot"
-          git config user.email "bot@example.com"
+          git config --global user.name "IPTV Bot"
+          git config --global user.email "bot@example.com"
           git add live.txt
-          git commit -m "auto refresh $(date -Iseconds)" || exit 0
+          git commit -m "auto update source" || echo "no change"
           git push
