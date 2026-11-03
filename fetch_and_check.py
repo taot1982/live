@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ========== 配置区 ==========
 SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
-DONG_URL = "http://s.201a.cn/uzi"
+DONG_URL = "http://a.u9c.cn/5P1He0"
 OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
@@ -42,16 +42,22 @@ def check_stream(url: str):
     return (False, 999.0, url)
 
 
-def fetch_text(url):
+def fetch_text_auto_decode(url):
+    """获取二进制bytes，自动尝试多编码解码，解决bin返回乱码问题"""
     try:
         resp = requests.get(url, timeout=TIMEOUT)
         resp.raise_for_status()
         raw_bytes = resp.content
-        try:
-            text = raw_bytes.decode("gb18030")
-        except Exception:
-            text = raw_bytes.decode("utf-8", errors="replace")
-        return text
+        # 依次尝试编码
+        for enc in ["utf‑8", "gb18030", "gbk", "latin‑1"]:
+            try:
+                text = raw_bytes.decode(enc)
+                print("源 {} 使用编码：{}".format(url, enc))
+                return text
+            except UnicodeDecodeError:
+                continue
+        print("警告：{} 所有编码解码失败，二进制无法转为文本".format(url))
+        return ""
     except Exception as e:
         print("获取源失败 {} , error:{}".format(url, e))
         return ""
@@ -164,16 +170,16 @@ def main():
         os.makedirs(out_dir, exist_ok=True)
 
     print("1.拉取主上游源：{}".format(SOURCE_URL))
-    main_text = fetch_text(SOURCE_URL)
+    main_text = fetch_text_auto_decode(SOURCE_URL)
     print("2.拉取iptasd.txt：{}".format(EXTRA_URL))
-    extra_text = fetch_text(EXTRA_URL)
+    extra_text = fetch_text_auto_decode(EXTRA_URL)
     print("3.拉取M3U东方有线源：{}".format(DONG_URL))
-    dong_text = fetch_text(DONG_URL)
+    dong_text = fetch_text_auto_decode(DONG_URL)
 
     print("开始处理频道，东方有线免测速；其余分组正常测速过滤")
     result_text = process_all_content(main_text, extra_text, dong_text)
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
         f.write(result_text)
     print("处理完毕，输出：{}".format(OUTPUT_FILE))
 
