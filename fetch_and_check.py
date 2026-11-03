@@ -6,12 +6,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 DONG_URL = "http://a.u9c.cn/5P1He0"
-OUTPUT_FILE = "live.txt"
+OUTPUT_FILE = "live/live.txt"
 TIMEOUT = 10
 MAX_WORKERS = 12
 READ_BYTES = 2048
 NEED_GROUPS = ["4K频道", "轮播剧场"]
 DONG_GROUP_NAME = "东方有线"
+SKIP_SPEED_TEST = False  # True = 跳过测速，直接输出，用来排查
 # =============================
 
 def check_stream(url: str):
@@ -34,7 +35,8 @@ def check_stream(url: str):
             next(r.iter_content(chunk_size=READ_BYTES), None)
             cost = time.perf_counter() - t0
             return (True, cost, url)
-    except Exception:
+    except Exception as e:
+        print("测速失败 {} | {}".format(url, str(e)))
         return (False, 999.0, url)
 
 
@@ -99,6 +101,27 @@ def parse_m3u_to_group(content, group_name):
     return []
 
 
+def render_groups(groups, delay_map=None):
+    final_lines = []
+    for g in groups:
+        if delay_map is None:
+            alive_items = [(0, name, url) for name, url in g["items"]]
+        else:
+            alive_items = []
+            for name, url in g["items"]:
+                ok, d = delay_map.get(url, (False, 999.0))
+                if ok:
+                    alive_items.append((d, name, url))
+        if not alive_items:
+            print("分组【{}】全部失效，跳过输出".format(g["group_name"]))
+            continue
+        alive_items.sort(key=lambda x: x[0])
+        final_lines.append("{},#genre#".format(g["group_name"]))
+        for d, name, url in alive_items:
+            final_lines.append("{},{}".format(name, url))
+    return "\n".join(final_lines)
+
+
 def process_all_content(main_text, extra_text, dong_text):
     dong_groups = parse_m3u_to_group(dong_text, DONG_GROUP_NAME)
     main_groups = parse_txt_content(main_text)
@@ -106,6 +129,11 @@ def process_all_content(main_text, extra_text, dong_text):
     pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"]) > 0]
 
     all_groups = dong_groups + main_groups + pick_extra
+    all_raw_lines = render_groups(all_groups)
+
+    if SKIP_SPEED_TEST:
+        print("跳过测速，直接输出原始解析结果")
+        return all_raw_lines
 
     all_tasks = []
     for g in all_groups:
@@ -120,21 +148,11 @@ def process_all_content(main_text, extra_text, dong_text):
             ok, delay, _ = future.result()
             delay_map[url] = (ok, delay)
 
-    final_lines = []
-    for g in all_groups:
-        alive_items = []
-        for name, url in g["items"]:
-            ok, d = delay_map.get(url, (False, 999.0))
-            if ok:
-                alive_items.append((d, name, url))
-        if not alive_items:
-            print("分组【{}】全部失效，跳过输出".format(g["group_name"]))
-            continue
-        alive_items.sort(key=lambda x: x[0])
-        final_lines.append("{},#genre#".format(g["group_name"]))
-        for d, name, url in alive_items:
-            final_lines.append("{},{}".format(name, url))
-    return "\n".join(final_lines)
+    result = render_groups(all_groups, delay_map)
+    if not result.strip():
+        print("警告：测速后无存活源，回退使用未测速原始版本")
+        return all_raw_lines
+    return result
 
 
 def main():
@@ -145,7 +163,7 @@ def main():
     print("3.拉取M3U东方有线源：{}".format(DONG_URL))
     dong_text = fetch_text(DONG_URL)
 
-    print("全部频道测速，过滤失效源，组内延迟排序")
+    print("开始处理频道")
     result_text = process_all_content(main_text, extra_text, dong_text)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -155,3 +173,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
