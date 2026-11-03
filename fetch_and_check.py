@@ -1,4 +1,5 @@
 import requests
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========= 配置区 =========
@@ -6,16 +7,17 @@ SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
-READ_BYTES = 2048  # 只读取开头一小段，不完整下载
+READ_BYTES = 2048
 # ===========================
 
-def is_live_stream(url: str) -> bool:
+def check_stream(url: str):
     if not (url.startswith("http://") or url.startswith("https://")):
-        return True
+        return (True, 0.0, url)
     try:
         headers = {
             "User-Agent": "VLC/3.0.18 LibVLC/3.0.18"
         }
+        t0 = time.perf_counter()
         with requests.get(
             url,
             timeout=TIMEOUT,
@@ -24,18 +26,23 @@ def is_live_stream(url: str) -> bool:
             allow_redirects=True
         ) as r:
             if not (200 <= r.status_code < 400):
-                return False
-            # 读取一小段就退出
+                return (False, 999.0, url)
             next(r.iter_content(chunk_size=READ_BYTES), None)
-            return True
+            cost = time.perf_counter() - t0
+            return (True, cost, url)
     except Exception:
-        return False
+        return (False, 999.0, url)
 
 
 def process_m3u(content: str):
     lines = content.splitlines()
-    check_items = []
-    output_header = []
+
+    # 结构：
+    # meta_lines：不属于任何流的注释、头部
+    # groups：[{ "meta": [], "items": [(extinf, url)] }]
+    groups = []
+    current_group_meta = []
+    current_group_items = []
     pending_extinf = None
 
     for line in lines:
@@ -44,28 +51,54 @@ def process_m3u(content: str):
             pending_extinf = line
             continue
         if stripped.startswith("#"):
-            output_header.append(line)
+            # 如果是分组标记，作为分组元信息，开启新分组
+            if stripped.startswith("#EXTGRP") and (current_group_meta or current_group_items):
+                groups.append({
+                    "meta": current_group_meta,
+                    "items": current_group_items
+                })
+                current_group_meta = []
+                current_group_items = []
+            current_group_meta.append(line)
             continue
         if stripped.startswith("http"):
-            check_items.append((pending_extinf, stripped))
+            current_group_items.append((pending_extinf, stripped))
             pending_extinf = None
             continue
-        output_header.append(line)
+        current_group_meta.append(line)
 
-    keep_idx = set()
+    # 压入最后一组
+    if current_group_meta or current_group_items:
+        groups.append({
+            "meta": current_group_meta,
+            "items": current_group_items
+        })
+
+    # 全部链接并发测速
+    all_tasks = []
+    for g in groups:
+        for _, url in g["items"]:
+            all_tasks.append(url)
+
+    delay_map = {}
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        task_map = {
-            executor.submit(is_live_stream, url): i
-            for i, (_, url) in enumerate(check_items)
-        }
+        task_map = {executor.submit(check_stream, u): u for u in all_tasks}
         for future in as_completed(task_map):
-            idx = task_map[future]
-            if future.result():
-                keep_idx.add(idx)
+            url = task_map[future]
+            ok, delay, _ = future.result()
+            delay_map[url] = (ok, delay)
 
-    final = output_header.copy()
-    for i, (extinf, url) in enumerate(check_items):
-        if i in keep_idx:
+    final = []
+    for g in groups:
+        final.extend(g["meta"])
+        # 本组过滤存活，并且组内按延迟升序
+        alive = []
+        for extinf, url in g["items"]:
+            ok, d = delay_map.get(url, (False, 999))
+            if ok:
+                alive.append((d, extinf, url))
+        alive.sort(key=lambda x: x[0])
+        for d, extinf, url in alive:
             if extinf:
                 final.append(extinf)
             final.append(url)
@@ -83,7 +116,7 @@ def main():
         print(f"拉上游失败：{e}")
         return
 
-    print("开始测速，GET 片段探测（降低误杀）")
+    print("测速：组内按延迟排序，分组顺序保持不变")
     out_text = process_m3u(raw_text)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
