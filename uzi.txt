@@ -1,3 +1,4 @@
+东方有线,#genre#
 #EXTM3U x-tvg-url="https://fy.188766.xyz/e.xml" tvg-shift="0"
 #EXTINF:-1 tvg-id="CCTV1-综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV1-综合.png" group-title="吉林松原酒店 吉林联通",CCTV1-综合
 http://139.214.182.172:9901/tsfile/live/1001_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
