@@ -4,23 +4,22 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置区 ==========
-SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
-#替换为新链接 s.201a.cn/uzi，免测速
-DONG_URL = "http://s.201a.cn/uzi"
-OUTPUT_FILE = "live/live.txt"
+LOCAL_TXT_PATH = "uzi.txt"
+OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
 READ_BYTES = 2048
 NEED_GROUPS = ["4K频道", "轮播剧场"]
-DONG_GROUP_NAME = "东方有线"
+UZI_GROUP_NAME = "东方有线"
 # =============================
 
 def check_stream(url: str):
     if not (url.startswith("http://") or url.startswith("https://")):
         return (True, 0.0, url)
     headers = {
-        "User‑Agent": "VLC/3.0.18 LibVLC/3.0.18"
+        "User-Agent": "VLC/3.0.18 LibVLC/3.0.18"
     }
     for attempt in range(2):
         try:
@@ -44,12 +43,11 @@ def check_stream(url: str):
 
 
 def fetch_text_auto_decode(url):
-    """获取原始二进制字节，循环尝试多种编码解析，兼容bin返回"""
     try:
         resp = requests.get(url, timeout=TIMEOUT)
         resp.raise_for_status()
         raw_bytes = resp.content
-        enc_list = ["utf‑8", "gb18030", "gbk", "latin‑1"]
+        enc_list = ["utf-8", "gb18030", "gbk", "latin-1"]
         for enc in enc_list:
             try:
                 text = raw_bytes.decode(enc)
@@ -57,11 +55,29 @@ def fetch_text_auto_decode(url):
                 return text
             except UnicodeDecodeError:
                 continue
-        print("警告：{} 全部编码解析失败，返回内容不是可解析文本播放列表".format(url))
+        print("警告：{} 全部编码解析失败".format(url))
         return ""
     except Exception as e:
         print("获取源失败 {} , error:{}".format(url, e))
         return ""
+
+
+def read_local_file(filepath):
+    if not os.path.exists(filepath):
+        print(f"警告：本地文件 {filepath} 不存在，跳过该分组")
+        return ""
+    with open(filepath, "rb") as f:
+        raw_bytes = f.read()
+    enc_list = ["utf-8", "gb18030", "gbk", "latin-1"]
+    for enc in enc_list:
+        try:
+            text = raw_bytes.decode(enc)
+            print(f"本地文件 {filepath}，编码：{enc}")
+            return text
+        except UnicodeDecodeError:
+            continue
+    print(f"警告：本地文件 {filepath} 解码失败")
+    return ""
 
 
 def parse_txt_content(content):
@@ -87,28 +103,20 @@ def parse_txt_content(content):
     return groups_out
 
 
-def parse_m3u_to_group(content, group_name):
+def parse_plain_txt_to_group(content, group_name):
     if not content.strip():
         return []
     items = []
     lines = content.splitlines()
-    pending_name = None
     for line in lines:
         s = line.strip()
-        if not s:
+        if not s or s.startswith("#"):
             continue
-        if s.startswith("#EXTM3U"):
-            continue
-        if s.startswith("#EXTINF"):
-            if "," in s:
-                pending_name = s.split(",", 1)[1].strip()
-            else:
-                pending_name = None
-            continue
-        if not s.startswith("#") and s.startswith("http"):
-            if pending_name:
-                items.append((pending_name, s))
-            pending_name = None
+        if "," in s:
+            name, url = s.split(",", 1)
+            name = name.strip()
+            url = url.strip()
+            items.append((name, url))
     if len(items) > 0:
         return [{"group_name": group_name, "items": items, "skip_test": True}]
     return []
@@ -136,8 +144,9 @@ def render_groups(groups, delay_map):
     return "\n".join(final_lines)
 
 
-def process_all_content(main_text, extra_text, dong_text):
-    dong_groups = parse_m3u_to_group(dong_text, DONG_GROUP_NAME)
+def process_all_content(main_text, extra_text, uzi_text):
+    # 东方有线放在最前面
+    dong_groups = parse_plain_txt_to_group(uzi_text, UZI_GROUP_NAME)
     main_groups = parse_txt_content(main_text)
     extra_groups = parse_txt_content(extra_text)
     pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"]) > 0]
@@ -172,17 +181,17 @@ def main():
 
     print("1.拉取主上游源：{}".format(SOURCE_URL))
     main_text = fetch_text_auto_decode(SOURCE_URL)
-    print("2.拉取iptasd.txt：{}".format(EXTRA_URL))
+    print("2.拉取 iptasd.txt：{}".format(EXTRA_URL))
     extra_text = fetch_text_auto_decode(EXTRA_URL)
-    print("3.拉取免测速源：{}".format(DONG_URL))
-    dong_text = fetch_text_auto_decode(DONG_URL)
+    print("3.读取本地 uzi.txt → 分组名：东方有线")
+    uzi_text = read_local_file(LOCAL_TXT_PATH)
 
-    print("开始处理频道，第一个分组免测速；其余分组正常测速过滤")
-    result_text = process_all_content(main_text, extra_text, dong_text)
+    print("开始处理：东方有线免测速，排在首位；其余分组测速过滤")
+    result_text = process_all_content(main_text, extra_text, uzi_text)
 
-    with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(result_text)
-    print("处理完毕，输出：{}".format(OUTPUT_FILE))
+    print("处理完毕，输出：live.txt")
 
 
 if __name__ == "__main__":
