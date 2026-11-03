@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ========== 配置区 ==========
 SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
-DONG_URL = "http://a.u9c.cn/5P1He0"
+DONG_URL = "http://s.201a.cn/uzi"
 OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
