@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ========== 配置区 ==========
 SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
+#替换为新链接 s.201a.cn/uzi，免测速
 DONG_URL = "http://s.201a.cn/uzi"
 OUTPUT_FILE = "live/live.txt"
 TIMEOUT = 8
@@ -19,7 +20,7 @@ def check_stream(url: str):
     if not (url.startswith("http://") or url.startswith("https://")):
         return (True, 0.0, url)
     headers = {
-        "User-Agent": "VLC/3.0.18 LibVLC/3.0.18"
+        "User‑Agent": "VLC/3.0.18 LibVLC/3.0.18"
     }
     for attempt in range(2):
         try:
@@ -43,20 +44,20 @@ def check_stream(url: str):
 
 
 def fetch_text_auto_decode(url):
-    """获取二进制bytes，自动尝试多编码解码，解决bin返回乱码问题"""
+    """获取原始二进制字节，循环尝试多种编码解析，兼容bin返回"""
     try:
         resp = requests.get(url, timeout=TIMEOUT)
         resp.raise_for_status()
         raw_bytes = resp.content
-        # 依次尝试编码
-        for enc in ["utf‑8", "gb18030", "gbk", "latin‑1"]:
+        enc_list = ["utf‑8", "gb18030", "gbk", "latin‑1"]
+        for enc in enc_list:
             try:
                 text = raw_bytes.decode(enc)
                 print("源 {} 使用编码：{}".format(url, enc))
                 return text
             except UnicodeDecodeError:
                 continue
-        print("警告：{} 所有编码解码失败，二进制无法转为文本".format(url))
+        print("警告：{} 全部编码解析失败，返回内容不是可解析文本播放列表".format(url))
         return ""
     except Exception as e:
         print("获取源失败 {} , error:{}".format(url, e))
@@ -173,10 +174,10 @@ def main():
     main_text = fetch_text_auto_decode(SOURCE_URL)
     print("2.拉取iptasd.txt：{}".format(EXTRA_URL))
     extra_text = fetch_text_auto_decode(EXTRA_URL)
-    print("3.拉取M3U东方有线源：{}".format(DONG_URL))
+    print("3.拉取免测速源：{}".format(DONG_URL))
     dong_text = fetch_text_auto_decode(DONG_URL)
 
-    print("开始处理频道，东方有线免测速；其余分组正常测速过滤")
+    print("开始处理频道，第一个分组免测速；其余分组正常测速过滤")
     result_text = process_all_content(main_text, extra_text, dong_text)
 
     with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
