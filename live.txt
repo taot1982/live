@@ -1,5 +1,5 @@
 更新时间,#genre#
-📅 2026-11-03 20:08:07 星期二,https://lotus.stingray.com/manifest/cmusic-cme004-montreal/samsungtvplus/dee3e3af-2706-3e77-a952-91b99f6d1819/5711200/manifest.m3u8
+📅 2026-11-03 20:44:16 星期二,https://lotus.stingray.com/manifest/cmusic-cme004-montreal/samsungtvplus/dee3e3af-2706-3e77-a952-91b99f6d1819/5711200/manifest.m3u8
 
 央视频道,#genre#
 CCTV1,http://1mv3n3493d.apps.bot-hosting.cloud/cctv1.m3u8
@@ -1378,7 +1378,6 @@ CGTN,http://112.64.108.59:7788/609017205
 吉林卫视,http://218.13.139.26:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=1&authid=0
 吉林卫视,http://120.211.62.180:8000/hls/35/index.m3u8
 吉林卫视,http://api.kkitv.itv888.cn:8080/hls/b6dl8yuvu/index.m3u
-吉林卫视,https://hlsbkmgsplive.miguvideo.com/envivo_v/2018/SD/jilin/1000/01.m3u8?&HlsSubType=&encrypt=
 江苏卫视,http://110.40.170.5:8890/diai/live_iptv.php?id=28&token=sfjfd78tfk
 江苏卫视,http://218.13.139.26:9901/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0
 江苏卫视,http://www.20260809.xyz:1234/623899368
@@ -1406,8 +1405,6 @@ CGTN,http://112.64.108.59:7788/609017205
 青海卫视,https://hls-gateway.vpstv.net/streams/708825.m3u8
 山东卫视,http://218.13.139.26:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=1&authid=0
 山东卫视,http://111.59.24.227:8181/tsfile/live/0131_2.m3u8?key=txiptv&playlive=1&authid=0
-山东卫视,https://hlsbkmgsplive.miguvideo.com/wd_r4/yg/shandongwshd/3000/01.m3u8?&HlsSubType=&encrypt=
-山东卫视,https://hlsbkmgsplive.miguvideo.com/wd-shandonghd-1200/01.m3u8?&HlsSubType=&encrypt=
 山西卫视,http://120.211.62.180:8000/hls/37/index.m3u8
 山西卫视,http://m3u8.channel.wsrtv.com.cn/cms/videos/nmip-media/channellive/channel7/playlist.m3u8
 山西卫视,https://zby.130519.xyz/PLTV/11/224/3221226113/index.m3u8
@@ -1475,6 +1472,8 @@ CGTN,http://112.64.108.59:7788/609017205
 北京卫视,http://wstvcpudtxy.liveplay.myqcloud.com/wstvcpud/udrmbtv1_1_hd.m3u8
 湖北卫视,http://hlszymgsplive.miguvideo.com:8080/wd_r2/2018/ocn/hubeiwshd/2000/01.m3u8?msisdn=27251cb858db98fb0c959c1190521368&mdspid=&spid=600633&netType=0&sid=5910022163&pid=2028597139&timestamp=20261103110321&Channel_ID=0116_2600034600-99000-201600010024520&ProgramID=947472496&ParentNodeID=-99&assertID=5910022163&client_ip=125.211.195.121&SecurityKey=20261103110321&promotionId=&mvid=5900004355&mcid=500020&playurlVersion=ZQ-A1-9.10.1-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&mtv_session=680075f1b50eeb97e48d7b8586d91a59&sv=10004&ct=android&HlsSubType=1&HlsProfileId=1&nphaid=0&encrypt=bd5fb69e2203efd787ba887a0e040dd2
 天津卫视,http://183.11.239.36:808/hls/42/index.m3u8
+山东卫视,https://hlsbkmgsplive.miguvideo.com/wd_r4/yg/shandongwshd/3000/01.m3u8?&HlsSubType=&encrypt=
+山东卫视,https://hlsbkmgsplive.miguvideo.com/wd-shandonghd-1200/01.m3u8?&HlsSubType=&encrypt=
 辽宁卫视,http://hlsztemgsplive.miguvideo.com:8080/wd_r2/2018/ocn/liaoningwshd/2000/01.m3u8?msisdn=27251cb858db98fb0c959c1190521368&mdspid=&spid=600572&netType=0&sid=5910022198&pid=2028597139&timestamp=20261103110143&Channel_ID=0116_2600034600-99000-201600010031862&ProgramID=630291707&ParentNodeID=-99&assertID=5910022198&client_ip=113.6.228.252&SecurityKey=20261103110143&promotionId=&mvid=5101043014&mcid=500020&playurlVersion=ZQ-A1-9.10.1-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&mtv_session=1ce38f400b57ade16dc4378d70c4a228&sv=10004&ct=android&HlsSubType=1&HlsProfileId=1&nphaid=0&encrypt=ce4d84cbb6f7632ff072f20b521678e6
 辽宁卫视,https://hlsbkmgsplive.miguvideo.com/migu/kailu/lnwshd265/54/20200407/01.m3u8?&HlsSubType=&encrypt=
 黑龙江卫视,http://hlsztemgsplive.miguvideo.com:8080/migu/kailu/nxjj/51/20251225/01.m3u8?msisdn=27251cb858db98fb0c959c1190521368&mdspid=&spid=600697&netType=0&sid=5910022409&pid=2028597139&timestamp=20261103110216&Channel_ID=0116_2600034600-99000-201600010003922&ProgramID=738906901&ParentNodeID=-99&assertID=5910022409&client_ip=113.6.228.253&SecurityKey=20261103110216&promotionId=&mvid=5900004349&mcid=500020&playurlVersion=ZQ-A1-9.10.1-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&mtv_session=99520815291a3687081013eb079e4bfb&sv=10004&ct=android&HlsSubType=1&HlsProfileId=1&nphaid=0&encrypt=642774de0c195f71cbd6d31c4c09b3e2
@@ -1483,6 +1482,7 @@ CGTN,http://112.64.108.59:7788/609017205
 东南卫视,http://hlsztemgsplive.miguvideo.com:8080/migu/kailu/dongnanws/51/20230724/01.m3u8?msisdn=27251cb858db98fb0c959c1190521368&mdspid=&spid=600717&netType=0&sid=5910022182&pid=2028597139&timestamp=20261103110112&Channel_ID=0116_2600034600-99000-201600010063894&ProgramID=849116810&ParentNodeID=-99&assertID=5910022182&client_ip=113.6.228.252&SecurityKey=20261103110112&promotionId=&mvid=5900006229&mcid=500020&playurlVersion=ZQ-A1-9.10.1-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&mtv_session=a99305eb2b9ae4e59ae622931eba3275&sv=10004&ct=android&HlsSubType=1&HlsProfileId=1&nphaid=0&encrypt=836464a65eead8fbcebf85b5f0daac82
 东南卫视,https://hlsbkmgsplive.miguvideo.com/migu/kailu/dongnanws/51/20230724/01.m3u8?&HlsSubType=&encrypt=
 重庆卫视,https://hlsbkmgsplive.miguvideo.com/envivo_x/2018/SD/chongqing/1000/01.m3u8?&HlsSubType=&encrypt=
+吉林卫视,https://hlsbkmgsplive.miguvideo.com/envivo_v/2018/SD/jilin/1000/01.m3u8?&HlsSubType=&encrypt=
 江西卫视,http://hlsztemgsplive.miguvideo.com:8080/migu/kailu/jxwshd/51/20190820/01.m3u8?msisdn=27251cb858db98fb0c959c1190521368&mdspid=&spid=600633&netType=0&sid=5910021492&pid=2028597139&timestamp=20261103110250&Channel_ID=0116_2600034600-99000-201600010082470&ProgramID=783847495&ParentNodeID=-99&assertID=5910021492&client_ip=113.6.228.254&SecurityKey=20261103110250&promotionId=&mvid=5900004351&mcid=500020&playurlVersion=ZQ-A1-9.10.1-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&mtv_session=982b918f10e82dc987c1ff68e3d68921&sv=10004&ct=android&HlsSubType=1&HlsProfileId=1&nphaid=0&encrypt=d7c594daa65eed90d114c959d99fb9c8
 兵团卫视,https://hlsbkmgsplive.miguvideo.com/migu/kailu/btws/51/20250804/01.m3u8?&HlsSubType=&encrypt=
 东南卫视,http://183.62.8.58:50085/tsfile/live/0137_1.m3u8?key=txiptv&playlive=1&authid=0
