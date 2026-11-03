@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import os
 import requests
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置区 ==========
-SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 LOCAL_TXT_PATH = "uzi.txt"
 OUTPUT_FILE = "live.txt"
@@ -64,7 +65,7 @@ def fetch_text_auto_decode(url):
 
 def read_local_file(filepath):
     if not os.path.exists(filepath):
-        print(f"警告：本地文件 {filepath} 不存在，跳过该分组")
+        print(f"警告：本地文件 {filepath} 不存在")
         return ""
     with open(filepath, "rb") as f:
         raw_bytes = f.read()
@@ -78,6 +79,20 @@ def read_local_file(filepath):
             continue
     print(f"警告：本地文件 {filepath} 解码失败")
     return ""
+
+
+def normalize_uzi_content(raw_text):
+    if not raw_text.strip():
+        print("uzi.txt 为空")
+        return ""
+    lines = [ln.strip() for ln in raw_text.splitlines() if ln.strip()]
+    if any(",#genre#" in ln for ln in lines):
+        print("检测：uzi.txt 自带分组标记，无需修改")
+        return raw_text
+    print("检测：uzi.txt 无分组标记，自动添加【东方有线】分组头")
+    out = [f"{UZI_GROUP_NAME},#genre#"]
+    out.extend(lines)
+    return "\n".join(out)
 
 
 def parse_txt_content(content):
@@ -103,25 +118,6 @@ def parse_txt_content(content):
     return groups_out
 
 
-def parse_plain_txt_to_group(content, group_name):
-    if not content.strip():
-        return []
-    items = []
-    lines = content.splitlines()
-    for line in lines:
-        s = line.strip()
-        if not s or s.startswith("#"):
-            continue
-        if "," in s:
-            name, url = s.split(",", 1)
-            name = name.strip()
-            url = url.strip()
-            items.append((name, url))
-    if len(items) > 0:
-        return [{"group_name": group_name, "items": items, "skip_test": True}]
-    return []
-
-
 def render_groups(groups, delay_map):
     final_lines = []
     for g in groups:
@@ -144,9 +140,11 @@ def render_groups(groups, delay_map):
     return "\n".join(final_lines)
 
 
-def process_all_content(main_text, extra_text, uzi_text):
-    # 东方有线放在最前面
-    dong_groups = parse_plain_txt_to_group(uzi_text, UZI_GROUP_NAME)
+def process_all_content(main_text, extra_text, normalized_uzi):
+    dong_groups = parse_txt_content(normalized_uzi)
+    for g in dong_groups:
+        g["skip_test"] = True
+
     main_groups = parse_txt_content(main_text)
     extra_groups = parse_txt_content(extra_text)
     pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"]) > 0]
@@ -159,39 +157,41 @@ def process_all_content(main_text, extra_text, uzi_text):
             continue
         for _name, url in g["items"]:
             test_url_set.add(url)
-    all_tasks = list(test_url_set)
 
     delay_map = {}
-    if all_tasks:
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            task_map = {executor.submit(check_stream, u): u for u in all_tasks}
-            for future in as_completed(task_map):
-                url = task_map[future]
-                ok, delay, _ = future.result()
-                delay_map[url] = (ok, delay)
+    print(f"开始测速，待检测链接数量：{len(test_url_set)}")
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future2url = {executor.submit(check_stream, u): u for u in test_url_set}
+        for fut in as_completed(future2url):
+            ok, cost, url = fut.result()
+            delay_map[url] = (ok, cost)
 
-    result = render_groups(all_groups, delay_map)
-    return result
+    out_text = render_groups(all_groups, delay_map)
+    return out_text
 
 
 def main():
-    out_dir = os.path.dirname(OUTPUT_FILE)
-    if out_dir and not os.path.exists(out_dir):
-        os.makedirs(out_dir, exist_ok=True)
+    raw_uzi = read_local_file(LOCAL_TXT_PATH)
+    normalized_uzi = normalize_uzi_content(raw_uzi)
 
-    print("1.拉取主上游源：{}".format(SOURCE_URL))
-    main_text = fetch_text_auto_decode(SOURCE_URL)
-    print("2.拉取 iptasd.txt：{}".format(EXTRA_URL))
-    extra_text = fetch_text_auto_decode(EXTRA_URL)
-    print("3.读取本地 uzi.txt → 分组名：东方有线")
-    uzi_text = read_local_file(LOCAL_TXT_PATH)
+    # 回写：把标准化结果保存进 uzi.txt
+    if normalized_uzi:
+        with open(LOCAL_TXT_PATH, "w", encoding="utf-8") as fw:
+            fw.write(normalized_uzi)
+        print("已回写标准化内容到 uzi.txt")
 
-    print("开始处理：东方有线免测速，排在首位；其余分组测速过滤")
-    result_text = process_all_content(main_text, extra_text, uzi_text)
+    main_txt = fetch_text_auto_decode(SOURCE_URL)
+    extra_txt = fetch_text_auto_decode(EXTRA_URL)
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(result_text)
-    print("处理完毕，输出：live.txt")
+    result = process_all_content(main_txt, extra_txt, normalized_uzi)
+
+    if not result.strip():
+        print("警告：测速后全部为空，兜底输出处理后的 uzi")
+        result = normalized_uzi
+
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as fw:
+        fw.write(result)
+    print("已写入 {}".format(OUTPUT_FILE))
 
 
 if __name__ == "__main__":
