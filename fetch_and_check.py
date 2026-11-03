@@ -3,7 +3,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========= 配置区 =========
-SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
 OUTPUT_FILE = "live.txt"
 TIMEOUT = 8
 MAX_WORKERS = 10
@@ -37,9 +37,6 @@ def check_stream(url: str):
 def process_m3u(content: str):
     lines = content.splitlines()
 
-    # 结构：
-    # meta_lines：不属于任何流的注释、头部
-    # groups：[{ "meta": [], "items": [(extinf, url)] }]
     groups = []
     current_group_meta = []
     current_group_items = []
@@ -51,7 +48,6 @@ def process_m3u(content: str):
             pending_extinf = line
             continue
         if stripped.startswith("#"):
-            # 如果是分组标记，作为分组元信息，开启新分组
             if stripped.startswith("#EXTGRP") and (current_group_meta or current_group_items):
                 groups.append({
                     "meta": current_group_meta,
@@ -67,14 +63,12 @@ def process_m3u(content: str):
             continue
         current_group_meta.append(line)
 
-    # 压入最后一组
     if current_group_meta or current_group_items:
         groups.append({
             "meta": current_group_meta,
             "items": current_group_items
         })
 
-    # 全部链接并发测速
     all_tasks = []
     for g in groups:
         for _, url in g["items"]:
@@ -90,14 +84,17 @@ def process_m3u(content: str):
 
     final = []
     for g in groups:
-        final.extend(g["meta"])
-        # 本组过滤存活，并且组内按延迟升序
         alive = []
         for extinf, url in g["items"]:
-            ok, d = delay_map.get(url, (False, 999))
+            ok, d = delay_map.get(url, (False, 999.0))
             if ok:
                 alive.append((d, extinf, url))
+        if not alive:
+            # 当前分组没有存活源，整组跳过，不输出
+            continue
         alive.sort(key=lambda x: x[0])
+        # 输出分组头部标记
+        final.extend(g["meta"])
         for d, extinf, url in alive:
             if extinf:
                 final.append(extinf)
@@ -111,12 +108,16 @@ def main():
     try:
         resp = requests.get(SOURCE_URL, timeout=20)
         resp.raise_for_status()
-        raw_text = resp.text
+        raw_bytes = resp.content
+        try:
+            raw_text = raw_bytes.decode("gb18030")
+        except Exception:
+            raw_text = raw_bytes.decode("utf-8", errors="replace")
     except Exception as e:
         print(f"拉上游失败：{e}")
         return
 
-    print("测速：组内按延迟排序，分组顺序保持不变")
+    print("测速：剔除失效源，组内按延迟排序，空分组不输出")
     out_text = process_m3u(raw_text)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -125,4 +126,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
