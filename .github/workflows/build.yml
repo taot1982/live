@@ -13,6 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install requests
+        run: pip install requests
+
       - name: Run python
         run: python3 fetch_and_check.py
 
@@ -20,6 +23,6 @@ jobs:
         run: |
           git config --global user.name "taot1982"
           git config --global user.email "taot1982@example.com"
-          git add live.txt
-          git commit -m "auto update live.txt" || echo "no change"
+          git add live.txt uzi.txt
+          git commit -m "auto normalize uzi + filter stream" || echo "no change"
           git push --force-with-lease
