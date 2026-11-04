@@ -17,6 +17,8 @@ MAX_WORKERS = 8
 READ_BYTES = 2048
 NEED_GROUPS = ["4K频道", "轮播剧场"]
 UZI_GROUP_NAME = "东方有线"
+REPLACE_OLD_TEXT = "吉林松原酒店 吉林联通"
+REPLACE_NEW_TEXT = "东方有线"
 # ==========================
 
 
@@ -59,39 +61,23 @@ def fetch_text(url):
         return ""
 
 
-def parse_plain_m3u_txt(content):
-    """解析 #EXTM3U 或者 频道名,url 文本格式"""
-    groups = []
-    lines = [line.strip() for line in content.splitlines() if line.strip()]
-    items = []
-    last_name = "未知"
-
-    for line in lines:
-        if line.startswith("#EXTINF"):
-            if "," in line:
-                last_name = line.split(",", 1)[1].strip()
-        elif line.startswith("http"):
-            items.append((last_name, line))
-        elif "," in line and not line.startswith("#"):
-            # 简易 txt：名称,链接
-            n, u = line.split(",", 1)
-            items.append((n.strip(), u.strip()))
-
-    if items:
-        groups.append({
-            "group_name": "远程源",
-            "items": items,
-            "skip_test": False
-        })
-    return groups
-
-
 def parse_m3u_content(content, group_name):
     if not content:
         return []
     if content.lstrip().startswith("#EXTM3U"):
-        return parse_plain_m3u_txt(content)
-    # 传统 ,#genre#
+        groups = []
+        items = []
+        last_name = "未知"
+        lines = [line.strip() for line in content.splitlines() if line.strip()]
+        for line in lines:
+            if line.startswith("#EXTINF"):
+                if "," in line:
+                    last_name = line.split(",", 1)[1].strip()
+            elif line.startswith("http"):
+                items.append((last_name, line))
+        if items:
+            groups.append({"group_name": group_name, "items": items, "skip_test": False})
+        return groups
     groups = []
     current = None
     for line in content.splitlines():
@@ -107,7 +93,7 @@ def parse_m3u_content(content, group_name):
 
 
 def build_live1():
-    """只处理本地 uzi，输出 live1.txt，不联网、不测速"""
+    """读取 uzi，替换文字，输出 live1.txt"""
     print("\n===== 生成 live1.txt（本地 uzi） =====")
     if not os.path.exists(LOCAL_TXT_PATH):
         print("[警告] uzi.txt 不存在，live1 为空")
@@ -125,6 +111,9 @@ def build_live1():
         except Exception:
             continue
 
+    # 关键：替换目标文字
+    text = text.replace(REPLACE_OLD_TEXT, REPLACE_NEW_TEXT)
+
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     out = [f"{UZI_GROUP_NAME},#genre#"]
     for ln in lines:
@@ -133,7 +122,7 @@ def build_live1():
     result = "\n".join(out)
     with open(LIVE1, "w", encoding="utf-8") as f:
         f.write(result)
-    print(f"[完成] {LIVE1}")
+    print(f"[完成] {LIVE1}，已完成文本替换")
 
 
 def build_live2():
@@ -146,7 +135,6 @@ def build_live2():
     g2 = parse_m3u_content(t2, "附加频道")
 
     all_groups = g1 + g2
-    # 筛选指定组
     filtered = []
     for g in all_groups:
         if g["group_name"] in NEED_GROUPS or not NEED_GROUPS:
@@ -154,7 +142,6 @@ def build_live2():
     if not filtered:
         filtered = all_groups
 
-    # 收集所有待测速链接
     url_set = set()
     for g in filtered:
         if not g.get("skip_test"):
@@ -170,7 +157,6 @@ def build_live2():
                 ok, cost, u = fut.result()
                 delay_map[u] = (ok, cost)
 
-    # 组内按延迟升序，组顺序保持不变
     out_lines = []
     for g in filtered:
         out_lines.append(f"{g['group_name']},#genre#")
