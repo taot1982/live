@@ -6,7 +6,7 @@ import sys
 import warnings
 warnings.filterwarnings("ignore")
 
-# ========== 修复日志编码（解决你这个报错核心） ==========
+# 修复日志编码
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
@@ -16,11 +16,13 @@ source_list = [
     "https://sttottv.ccwu.cc/ZB.TXT"
 ]
 OUTPUT_FILE = "live.txt"
-TEST_TIMEOUT = 15
+TEST_TIMEOUT = 4
 FETCH_SOURCE_TIMEOUT = 20
 FETCH_MAX_RETRY = 3
-CONCURRENCY = 8
+CONCURRENCY = 4
 READ_BYTES = 2048
+# 尝试的编码顺序
+TRY_ENCODINGS = ["gbk", "gb2312", "utf-8"]
 # ==================================================
 
 headers = {
@@ -50,8 +52,22 @@ def fetch_with_retry(url, max_retry=3, timeout=20):
     raise last_exception
 
 
+def get_text_auto_decode(resp):
+    """自动尝试编码解码，解决GBK乱码"""
+    raw_bytes = resp.content
+    for enc in TRY_ENCODINGS:
+        try:
+            text = raw_bytes.decode(enc)
+            print(f"✅ 编码识别成功：{enc}")
+            return text
+        except UnicodeDecodeError:
+            continue
+    # 全部失败兜底：替换无法解析字符
+    print(f"⚠️ 全部编码尝试失败，使用replace兜底解码")
+    return raw_bytes.decode("utf-8", errors="replace")
+
+
 def test_stream(url):
-    """测速，低误杀，只读取少量数据"""
     try:
         start = time.time()
         r = requests.get(url, headers=headers, timeout=TEST_TIMEOUT, stream=True, verify=False)
@@ -64,7 +80,6 @@ def test_stream(url):
 
 
 def txt_to_m3u(raw_text):
-    """简易txt(#genre#) 转标准m3u，内置转换，不用云函数"""
     lines = raw_text.splitlines()
     current_group = "默认组"
     out = []
@@ -72,8 +87,9 @@ def txt_to_m3u(raw_text):
         line = line.strip()
         if not line:
             continue
-        # 清洗特殊字符（\u2011这类异常连字符）
+        # 清洗特殊异常符号
         line = line.replace('\u2011', '-')
+        line = line.replace('\ufffd', '')
         if line.endswith(",#genre#"):
             current_group = line.replace(",#genre#", "").strip()
             continue
@@ -123,12 +139,10 @@ def main():
         print(f"\n===== 开始拉取上游源: {src} =====")
         try:
             resp = fetch_with_retry(src, max_retry=FETCH_MAX_RETRY, timeout=FETCH_SOURCE_TIMEOUT)
-            text = resp.text
-            # 判断：已经是m3u还是txt格式
+            text = get_text_auto_decode(resp)
             if text.lstrip().startswith("#EXTM3U"):
                 m3u_content = text
             else:
-                # txt格式 → 转换为标准m3u
                 m3u_content = "#EXTM3U\n" + txt_to_m3u(text)
             all_m3u_raw += m3u_content + "\n"
             ok_source_count += 1
@@ -155,11 +169,17 @@ def main():
     url_map = {item["url"]: item for item in channel_list}
     url_result = {}
 
+    # 线程池超时保护
     with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as executor:
         future_map = {executor.submit(test_stream, u): u for u in url_map.keys()}
-        for fut in concurrent.futures.as_completed(future_map):
-            u, delay, ok = fut.result()
-            url_result[u] = {"delay": delay, "ok": ok}
+        for fut in concurrent.futures.as_completed(future_map, timeout=120):
+            try:
+                u, delay, ok = fut.result()
+                url_result[u] = {"delay": delay, "ok": ok}
+            except concurrent.futures.TimeoutError:
+                u = future_map[fut]
+                url_result[u] = {"delay": 999.9, "ok": False}
+                print(f"⏱ 测速任务超时，标记失效：{u}")
 
     group_order = []
     group_bucket = {}
