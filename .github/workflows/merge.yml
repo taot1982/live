@@ -2,7 +2,7 @@ name: Merge IPTV Source
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch: # 保留手动触发按钮
 
 jobs:
   build:
@@ -25,5 +25,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add live.txt
-          git commit -m "auto update live.txt" || echo "no changes"
+          git commit -m "auto update live.txt (iptv/iptasd changed)" || echo "no changes"
           git push origin main
