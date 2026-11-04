@@ -5,15 +5,16 @@ def read_iptv():
     new_lines = []
     for line in lines:
         line_strip = line.strip()
-        # 跳过空行、#by、#节目数量
-        if not line_strip or line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
+        # 跳过 #by、#节目数量 注释行
+        if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
-        # 替换内容
+        # 替换文字
         line = line.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
+        # 删除 #类型： （注意这里是英文冒号）
         line = line.replace("#类型：", "")
-        # 去掉首尾空白，只保留有效内容，末尾加换行
-        new_lines.append(line_strip + "\n")
+        new_lines.append(line)
     return new_lines
+
     
 def read_iptasd():
     out = []
