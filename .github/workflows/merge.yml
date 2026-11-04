@@ -20,13 +20,13 @@ jobs:
       - name: Commit and push if changed
         run: |
           git config --global user.name "bot"
-git config --global user.email "bot@github.com"
-git add live.txt
+          git config --global user.email "bot@github.com"
+          git add live.txt
 
-if git diff --cached --quiet; then
-    echo "live.txt 内容未发生变化，无法空提交，跳过 push"
-else
-    git commit -m "auto update live"
-    git push origin main
-fi
+          if git diff --cached --quiet; then
+          echo "live.txt 内容未发生变化，无法空提交，跳过 push"
+          else
+          git commit -m "auto update live"
+          git push origin main
+          fi
 
