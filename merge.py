@@ -8,12 +8,13 @@ def read_iptv():
         # 跳过 #by、#节目数量 注释行
         if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
-        # 1. 替换吉林松原酒店 吉林联通
-        line = line.replace("吉林松原酒店 吉林联通", "东方有线，#genre#")
-        # 2. 去掉 #类型：前缀
-        if line_strip.startswith("#类型："):
-            line = line.replace("#类型："，"")
+        # 替换文字
+        line = line.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
+        # 删除 #类型： （注意这里是英文冒号）
+        line = line.replace("#类型：", "")
         new_lines.append(line)
+    return new_lines
+
   
 def read_iptasd():
     out = []
