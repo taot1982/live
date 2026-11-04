@@ -1,29 +1,27 @@
-name: Merge IPTV Source
+name: Auto Generate Live
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
   push:
-    branches: [ main ]
-  workflow_dispatch: # 保留手动触发按钮
-
+    paths:
+      - 'iptv.txt'
+      - 'merge.py'
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Python merge script
+      - uses: actions/checkout@v4
+      - name: Install python deps
+        run: pip3 install requests
+      - name: Run Python
         run: python3 merge.py
-
-      - name: Upload live.txt for download
-        uses: actions/upload-artifact@v4
-        with:
-          name: live-source
-          path: live.txt
-
-      - name: Commit & Push updated live.txt
+      - name: Commit & Push
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
           git add live.txt
-          git commit -m "auto update live.txt (iptv/iptasd changed)" || echo "no changes"
-          git push origin main
+          git commit -m "auto update live" || true
+          git push
