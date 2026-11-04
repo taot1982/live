@@ -6,7 +6,7 @@ import re
 # ===================== 配置区（只改这里）=====================
 SCF_BASE = "https://1525041261-hd5hacihfc.ap-shanghai.tencentscf.com?token=202120785&url="
 PUBLIC_PROXY = "https://proxy.yumus.cn/?url="
-SOURCE_URL = "http://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 
 OUTPUT_FILE = "live.m3u"
