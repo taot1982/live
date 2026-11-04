@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - 'iptv.txt'
+      - 'iptasd.txt'
       - 'ZB.TXT'
       - 'merge.py'
 jobs:
