@@ -9,7 +9,7 @@ def read_iptv():
         if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
         # 1. 替换吉林松原酒店 吉林联通
-        line = line.replace("吉林松原酒店 吉林联通", "东方有线")
+        line = line.replace("吉林松原酒店 吉林联通", "东方有线，#genre#")
         # 2. 去掉 #类型：前缀
         if line_strip.startswith("#类型："):
             line = line.replace("#类型：", "")
