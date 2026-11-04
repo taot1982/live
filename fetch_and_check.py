@@ -5,7 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置 ==========
-SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 LOCAL_TXT_PATH = "uzi.txt"
 LIVE1 = "live1.txt"
