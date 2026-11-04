@@ -23,7 +23,7 @@ def filter_all_lines(file_path):
             continue
         if line_strip.endswith(",#genre#"):
             continue
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+        line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
         out.append(line_strip)
     print(f"{file_path} 保留行数：{len(out)}")
     return out
