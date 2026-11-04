@@ -23,7 +23,7 @@ def load_dongfang():
             continue
         if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
         line_strip = line_strip.replace("#类型：", "")
         if "东方有线" in line_strip:
             out.append(line_strip)
