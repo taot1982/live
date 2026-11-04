@@ -2,11 +2,15 @@ import requests
 import concurrent.futures
 import time
 import re
+import sys
 import warnings
 warnings.filterwarnings("ignore")
 
+# ========== 修复日志编码（解决你这个报错核心） ==========
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
 # ===================== 配置区 =====================
-# 直接访问原始源站，废弃无法打开的腾讯云函数
 source_list = [
     "http://203.135.100.107:7681/iptasd.txt",
     "https://sttottv.ccwu.cc/ZB.TXT"
@@ -20,7 +24,7 @@ READ_BYTES = 2048
 # ==================================================
 
 headers = {
-    "User‑Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
 
 
@@ -47,6 +51,7 @@ def fetch_with_retry(url, max_retry=3, timeout=20):
 
 
 def test_stream(url):
+    """测速，低误杀，只读取少量数据"""
     try:
         start = time.time()
         r = requests.get(url, headers=headers, timeout=TEST_TIMEOUT, stream=True, verify=False)
@@ -56,6 +61,30 @@ def test_stream(url):
         return (url, delay, True)
     except Exception:
         return (url, 999.9, False)
+
+
+def txt_to_m3u(raw_text):
+    """简易txt(#genre#) 转标准m3u，内置转换，不用云函数"""
+    lines = raw_text.splitlines()
+    current_group = "默认组"
+    out = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        # 清洗特殊字符（\u2011这类异常连字符）
+        line = line.replace('\u2011', '-')
+        if line.endswith(",#genre#"):
+            current_group = line.replace(",#genre#", "").strip()
+            continue
+        sp = line.split(",")
+        if len(sp)>=2:
+            ch_name = sp[0].strip()
+            ch_url = sp[1].strip()
+            if ch_url.startswith("http"):
+                out.append(f'#EXTINF:-1 group-title="{current_group}",{ch_name}')
+                out.append(ch_url)
+    return "\n".join(out)
 
 
 def parse_standard_m3u(raw_text):
@@ -73,7 +102,7 @@ def parse_standard_m3u(raw_text):
                 continue
             url_line = lines[i+1].strip()
             if url_line.startswith("http"):
-                grp_match = re.search(r'group‑title="([^"]+)"', line)
+                grp_match = re.search(r'group-title="([^"]+)"', line)
                 group_name = grp_match.group(1) if grp_match else "默认组"
                 result.append({
                     "group": group_name,
@@ -87,7 +116,7 @@ def parse_standard_m3u(raw_text):
 
 
 def main():
-    all_raw = ""
+    all_m3u_raw = ""
     ok_source_count = 0
 
     for src in source_list:
@@ -95,27 +124,30 @@ def main():
         try:
             resp = fetch_with_retry(src, max_retry=FETCH_MAX_RETRY, timeout=FETCH_SOURCE_TIMEOUT)
             text = resp.text
-            if not text.lstrip().startswith("#EXTM3U"):
-                print(f"⚠️ 警告：该上游返回不是 #EXTM3U 开头，丢弃！前300字符预览：{repr(text[:300])}")
-                continue
-            all_raw += text + "\n"
+            # 判断：已经是m3u还是txt格式
+            if text.lstrip().startswith("#EXTM3U"):
+                m3u_content = text
+            else:
+                # txt格式 → 转换为标准m3u
+                m3u_content = "#EXTM3U\n" + txt_to_m3u(text)
+            all_m3u_raw += m3u_content + "\n"
             ok_source_count += 1
-            print(f"✅ 上游拉取成功，本次追加 {len(text)} 字符")
+            print(f"✅ 上游拉取&转换成功")
         except Exception as e:
             print(f"❌ 上游【完全失败】 {src} : {str(e)}")
             continue
 
     print(f"\n汇总：成功拉取上游数量 {ok_source_count}/{len(source_list)}")
-    if not all_raw.strip():
+    if not all_m3u_raw.strip():
         print("❌ 全部上游都拉取失败！输出空m3u模板")
-        with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write("#EXTM3U\n")
         return
 
-    channel_list = parse_standard_m3u(all_raw)
+    channel_list = parse_standard_m3u(all_m3u_raw)
     if not channel_list:
-        print("⚠️ 警告：解析后没有得到任何频道！检查上游返回的m3u格式")
-        with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
+        print("⚠️ 警告：解析后没有得到任何频道！检查上游返回内容")
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write("#EXTM3U\n")
         return
     print(f"解析得到频道总条目: {len(channel_list)}")
@@ -149,7 +181,7 @@ def main():
             out_lines.append(it["url"])
             valid_total += 1
 
-    with open(OUTPUT_FILE, "w", encoding="utf‑8") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(out_lines))
     print(f"\n✅ 处理完成，输出文件：{OUTPUT_FILE}")
     print(f"✅ 输出有效频道数量：{valid_total}")
