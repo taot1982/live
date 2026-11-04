@@ -4,19 +4,28 @@ on:
   schedule:
     - cron: '0 8 * * *'
   push:
+    branches: [ main ]
 jobs:
   run:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Run Python merge script
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Python script
         run: python3 merge.py
-      - name: Commit & Push
+      - name: Commit and push if changed
         run: |
           git config --global user.name "bot"
           git config --global user.email "bot@github.com"
           git add live.txt
-          git commit -m "auto update live" || true
-          git push
+          # 只有文件发生变化才提交，避免空提交
+          if git diff --cached --quiet; then
+            echo "live.txt 没有变化，跳过提交"
+          else
+            git commit -m "auto update live"
+            git push
+          fi
