@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 配置
 SRC_URL = "https://sttottv.ccwu.cc/ZB.TXT"
-TIMEOUT = 3
-MAX_WORKERS = 15
+TIMEOUT = 2
+MAX_WORKERS = 8
 OUTPUT = "live.txt"
 LOCAL_FILE = "iptv.txt"
 
@@ -15,7 +15,7 @@ def is_english_name(name: str) -> bool:
 
 def test_url_latency(url: str) -> tuple[str, float]:
     try:
-        r = requests.get(url, timeout=TIMEOUT, stream=True)
+        r = requests.get(url, timeout=(1.2, TIMEOUT), stream=True)
         if r.status_code == 200:
             latency = r.elapsed.total_seconds()
         else:
@@ -25,7 +25,6 @@ def test_url_latency(url: str) -> tuple[str, float]:
     return url, latency
 
 def load_local_lines():
-    """读取本地iptv.txt，沿用你之前的过滤替换规则"""
     local_out = []
     with open(LOCAL_FILE, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -39,7 +38,7 @@ def load_local_lines():
     return local_out
 
 def fetch_remote():
-    resp = requests.get(SRC_URL, timeout=10)
+    resp = requests.get(SRC_URL, timeout=8)
     resp.encoding = "utf-8"
     lines = resp.text.splitlines()
     channel_map = {}
@@ -55,7 +54,6 @@ def fetch_remote():
             channel_map[name] = []
             order_list.append(name)
         channel_map[name].append(url)
-    # 测速、组内排序
     cn_remote = []
     en_remote = []
     for ch_name in order_list:
