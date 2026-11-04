@@ -212,6 +212,7 @@ CCTV8K,http://192.151.150.154/live/cctv8k.m3u8
 虎牙_小鬼头,http://42.240.145.105:2202/huya.php?key=8899&id=11352963
 虎牙_蜘蛛侠,http://42.240.145.105:2202/huya.php?key=8899&id=21059599
 📅 2026-11-04 21:05:18 星期三,https://lotus.stingray.com/manifest/cmusic-cme004-montreal/samsungtvplus/dee3e3af-2706-3e77-a952-91b99f6d1819/5711200/manifest.m3u8
+央视频道,#genre#
 CCTV1,http://1mv3n3493d.apps.bot-hosting.cloud/cctv1.m3u8
 CCTV2,http://1mv3n3493d.apps.bot-hosting.cloud/cctv2.m3u8
 CCTV3,http://1mv3n3493d.apps.bot-hosting.cloud/cctv3.m3u8
@@ -987,6 +988,7 @@ CGTN俄语,http://112.64.108.59:7788/609006446
 发现之旅,http://112.64.108.59:7788/624878970
 中学生,http://112.64.108.59:7788/708869532
 CGTN,http://112.64.108.59:7788/609017205
+卫视频道,#genre#
 北京卫视,http://1mv3n3493d.apps.bot-hosting.cloud/bjws.m3u8
 江苏卫视,http://1mv3n3493d.apps.bot-hosting.cloud/jsws.m3u8
 东方卫视,http://1mv3n3493d.apps.bot-hosting.cloud/dfws.m3u8
@@ -1758,6 +1760,7 @@ CGTN,http://112.64.108.59:7788/609017205
 宁夏卫视,http://112.64.108.59:7788/738910535
 重庆卫视,http://112.64.108.59:7788/738910914
 三沙卫视,http://112.64.108.59:7788/961023778
+广东频道,#genre#
 广东体育,https://gdsport.ccwu.cc/hls/1/index.m3u8
 天威TVG,http://116.77.33.98:44330/tsfile/live/1002_1.m3u8?key=txiptv&playlive=0&authid=0
 Channel [V],http://116.77.33.98:44330/tsfile/live/1010_1.m3u8?key=txiptv&playlive=0&authid=0
@@ -1852,6 +1855,7 @@ CNA亚洲新闻,http://liveko24-manminglobal3.ktcdn.co.kr/liveko24/gcnko_high/ch
 龙华电影,https://cdn8.163189.xyz/live/lhdy/stream.m3u8
 龙华经典,https://cdn8.163189.xyz/live/lhjd/stream.m3u8
 龙门飞甲,http://jsmov2.a.yximgs.com/bs3/video-hls/5203346449046555193_hlsb.m3u8
+湖南频道,#genre#
 湖南卫视4K,http://45.192.97.170:8880/play/20.m3u8
 湖南卫视4K,http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/Y2RuZXhfaWQ9YWxfaGxzX2xkdnQmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8
 湖南经视,https://phoneal.qing.mgtv.com/nn_live/nn_x64/Y2RuZXhfaWQ9YWxfaGxzX2xkdnQmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNJSMPP360.m3u8
@@ -1895,6 +1899,7 @@ CHC电影,http://183.237.95.108:9901/tsfile/live/1008_1.m3u8?key=txiptv&playlive
 韩国电影1,https://stream.ads.ottera.tv/playlist.m3u8?network_id=595
 韩国电影2,https://stream.ads.ottera.tv/playlist.m3u8?network_id=743
 黄渤电影,https://live.metshop.top/huya/11352876
+新闻频道,#genre#
 凤凰资讯,https://fh.fxtv.cc.cd/fhzx
 凤凰中文,https://fh.fxtv.cc.cd/fhzw
 凤凰香港,https://fh.fxtv.cc.cd/fhhk
@@ -1914,6 +1919,7 @@ CHC电影,http://183.237.95.108:9901/tsfile/live/1008_1.m3u8?key=txiptv&playlive
 民视新闻,https://d2jc41c1shgcol.cloudfront.net/live/ftvnewsqt/playlist.m3u8
 TVBS新闻,https://d2jc41c1shgcol.cloudfront.net/live/tvbsnewsqt/playlist.m3u8
 LIVE三立,https://d2jc41c1shgcol.cloudfront.net/live/setnewsrtmp/playlist.m3u8
+港台频道,#genre#
 无线新闻,https://cdn6.123.rr.kg/163189/wxxw
 无线新闻,https://cdn6.123.rr.kg/163189/wxxwt
 凤凰中文,http://173.208.234.146/live/fhzw.m3u8
@@ -2001,6 +2007,7 @@ TVB星河(多音轨字幕),http://120.238.5.44:1698/hls/88/index.m3u8
 東森中國台,http://38.64.72.148:80/hls/modn/list/2003/chunklist1.m3u8
 Love Nature,https://bamus-lovenature-lg.amagi.tv/480p-cc/index.m3u8
 Love Nature,https://bamus-lovenature-lg.amagi.tv/240p-cc/index.m3u8
+ZETV,#genre#
 TVB星河,https://cdn3.indevs.in/stream/live/tvbxh/
 TVBPlus,https://cdn3.indevs.in/stream/tvb/tvbp/
 明珠台,https://cdn3.indevs.in/stream/tvb/mzt/
@@ -2293,6 +2300,7 @@ BBC Earth,https://amg00793-amg00793c6-xumo-us-2669.playouts.now.amagi.tv/BBCStud
 NBA1,http://23.237.104.106:8080/USA_NBA/tracks-v1a1/mono.m3u8
 中天新闻,http://nmk.ioapk.com:5050/of-4gtv-4gtv009/index.m3u8
 美亚电影,http://iptv.4666888.xyz/iptv2A.php?id=30
+5GTV,#genre#
 Astro AEC,https://cdn.qd.je/163189/aec
 Astro QJ,https://cdn.qd.je/163189/qj
 咪咕4K(限移动网络),http://r.jdshipin.com/ln4xk
@@ -2337,6 +2345,7 @@ TVBS Asia,http://38.64.72.148/hls/modn/list/4005/playlist.m3u8
 Pet Club TV,https://petclub-samsungaus.amagi.tv/playlist.m3u8
 翡翠台4K(字幕),http://o11.163189.xyz/stream/tvb/fct4k/
 凤凰香港,http://cdn6.123.rr.kg/163189/fhhk
+广东电信组播,#genre#
 广东卫视,http://183.236.43.98:4013/udp/239.77.1.19:5146
 广东卫视,http://183.236.43.98:4013/udp/239.77.1.152:5146
 广东卫视,http://183.236.43.98:4013/udp/239.77.0.166:5146
@@ -2476,6 +2485,7 @@ CGTN阿拉伯语,http://183.236.43.98:4013/udp/239.253.43.200:5146
 CGTN俄语,http://183.236.43.98:4013/udp/239.253.43.201:5146
 睛彩篮球,http://183.236.43.98:4013/udp/239.77.1.21:5146
 睛彩青少,http://183.236.43.98:4013/udp/239.77.1.22:5146
+湖南电信组播,#genre#
 九画面,http://118.248.156.76:8889/udp/239.76.245.131:1234
 九画面,http://118.248.156.76:8889/udp/239.76.252.131:9000
 湖南卫视,http://118.248.156.76:8889/udp/239.76.253.101:9000
@@ -3424,6 +3434,7 @@ CGTN阿拉伯语,http://58.46.31.8:8188/udp/239.76.246.97:1234
 宁乡综合频道,http://58.46.31.8:8188/udp/239.76.248.57:1234
 未知新闻综合,http://58.46.31.8:8188/udp/239.76.248.27:1234
 中方台,http://58.46.31.8:8188/udp/239.76.248.43:1234
+其他频道,#genre#
 翡翠台,http://183.62.8.58:50085/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0
 明珠台,http://183.62.8.58:50085/tsfile/live/0018_1.m3u8?key=txiptv&playlive=1&authid=0
 广东珠江,http://183.62.8.58:50085/tsfile/live/1000_1.m3u8?key=txiptv&playlive=1&authid=0
@@ -3432,6 +3443,7 @@ CGTN阿拉伯语,http://58.46.31.8:8188/udp/239.76.246.97:1234
 广东体育,http://183.62.8.58:50085/tsfile/live/1003_1.m3u8?key=txiptv&playlive=1&authid=0
 卡酷动画,http://183.62.8.58:50085/tsfile/live/1005_1.m3u8?key=txiptv&playlive=1&authid=0
 金鹰卡通,http://183.62.8.58:50085/tsfile/live/1006_1.m3u8?key=txiptv&playlive=1&authid=0
+FATV,#genre#
 廣東珠江,http://iptv.4666888.xyz/iptv2A.php?id=7
 廣東體育,http://iptv.4666888.xyz/iptv2A.php?id=8
 CCTV3,http://iptv.4666888.xyz/iptv2A.php?id=9
@@ -3476,6 +3488,7 @@ TV5MONDE,http://iptv.4666888.xyz/iptv2A.php?id=46
 Bloomberg TV,http://iptv.4666888.xyz/iptv2A.php?id=51
 愛奇藝,http://iptv.4666888.xyz/iptv2A.php?id=52
 龍華洋片,http://iptv.4666888.xyz/iptv2A.php?id=57
+HKTV,#genre#
 凤凰中文,http://woc.iiiya.cn:18888/rtp/239.61.2.184:9092
 凤凰资讯,http://woc.iiiya.cn:18888/rtp/239.61.2.183:9086
 HOY77,http://c.123.rr.kg/163189/hoy77
@@ -3619,8 +3632,10 @@ amc电影,https://ktpremium.world/live/yv2367/23670963/995220.m3u8
 凤凰资讯,http://www.zlizi.cn:4023/rtp/239.76.253.134:9000
 凤凰中文,http://www.zlizi.cn:4023/rtp/239.76.246.134:1234
 凤凰资讯,http://www.zlizi.cn:4023/rtp/239.76.246.135:1234
+iNEWS,#genre#
 無綫新聞台,https://php.946985.filegear-sg.me/tvbnews.php?id=c
 無綫新聞台國際版,https://php.946985.filegear-sg.me/tvbnews.php?id=inews
+Juli-God,#genre#
 翡翠台,https://cdn.qd.je/163189/fct
 翡翠台 4K「字幕」,https://cdn.qd.je/163189/fct4k
 翡翠台「字幕」,https://cdn.qd.je/163189/fct2
@@ -3736,6 +3751,7 @@ DreamWorks 夢工廠動畫,https://cdn.qd.je/163189/dreamworks
 東森電影台,https://cdn.qd.je/163189/dsdy
 東森戲劇台,https://cdn.qd.je/163189/dsxj
 東森洋片台,https://cdn.qd.je/163189/dsyp
+myTVSUPER,#genre#
 翡翠台,https://php.946985.filegear-sg.me/mytv265.php?id=J
 翡翠台 4K,https://php.946985.filegear-sg.me/mytv265.php?id=JUHD
 TVB Plus,https://php.946985.filegear-sg.me/mytv265.php?id=B
