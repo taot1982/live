@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-# ========== 文件名称 和仓库严格对齐 ==========
-ZB_FILE = "zb.txt"
+# ========== 和仓库文件名严格对齐 ==========
+ZB_FILE = "ZB.TXT"
 IPTV_FILE = "iptv.txt"
 IPASD_FILE = "iptasd.txt"
 OUTPUT = "live.txt"
@@ -61,9 +61,7 @@ def extract_4k_lunbo(file_path):
 
 
 def filter_zb(file_path):
-    """zb.txt：完全保留原有频道顺序，不打乱内部排序；只做过滤和文字替换
-    【不再拆分中英文挪位置】，保持原始顺序
-    """
+    """ZB.TXT：完全保留原有频道顺序，不打乱内部排序；只做过滤和文字替换"""
     out = []
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -77,14 +75,14 @@ def filter_zb(file_path):
             continue
         if line_strip.endswith(",#genre#"):
             continue
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
+        line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
         out.append(line_strip)
     print(f"{file_path} 保留行数：{len(out)}")
     return out
 
 
 def main():
-    # 整体拼接顺序：iptv.txt全部内容 → iptasd提取的4K+轮播 → zb.txt（原样顺序）
+    # 整体拼接顺序：iptv.txt全部内容 → iptasd提取的4K+轮播 → ZB.TXT（原样顺序）
     part1 = filter_all_lines(IPTV_FILE)
     part2 = extract_4k_lunbo(IPASD_FILE)
     part3 = filter_zb(ZB_FILE)
