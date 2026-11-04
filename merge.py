@@ -2,7 +2,7 @@
 import re
 
 # ========== 文件名称 和仓库严格对齐 ==========
-ZB_FILE = "ZB.TXT"
+ZB_FILE = "zb.txt"
 IPTV_FILE = "iptv.txt"
 IPASD_FILE = "iptasd.txt"
 OUTPUT = "live.txt"
@@ -23,7 +23,7 @@ def filter_all_lines(file_path):
             continue
         if line_strip.endswith(",#genre#"):
             continue
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
+        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
         out.append(line_strip)
     print(f"{file_path} 保留行数：{len(out)}")
     return out
@@ -60,10 +60,11 @@ def extract_4k_lunbo(file_path):
     return out
 
 
-def split_zb_cn_en(file_path):
-    """ZB.TXT：中文内容在前，英文频道全部挪到ZB的末尾，各自内部顺序不变"""
-    cn_part = []
-    en_part = []
+def filter_zb(file_path):
+    """zb.txt：完全保留原有频道顺序，不打乱内部排序；只做过滤和文字替换
+    【不再拆分中英文挪位置】，保持原始顺序
+    """
+    out = []
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
     for line in lines:
@@ -75,28 +76,18 @@ def split_zb_cn_en(file_path):
         if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
         if line_strip.endswith(",#genre#"):
-            # 分组标题判断中英文
-            if re.search(r'[\u4e00-\u9fff]', line_strip):
-                cn_part.append(line_strip)
-            else:
-                en_part.append(line_strip)
             continue
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
-        # 判断是否包含中文
-        if re.search(r'[\u4e00-\u9fff]', line_strip):
-            cn_part.append(line_strip)
-        else:
-            en_part.append(line_strip)
-    zb_out = cn_part + en_part
-    print(f"{file_path} 中文{len(cn_part)}行，英文{len(en_part)}行，合并后{len(zb_out)}行")
-    return zb_out
+        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线,#genre#")
+        out.append(line_strip)
+    print(f"{file_path} 保留行数：{len(out)}")
+    return out
 
 
 def main():
-    # 整体拼接顺序：iptv.txt全部内容 → iptasd提取的4K+轮播 → ZB中文在前、英文在后
+    # 整体拼接顺序：iptv.txt全部内容 → iptasd提取的4K+轮播 → zb.txt（原样顺序）
     part1 = filter_all_lines(IPTV_FILE)
     part2 = extract_4k_lunbo(IPASD_FILE)
-    part3 = split_zb_cn_en(ZB_FILE)
+    part3 = filter_zb(ZB_FILE)
 
     final = part1 + part2 + part3
     with open(OUTPUT, "w", encoding="utf-8") as f:
