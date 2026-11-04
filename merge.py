@@ -17,13 +17,9 @@ def read_iptasd():
             continue
         if "#genre#" in line:
             current_group = line.replace("#genre#", "").strip()
-            # 匹配分组，标题行一起输出
-            if "4K频道" in current_group:
-                out.append(line)
-            elif "轮播剧场" in current_group:
+            if "4K频道" in current_group or "轮播剧场" in current_group:
                 out.append(line)
             continue
-        # 只收集对应分组下的频道
         if "4K频道" in current_group or "轮播剧场" in current_group:
             out.append(line)
     return out
@@ -32,6 +28,8 @@ if __name__ == "__main__":
     part1 = read_iptv()
     part2 = read_iptasd()
     result = part1 + part2
+    # 过滤掉空行，防止解析翻车
+    result = [x for x in result if x.strip()]
 
     with open("live.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(result))
