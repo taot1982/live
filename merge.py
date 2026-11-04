@@ -2,7 +2,6 @@
 def read_iptv():
     with open("iptv.txt", "r", encoding="utf-8") as f:
         text = f.read()
-    # 替换分组名称
     text = text.replace("吉林松原酒店 吉林联通", "东方有线")
     return text.splitlines()
 
@@ -16,12 +15,16 @@ def read_iptasd():
         line = line.strip()
         if not line:
             continue
-        # 识别分组行
         if "#genre#" in line:
             current_group = line.replace("#genre#", "").strip()
+            # 匹配分组，标题行一起输出
+            if "4K频道" in current_group:
+                out.append(line)
+            elif "轮播剧场" in current_group:
+                out.append(line)
             continue
-        # 模糊匹配：分组包含4K/4k 或者 轮播剧场
-        if "4K" in current_group or "4k" in current_group or "轮播剧场" in current_group:
+        # 只收集对应分组下的频道
+        if "4K频道" in current_group or "轮播剧场" in current_group:
             out.append(line)
     return out
 
