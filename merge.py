@@ -9,7 +9,7 @@ OUTPUT = "live.txt"
 # ============================================
 
 def filter_all_lines(file_path):
-    """iptv.txt：全部内容原样保留，分组顺序不变，过滤+文字替换"""
+    """iptv.txt：全部内容原样保留，分组顺序不变，过滤+文字替换，CCTV5+挪到 CCTV5-体育后面（包含url版本）"""
     out = []
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -25,9 +25,22 @@ def filter_all_lines(file_path):
             continue
         line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
         out.append(line_strip)
-    print(f"{file_path} 保留行数：{len(out)}")
-    return out
 
+    cctv5_plus_line = None
+    new_out = []
+    for l in out:
+        if l.startswith("CCTV5+,体育赛事,"):
+            cctv5_plus_line = l
+            continue
+        new_out.append(l)
+        if l.startswith("CCTV5-体育,") and cctv5_plus_line is not None:
+            new_out.append(cctv5_plus_line)
+            cctv5_plus_line = None
+    if cctv5_plus_line is not None:
+        new_out.append(cctv5_plus_line)
+
+    print(f"{file_path} 保留行数：{len(new_out)}")
+    return new_out
 
 def extract_4k_lunbo(file_path):
     """iptasd.txt：只提取【4K频道】、【轮播剧场】分组内内容，保持文件原生顺序"""
