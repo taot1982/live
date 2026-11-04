@@ -5,7 +5,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置 ==========
-# 如果这两个源已经失效，换成你可用的上游
 SOURCE_URL = "http://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 
@@ -17,7 +16,6 @@ OUTPUT = "live.txt"
 TIMEOUT = 10
 MAX_WORKERS = 8
 READ_BYTES = 2048
-# 如果不需要过滤分组，可以把这个清空列表 NEED_GROUPS = []
 NEED_GROUPS = []
 UZI_GROUP_NAME = "东方有线"
 REPLACE_OLD_TEXT = "吉林松原酒店 吉林联通"
@@ -134,7 +132,82 @@ def build_live2():
     t1 = fetch_text(SOURCE_URL)
     t2 = fetch_text(EXTRA_URL)
 
-    g1 = parse_m3u_content(t1, "主源频道")
-    g2 = parse_m3u_content(t2, "附加频道")
+    g1 = parse_m3u_content(t1, "上游1")
+    g2 = parse_m3u_content(t2, "上游2")
 
-    
+    all_groups = g1 + g2
+    filtered = all_groups
+
+    url_set = set()
+    for g in filtered:
+        if not g.get("skip_test"):
+            for _, u in g["items"]:
+                url_set.add(u)
+
+    delay_map = {}
+    if url_set:
+        print(f"[测速总数] {len(url_set)}")
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
+            fu = {ex.submit(check_stream, u): u for u in url_set}
+            for fut in as_completed(fu):
+                ok, cost, u = fut.result()
+                delay_map[u] = (ok, cost)
+
+    out_lines = []
+    # 先收集测速通过的
+    for g in filtered:
+        out_lines.append(f"{g['group_name']},#genre#")
+        item_list = []
+        for name, u in g["items"]:
+            ok, d = delay_map.get(u, (False, 999))
+            if ok:
+                item_list.append((d, name, u))
+        item_list.sort(key=lambda x: x[0])
+        for d, name, u in item_list:
+            out_lines.append(f"{name},{u}")
+
+    # ✅ 兜底：如果测速后为空，直接输出原始全部源
+    if not out_lines:
+        print("[兜底触发：测速全部失败，保留原始源]")
+        for g in filtered:
+            out_lines.append(f"{g['group_name']},#genre#")
+            for name, u in g["items"]:
+                out_lines.append(f"{name},{u}")
+
+    txt = "\n".join(out_lines)
+    with open(LIVE2, "w", encoding="utf-8") as f:
+        f.write(txt)
+    print(f"[完成] {LIVE2}")
+
+
+def merge():
+    print("\n===== 合并 live1 + live2 -> live.txt =====")
+    part1 = ""
+    part2 = ""
+    if os.path.exists(LIVE1):
+        with open(LIVE1, "r", encoding="utf-8") as f:
+            part1 = f.read().strip()
+    if os.path.exists(LIVE2):
+        with open(LIVE2, "r", encoding="utf-8") as f:
+            part2 = f.read().strip()
+
+    chunks = []
+    if part1:
+        chunks.append(part1)
+    if part2:
+        chunks.append(part2)
+    final = "\n\n".join(chunks)
+    with open(OUTPUT, "w", encoding="utf-8") as f:
+        f.write(final)
+    print(f"[完成] {OUTPUT}")
+
+
+def main():
+    build_live1()
+    build_live2()
+    merge()
+    print("\n全部任务结束")
+
+
+if __name__ == "__main__":
+    main()
