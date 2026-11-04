@@ -5,7 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置 ==========
-SOURCE_URL = "http://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://shturl.cc/H30FXbcPYS07udKfh5Vj"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 
 LOCAL_TXT_PATH = "uzi.txt"
@@ -55,6 +55,7 @@ def fetch_text(url):
             try:
                 text = raw.decode(enc)
                 print(f"[获取成功] {url} 长度：{len(text)}")
+                print(f"[片段预览] {repr(text[:300])}")
                 return text
             except UnicodeDecodeError:
                 continue
@@ -64,13 +65,14 @@ def fetch_text(url):
         return ""
 
 
-def parse_m3u_content(content, group_name):
+def parse_m3u_content(content, fallback_group):
     if not content:
         return []
+    # 标准 #genre# / EXTINF 解析
     if content.lstrip().startswith("#EXTM3U"):
         groups = []
         items = []
-        last_name = "未知"
+        last_name = fallback_group
         lines = [line.strip() for line in content.splitlines() if line.strip()]
         for line in lines:
             if line.startswith("#EXTINF"):
@@ -79,7 +81,7 @@ def parse_m3u_content(content, group_name):
             elif line.startswith("http"):
                 items.append((last_name, line))
         if items:
-            groups.append({"group_name": group_name, "items": items, "skip_test": False})
+            groups.append({"group_name": fallback_group, "items": items, "skip_test": False})
         return groups
 
     groups = []
@@ -93,6 +95,18 @@ def parse_m3u_content(content, group_name):
         elif current and "," in s and not s.startswith("#"):
             n, u = s.split(",", 1)
             current["items"].append((n.strip(), u.strip()))
+
+    # 如果标准解析为空：粗暴备用解析，全部塞进 fallback 分组
+    if not groups:
+        print("[备用解析触发，格式识别失败，走通用按行读取]")
+        items = []
+        for line in content.splitlines():
+            s = line.strip()
+            if s and "," in s and s.startswith(("http", "rtmp")):
+                name, link = s.split(",", 1)
+                items.append((name.strip(), link.strip()))
+        if items:
+            groups.append({"group_name": fallback_group, "items": items, "skip_test": False})
     return groups
 
 
@@ -132,14 +146,16 @@ def build_live2():
     t1 = fetch_text(SOURCE_URL)
     t2 = fetch_text(EXTRA_URL)
 
-    g1 = parse_m3u_content(t1, "上游1")
-    g2 = parse_m3u_content(t2, "上游2")
+    g1 = parse_m3u_content(t1, "上游源一")
+    g2 = parse_m3u_content(t2, "上游源二")
 
     all_groups = g1 + g2
-    filtered = all_groups
+    print(f"[解析后分组总数] {len(all_groups)}")
+    if len(all_groups) == 0:
+        print("【致命】两个上游全部解析不出频道！")
 
     url_set = set()
-    for g in filtered:
+    for g in all_groups:
         if not g.get("skip_test"):
             for _, u in g["items"]:
                 url_set.add(u)
@@ -154,8 +170,8 @@ def build_live2():
                 delay_map[u] = (ok, cost)
 
     out_lines = []
-    # 先收集测速通过的
-    for g in filtered:
+    # 先输出测速存活，组内按延迟排序
+    for g in all_groups:
         out_lines.append(f"{g['group_name']},#genre#")
         item_list = []
         for name, u in g["items"]:
@@ -166,13 +182,23 @@ def build_live2():
         for d, name, u in item_list:
             out_lines.append(f"{name},{u}")
 
-    # ✅ 兜底：如果测速后为空，直接输出原始全部源
-    if not out_lines:
-        print("[兜底触发：测速全部失败，保留原始源]")
-        for g in filtered:
+    # 兜底：测速后为空，输出原始全部
+    if not out_lines and all_groups:
+        print("[兜底触发：测速全部失败，写出原始源]")
+        for g in all_groups:
             out_lines.append(f"{g['group_name']},#genre#")
             for name, u in g["items"]:
                 out_lines.append(f"{name},{u}")
+
+    # 终极兜底：连分组都拿不到，直接把原始文本原样写入
+    if not out_lines:
+        print("[终极兜底：解析失败，直接原样写入原始文本")
+        raw_text = []
+        if t1:
+            raw_text.append(t1)
+        if t2:
+            raw_text.append(t2)
+        out_lines = raw_text
 
     txt = "\n".join(out_lines)
     with open(LIVE2, "w", encoding="utf-8") as f:
