@@ -12,7 +12,7 @@ def read_iptv():
         line = line.replace("吉林松原酒店 吉林联通", "东方有线，#genre#")
         # 2. 去掉 #类型：前缀
         if line_strip.startswith("#类型："):
-            line = line.replace("#类型：" "")
+            line = line.replace("#类型："，"")
         new_lines.append(line)
   
 def read_iptasd():
