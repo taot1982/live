@@ -19,12 +19,9 @@ def read_iptasd():
         # 识别分组行
         if "#genre#" in line:
             current_group = line.replace("#genre#", "").strip()
-            # 匹配目标分组：4k频道、轮播剧场
-            if current_group in ["4k频道", "轮播剧场"]:
-                out.append(line)
             continue
-        # 当前分组是目标分组才收录频道
-        if current_group in ["4k频道", "轮播剧场"]:
+        # 模糊匹配：分组包含4K/4k 或者 轮播剧场
+        if "4K" in current_group or "4k" in current_group or "轮播剧场" in current_group:
             out.append(line)
     return out
 
@@ -36,4 +33,4 @@ if __name__ == "__main__":
     with open("live.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(result))
 
-    print(f"✅完成：东方有线:{len(part1)}条，4k频道+轮播剧场:{len(part2)}条，合计{len(result)}条，输出live.txt")
+    print(f"✅完成：东方有线:{len(part1)}条，4K频道+轮播剧场:{len(part2)}条，合计{len(result)}条，输出live.txt")
