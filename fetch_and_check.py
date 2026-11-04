@@ -9,8 +9,8 @@ SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 LOCAL_TXT_PATH = "uzi.txt"
 OUTPUT_FILE = "live.txt"
-TIMEOUT = 8
-MAX_WORKERS = 10
+TIMEOUT = 6
+MAX_WORKERS = 8
 READ_BYTES = 2048
 NEED_GROUPS = ["4K频道", "轮播剧场"]
 UZI_GROUP_NAME = "东方有线"
@@ -39,7 +39,7 @@ def check_stream(url: str):
                 return (True, cost, url)
         except Exception as e:
             print(f"[测速] 失败 {url} | {str(e)}")
-            time.sleep(0.3)
+            time.sleep(0.2)
     return (False, 999.0, url)
 
 
@@ -60,7 +60,7 @@ def fetch_text_auto_decode(url):
         print(f"[警告] {url} 全部编码解析失败")
         return ""
     except Exception as e:
-        print(f"[网络] 获取源失败 {url} , error:{e}")
+        print(f"[网络] 获取源超时/失败，直接跳过：{url} , error:{e}")
         return ""
 
 
@@ -207,7 +207,6 @@ def process_all_content(main_text, extra_text, normalized_uzi):
 
 
 def main():
-    # 【第一步：优先处理 uzi.txt，顺序前置】
     print("===== 阶段 1：处理本地 uzi.txt =====")
     raw_uzi = read_local_file(LOCAL_TXT_PATH)
     normalized_uzi = normalize_uzi_content(raw_uzi)
@@ -217,12 +216,10 @@ def main():
             fw.write(normalized_uzi)
         print("[uzi] 标准化内容已回写 uzi.txt")
 
-    # 【第二步：再拉取两个远程源】
-    print("\n===== 阶段 2：拉取远程源 =====")
+    print("\n===== 阶段 2：拉取远程源（超时直接跳过） =====")
     main_txt = fetch_text_auto_decode(SOURCE_URL)
     extra_txt = fetch_text_auto_decode(EXTRA_URL)
 
-    # 【第三步：整合、测速、渲染输出】
     print("\n===== 阶段 3：整合全部源 =====")
     result = process_all_content(main_txt, extra_txt, normalized_uzi)
 
