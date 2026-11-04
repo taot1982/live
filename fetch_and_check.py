@@ -5,17 +5,20 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置 ==========
-SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
+# 如果这两个源已经失效，换成你可用的上游
+SOURCE_URL = "http://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
+
 LOCAL_TXT_PATH = "uzi.txt"
 LIVE1 = "live1.txt"
 LIVE2 = "live2.txt"
 OUTPUT = "live.txt"
 
-TIMEOUT = 6
+TIMEOUT = 10
 MAX_WORKERS = 8
 READ_BYTES = 2048
-NEED_GROUPS = ["4K频道", "轮播剧场"]
+# 如果不需要过滤分组，可以把这个清空列表 NEED_GROUPS = []
+NEED_GROUPS = []
 UZI_GROUP_NAME = "东方有线"
 REPLACE_OLD_TEXT = "吉林松原酒店 吉林联通"
 REPLACE_NEW_TEXT = "东方有线"
@@ -52,7 +55,9 @@ def fetch_text(url):
         raw = resp.content
         for enc in ("utf-8", "gb18030", "gbk", "latin-1"):
             try:
-                return raw.decode(enc)
+                text = raw.decode(enc)
+                print(f"[获取成功] {url} 长度：{len(text)}")
+                return text
             except UnicodeDecodeError:
                 continue
         return ""
@@ -78,6 +83,7 @@ def parse_m3u_content(content, group_name):
         if items:
             groups.append({"group_name": group_name, "items": items, "skip_test": False})
         return groups
+
     groups = []
     current = None
     for line in content.splitlines():
@@ -93,7 +99,6 @@ def parse_m3u_content(content, group_name):
 
 
 def build_live1():
-    """读取 uzi，替换文字，输出 live1.txt"""
     print("\n===== 生成 live1.txt（本地 uzi） =====")
     if not os.path.exists(LOCAL_TXT_PATH):
         print("[警告] uzi.txt 不存在，live1 为空")
@@ -111,7 +116,6 @@ def build_live1():
         except Exception:
             continue
 
-    # 关键：替换目标文字
     text = text.replace(REPLACE_OLD_TEXT, REPLACE_NEW_TEXT)
 
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
@@ -126,7 +130,6 @@ def build_live1():
 
 
 def build_live2():
-    """拉两个远程，测速过滤，组内按延迟排序，输出 live2.txt"""
     print("\n===== 生成 live2.txt（远程源） =====")
     t1 = fetch_text(SOURCE_URL)
     t2 = fetch_text(EXTRA_URL)
@@ -134,76 +137,4 @@ def build_live2():
     g1 = parse_m3u_content(t1, "主源频道")
     g2 = parse_m3u_content(t2, "附加频道")
 
-    all_groups = g1 + g2
-    filtered = []
-    for g in all_groups:
-        if g["group_name"] in NEED_GROUPS or not NEED_GROUPS:
-            filtered.append(g)
-    if not filtered:
-        filtered = all_groups
-
-    url_set = set()
-    for g in filtered:
-        if not g.get("skip_test"):
-            for _, u in g["items"]:
-                url_set.add(u)
-
-    delay_map = {}
-    if url_set:
-        print(f"[测速总数] {len(url_set)}")
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
-            fu = {ex.submit(check_stream, u): u for u in url_set}
-            for fut in as_completed(fu):
-                ok, cost, u = fut.result()
-                delay_map[u] = (ok, cost)
-
-    out_lines = []
-    for g in filtered:
-        out_lines.append(f"{g['group_name']},#genre#")
-        item_list = []
-        for name, u in g["items"]:
-            ok, d = delay_map.get(u, (False, 999))
-            if ok:
-                item_list.append((d, name, u))
-        item_list.sort(key=lambda x: x[0])
-        for d, name, u in item_list:
-            out_lines.append(f"{name},{u}")
-
-    txt = "\n".join(out_lines)
-    with open(LIVE2, "w", encoding="utf-8") as f:
-        f.write(txt)
-    print(f"[完成] {LIVE2}")
-
-
-def merge():
-    """live1 在前，live2 在后，合并为 live.txt"""
-    print("\n===== 合并 live1 + live2 -> live.txt =====")
-    part1 = ""
-    part2 = ""
-    if os.path.exists(LIVE1):
-        with open(LIVE1, "r", encoding="utf-8") as f:
-            part1 = f.read().strip()
-    if os.path.exists(LIVE2):
-        with open(LIVE2, "r", encoding="utf-8") as f:
-            part2 = f.read().strip()
-
-    chunks = []
-    if part1:
-        chunks.append(part1)
-    if part2:
-        chunks.append(part2)
-    final = "\n\n".join(chunks)
-    with open(OUTPUT, "w", encoding="utf-8") as f:
-        f.write(final)
-    print(f"[完成] {OUTPUT}")
-
-
-def main():
-    build_live1()
-    build_live2()
-    merge()
-    print("\n全部任务结束")
-
-
-if __name__ == "__main__":
-    main()
+    
