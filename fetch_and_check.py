@@ -5,7 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 配置区 ==========
-SOURCE_URL = "https://stottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
 EXTRA_URL = "http://203.135.100.107:7681/iptasd.txt"
 LOCAL_TXT_PATH = "uzi.txt"
 OUTPUT_FILE = "live.txt"
@@ -118,6 +118,41 @@ def parse_txt_content(content):
     return groups_out
 
 
+def parse_m3u_content(content, default_group_name="未命名分组"):
+    """解析 m3u，提取名称和播放链接，放到一个分组"""
+    if not content.strip():
+        return []
+    lines = [x.strip() for x in content.splitlines() if x.strip()]
+    items = []
+    last_title = None
+    for line in lines:
+        if line.startswith("#EXTINF:"):
+            # 提取逗号后面标题
+            if "," in line:
+                last_title = line.split(",", 1)[1].strip()
+            else:
+                last_title = "未知频道"
+        elif line.startswith("http://") or line.startswith("https://"):
+            if last_title:
+                items.append((last_title, line))
+                last_title = None
+    if items:
+        return [{"group_name": default_group_name, "items": items, "skip_test": False}]
+    return []
+
+
+def auto_parse_source(content, guess_group):
+    """自动识别：M3U / 逗号 txt"""
+    if not content:
+        return []
+    if content.lstrip().startswith("#EXTM3U"):
+        print("识别为 M3U 格式，使用 M3U 解析器")
+        return parse_m3u_content(content, guess_group)
+    else:
+        print("识别为传统 ,#genre# txt 格式")
+        return parse_txt_content(content)
+
+
 def render_groups(groups, delay_map):
     final_lines = []
     for g in groups:
@@ -145,8 +180,8 @@ def process_all_content(main_text, extra_text, normalized_uzi):
     for g in dong_groups:
         g["skip_test"] = True
 
-    main_groups = parse_txt_content(main_text)
-    extra_groups = parse_txt_content(extra_text)
+    main_groups = auto_parse_source(main_text, "主源频道")
+    extra_groups = auto_parse_source(extra_text, "附加频道")
     pick_extra = [g for g in extra_groups if g["group_name"] in NEED_GROUPS and len(g["items"]) > 0]
 
     all_groups = dong_groups + main_groups + pick_extra
@@ -174,7 +209,6 @@ def main():
     raw_uzi = read_local_file(LOCAL_TXT_PATH)
     normalized_uzi = normalize_uzi_content(raw_uzi)
 
-    # 回写：把标准化结果保存进 uzi.txt
     if normalized_uzi:
         with open(LOCAL_TXT_PATH, "w", encoding="utf-8") as fw:
             fw.write(normalized_uzi)
