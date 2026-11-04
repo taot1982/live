@@ -25,6 +25,6 @@ jobs:
         run: |
           git config --global user.name "taot1982"
           git config --global user.email "taot1982@example.com"
-          git add live.txt uzi.txt
+          git add live.txt uzi.txt live1.txt live2.txt
           git commit -m "auto normalize uzi + filter stream" || echo "no change"
           git push --force-with-lease
