@@ -1,17 +1,22 @@
-name: merge source
+name: Merge IPTV Source
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # 支持手动点击运行
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: run python merge
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Python merge script
         run: python3 merge.py
-      - name: commit & push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add live.txt
-          git commit -m "auto merge iptv + 4k轮播" || true
-          git push
+
+      - name: Upload live.txt for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-source
+          path: live.txt
+
