@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 def read_iptv():
     with open("iptv.txt", "r", encoding="utf-8") as f:
-        text = f.read()
-    # 替换文字
-    text = text.replace("吉林松原酒店 吉林联通", "东方有线")
-    # 如果你想要【东方有线】作为分类行，格式：东方有线,#genre#
-    # 也就是把这一行单独变成分类标记
-    text = text.replace("东方有线", "东方有线,#genre#")
-    return text.splitlines()
+        lines = f.readlines()
+    new_lines = []
+    for line in lines:
+        line_strip = line.strip()
+        # 跳过 #by、#节目数量 注释行
+        if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
+            continue
+        # 1. 替换吉林松原酒店 吉林联通
+        line = line.replace("吉林松原酒店 吉林联通", "东方有线")
+        # 2. 去掉 #类型：前缀
+        if line_strip.startswith("#类型："):
+            line = line.replace("#类型：", "")
+        new_lines.append(line)
+    return new_lines
 
 def read_iptasd():
     out = []
