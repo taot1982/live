@@ -1,6 +1,4 @@
-#by cqshushu | 公众号：医工学习日志
-#类型：东方有线
-#节目数量：102
+东方有线，#genre#
 CCTV1-综合,http://139.214.182.238:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV2-财经,http://139.214.182.238:9901/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV3-综艺,http://139.214.182.238:9901/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0
