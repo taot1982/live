@@ -1,0 +1,17 @@
+name: merge source
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: run python merge
+        run: python3 merge.py
+      - name: commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add live.txt
+          git commit -m "auto merge iptv + 4k轮播" || true
+          git push
