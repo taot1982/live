@@ -9,7 +9,7 @@ OUTPUT = "live.txt"
 # ============================================
 
 def filter_all_lines(file_path):
-    """iptv.txt：全部内容原样保留，分组顺序不变，过滤+文字替换，CCTV5+体育赛事挪到 CCTV5-体育后面"""
+    """iptv.txt：过滤，强制 CCTV5+体育赛事 紧跟在 CCTV5-体育 后面"""
     out = []
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -26,40 +26,25 @@ def filter_all_lines(file_path):
         line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
         out.append(line_strip)
 
-    new_out = []
-    after_cctv5_sport = False  # 标记：是否已经经过CCTV5-体育
-    cctv5_plus_line = None
-
+    # 分离CCTV5+行
+    cctv5_plus = None
+    rest = []
     for l in out:
-        parts = l.split(',')
-        if len(parts) < 2:
-            new_out.append(l)
-            continue
-        name = parts[0].strip()
+        if "CCTV5+体育赛事" in l:
+            cctv5_plus = l
+        else:
+            rest.append(l)
 
-        if name == "CCTV5-体育":
-            new_out.append(l)
-            after_cctv5_sport = True
-            # 如果之前已经抓到CCTV5+体育赛事，立刻插在后面
-            if cctv5_plus_line is not None:
-                new_out.append(cctv5_plus_line)
-                cctv5_plus_line = None
-            continue
-
-        if name == "CCTV5+体育赛事":
-            if after_cctv5_sport:
-                # 已经过了CCTV5-体育，直接跟在后面
-                new_out.append(l)
-            else:
-                # 还没遇到CCTV5-体育，先缓存
-                cctv5_plus_line = l
-            continue
-
+    new_out = []
+    for l in rest:
         new_out.append(l)
-
-    # 兜底：从头到尾都没找到CCTV5-体育，放到末尾
-    if cctv5_plus_line is not None:
-        new_out.append(cctv5_plus_line)
+        # 碰到CCTV5-体育，立刻把CCTV5+塞在它后面
+        if "CCTV5-体育" in l and cctv5_plus is not None:
+            new_out.append(cctv5_plus)
+            cctv5_plus = None
+    # 兜底，如果没找到CCTV5-，放末尾
+    if cctv5_plus is not None:
+        new_out.append(cctv5_plus)
 
     print(f"{file_path} 保留行数：{len(new_out)}")
     return new_out
