@@ -26,8 +26,10 @@ def filter_all_lines(file_path):
         line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
         out.append(line_strip)
 
-    cctv5_plus_line = None
     new_out = []
+    after_cctv5_sport = False  # 标记：是否已经经过CCTV5-体育
+    cctv5_plus_line = None
+
     for l in out:
         parts = l.split(',')
         if len(parts) < 2:
@@ -35,19 +37,27 @@ def filter_all_lines(file_path):
             continue
         name = parts[0].strip()
 
-        # 抓到 CCTV5+体育赛事，先缓存，不加入列表
+        if name == "CCTV5-体育":
+            new_out.append(l)
+            after_cctv5_sport = True
+            # 如果之前已经抓到CCTV5+体育赛事，立刻插在后面
+            if cctv5_plus_line is not None:
+                new_out.append(cctv5_plus_line)
+                cctv5_plus_line = None
+            continue
+
         if name == "CCTV5+体育赛事":
-            cctv5_plus_line = l
+            if after_cctv5_sport:
+                # 已经过了CCTV5-体育，直接跟在后面
+                new_out.append(l)
+            else:
+                # 还没遇到CCTV5-体育，先缓存
+                cctv5_plus_line = l
             continue
 
         new_out.append(l)
 
-        # 遇到 CCTV5-体育，并且已经缓存了CCTV5+体育赛事，插入
-        if name == "CCTV5-体育" and cctv5_plus_line is not None:
-            new_out.append(cctv5_plus_line)
-            cctv5_plus_line = None
-
-    # 兜底：如果遍历完还没找到CCTV5-体育，放到末尾
+    # 兜底：从头到尾都没找到CCTV5-体育，放到末尾
     if cctv5_plus_line is not None:
         new_out.append(cctv5_plus_line)
 
