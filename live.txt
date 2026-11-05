@@ -4,6 +4,7 @@ CCTV2-财经,http://139.214.182.238:9901/tsfile/live/1018_1.m3u8?key=txiptv&play
 CCTV3-综艺,http://139.214.182.238:9901/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV4-国际,http://139.214.182.238:9901/tsfile/live/1040_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV5-体育,http://139.214.182.238:9901/tsfile/live/1045_1.m3u8?key=txiptv&playlive=1&authid=0
+CCTV5+体育赛事,http://139.214.182.238:9901/tsfile/live/1067_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV6-电影,http://139.214.182.238:9901/tsfile/live/1046_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV7-国防军事,http://139.214.182.238:9901/tsfile/live/1047_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV8-电视剧,http://139.214.182.238:9901/tsfile/live/1048_1.m3u8?key=txiptv&playlive=1&authid=0
@@ -16,7 +17,6 @@ CCTV14-少儿,http://139.214.182.238:9901/tsfile/live/1064_1.m3u8?key=txiptv&pla
 CCTV15-音乐,http://139.214.182.238:9901/tsfile/live/1066_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV-16 奥林匹克,http://139.214.182.238:9901/tsfile/live/1061_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV17-农业农村,http://139.214.182.238:9901/tsfile/live/1042_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV5+体育赛事,http://139.214.182.238:9901/tsfile/live/1067_1.m3u8?key=txiptv&playlive=1&authid=0
 吉林卫视,http://139.214.182.238:9901/tsfile/live/1068_1.m3u8?key=txiptv&playlive=1&authid=0
 辽宁卫视,http://139.214.182.238:9901/tsfile/live/1069_1.m3u8?key=txiptv&playlive=1&authid=0
 黑龙江卫视,http://139.214.182.238:9901/tsfile/live/1070_1.m3u8?key=txiptv&playlive=1&authid=0
@@ -3843,4 +3843,4 @@ NOW 70s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW7
 NOW 80s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW8
 NOW 90s00s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW9
 NOW ROCK,https://php.946985.filegear-sg.me/mytv265.php?id=NOWR
-Concerto,https://php.946985.filegear-sg.me/mytv265.php?id=CONC# Update at 2026-11-05T12:09:32+00:00
+Concerto,https://php.946985.filegear-sg.me/mytv265.php?id=CONC# Update at 2026-11-05T12:12:42+00:00
