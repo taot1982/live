@@ -9,7 +9,7 @@ OUTPUT = "live.txt"
 # ============================================
 
 def filter_all_lines(file_path):
-    """iptv.txt：全部内容原样保留，分组顺序不变，过滤+文字替换，CCTV5+挪到 CCTV5-体育后面（包含url版本）"""
+    """iptv.txt：全部内容原样保留，分组顺序不变，过滤+文字替换，CCTV5+体育赛事挪到 CCTV5-体育后面"""
     out = []
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -29,13 +29,25 @@ def filter_all_lines(file_path):
     cctv5_plus_line = None
     new_out = []
     for l in out:
-        if l.startswith("CCTV5+,体育赛事,"):
+        parts = l.split(',')
+        if len(parts) < 2:
+            new_out.append(l)
+            continue
+        name = parts[0].strip()
+
+        # 抓到 CCTV5+体育赛事，先缓存，不加入列表
+        if name == "CCTV5+体育赛事":
             cctv5_plus_line = l
             continue
+
         new_out.append(l)
-        if l.startswith("CCTV5-体育,") and cctv5_plus_line is not None:
+
+        # 遇到 CCTV5-体育，并且已经缓存了CCTV5+体育赛事，插入
+        if name == "CCTV5-体育" and cctv5_plus_line is not None:
             new_out.append(cctv5_plus_line)
             cctv5_plus_line = None
+
+    # 兜底：如果遍历完还没找到CCTV5-体育，放到末尾
     if cctv5_plus_line is not None:
         new_out.append(cctv5_plus_line)
 
