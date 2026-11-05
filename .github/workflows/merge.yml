@@ -1,32 +1,33 @@
 name: Auto Generate Live
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 手动触发（强制提交）
   schedule:
     - cron: '0 8 * * *'
   push:
-    branches: [ main ]
+    branches: [ main ] # 仓库main分支上传/修改文件，自动触发
+
+permissions:
+  contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Run Python script
         run: python3 merge.py
-      - name: Commit and push if changed
+
+      - name: Commit and push (强制提交，调试用)
         run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add live.txt
-
-          if git diff --cached --quiet; then
-          echo "live.txt 内容未发生变化，无法空提交，跳过 push"
-          else
-          git commit -m "auto update live"
+          # 允许空提交，即使文本无差异也生成commit
+          git commit --allow-empty -m "auto update live (force commit)"
           git push origin main
-          fi
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
