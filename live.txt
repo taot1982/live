@@ -16,6 +16,7 @@ CCTV14-少儿,http://139.214.182.238:9901/tsfile/live/1064_1.m3u8?key=txiptv&pla
 CCTV15-音乐,http://139.214.182.238:9901/tsfile/live/1066_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV-16 奥林匹克,http://139.214.182.238:9901/tsfile/live/1061_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV17-农业农村,http://139.214.182.238:9901/tsfile/live/1042_1.m3u8?key=txiptv&playlive=1&authid=0
+CCTV5+体育赛事,http://139.214.182.238:9901/tsfile/live/1067_1.m3u8?key=txiptv&playlive=1&authid=0
 吉林卫视,http://139.214.182.238:9901/tsfile/live/1068_1.m3u8?key=txiptv&playlive=1&authid=0
 辽宁卫视,http://139.214.182.238:9901/tsfile/live/1069_1.m3u8?key=txiptv&playlive=1&authid=0
 黑龙江卫视,http://139.214.182.238:9901/tsfile/live/1070_1.m3u8?key=txiptv&playlive=1&authid=0
@@ -100,7 +101,6 @@ BTV高清,http://139.214.182.238:9901/tsfile/live/1000_1.m3u8?key=txiptv&playliv
 梨园高清,http://139.214.182.238:9901/tsfile/live/1051_1.m3u8?key=txiptv&playlive=1&authid=0
 文物宝库,http://139.214.182.238:9901/tsfile/live/1055_1.m3u8?key=txiptv&playlive=1&authid=0
 CGTN 英语高清,http://139.214.182.238:9901/tsfile/live/1058_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV5+体育赛事,http://139.214.182.238:9901/tsfile/live/1067_1.m3u8?key=txiptv&playlive=1&authid=0
 4K频道,#genre#
 东方卫视4K,http://bp-resource-dfl.bestv.cn/148/3/video.m3u8
 浙江卫视4K,https://ali-xwl.cztv.com/live/channel4k2160p.m3u8
@@ -3843,4 +3843,4 @@ NOW 70s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW7
 NOW 80s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW8
 NOW 90s00s,https://php.946985.filegear-sg.me/mytv265.php?id=NOW9
 NOW ROCK,https://php.946985.filegear-sg.me/mytv265.php?id=NOWR
-Concerto,https://php.946985.filegear-sg.me/mytv265.php?id=CONC# Update at 2026-11-05T12:07:01+00:00
+Concerto,https://php.946985.filegear-sg.me/mytv265.php?id=CONC# Update at 2026-11-05T12:09:32+00:00
