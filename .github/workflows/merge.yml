@@ -1,10 +1,10 @@
 name: Auto Generate Live
 on:
-  workflow_dispatch:  # 手动触发（强制提交）
+  workflow_dispatch:
   schedule:
     - cron: '0 8 * * *'
   push:
-    branches: [ main ] # 仓库main分支上传/修改文件，自动触发
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -17,17 +17,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Run Python script
         run: python3 merge.py
 
-      - name: Commit and push (强制提交，调试用)
+      - name: 强制修改live.txt，制造变更（调试用）
+        run: |
+          # 追加一行时间标记，每次run都会不一样，git一定会识别到变更
+          echo "# Update at $(date -Iseconds)" >> live.txt
+
+      - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add live.txt
-          # 允许空提交，即使文本无差异也生成commit
-          git commit --allow-empty -m "auto update live (force commit)"
+          git commit -m "auto update live (force file change)"
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
