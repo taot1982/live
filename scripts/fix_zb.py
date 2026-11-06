@@ -1,9 +1,11 @@
 import requests
 import os
+import time
 
 FETCH_URL = "https://1525041261-gl7b7quwot.ap-hongkong.tencentscf.com?secret=badboytcl"
 OUTPUT_PATH = "ZB.TXT"
 TIMEOUT = 30
+RETRY_COUNT = 3
 
 def main():
     print("===== 调试信息 =====")
@@ -14,16 +16,20 @@ def main():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
     text_data = ""
-    try:
-        resp = requests.get(FETCH_URL, headers=headers, timeout=TIMEOUT)
-        print(f"HTTP状态码: {resp.status_code}")
-        resp.raise_for_status()
-        text_data = resp.text
-        print(f"✅ 接口拉取成功，内容长度：{len(text_data)}")
-    except requests.exceptions.RequestException as e:
-        print(f"❌ 接口请求失败：{e}")
+    for i in range(RETRY_COUNT):
+        try:
+            resp = requests.get(FETCH_URL, headers=headers, timeout=TIMEOUT)
+            print(f"第{i+1}次尝试，HTTP状态码: {resp.status_code}")
+            resp.raise_for_status()
+            text_data = resp.text
+            print(f"✅ 接口拉取成功，内容长度：{len(text_data)}")
+            break
+        except requests.exceptions.RequestException as e:
+            print(f"❌ 第{i+1}次请求失败：{e}")
+            if i != RETRY_COUNT -1:
+                time.sleep(2)
 
-    # 强制写入，不管成功失败都生成ZB.TXT
+    # 强制写入文件，不管成功失败都生成ZB.TXT
     try:
         with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
             f.write(text_data)
