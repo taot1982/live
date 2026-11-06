@@ -2,7 +2,7 @@ import requests
 import os
 import time
 
-FETCH_URL = "https://1525041261-gl7b7quwot.ap-hongkong.tencentscf.com?secret=badboytcl"
+FETCH_URL = "https://1525041261-3ajrh49e70.ap-shanghai.tencentscf.com/?secret=badboytcl01"
 OUTPUT_PATH = "ZB.TXT"
 TIMEOUT = 30
 RETRY_COUNT = 3
