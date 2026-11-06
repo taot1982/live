@@ -1,36 +1,37 @@
-name: Auto Fix IPTV Source
+name: Auto Fetch & Convert IPTV Sources
 on:
-  # 定时：UTC时间，下面是 0点（北京时间早上8点）执行，可自行修改cron
   schedule:
     - cron: '0 0 * * *'
-  # 支持手动点按钮立即运行（推荐打开）
   workflow_dispatch:
 
 permissions:
-  contents: write  # 允许action提交文件到仓库
+  contents: write
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出仓库代码
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 安装Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: 安装requests依赖
+      - name: Install requests
         run: pip install requests
 
-      - name: 执行修复脚本
+      - name: Run fix zhibo
         run: python scripts/fix.py
 
-      - name: 提交更新文件
+      - name: Run fix iptasd
+        run: python scripts/fix_iptasd.py
+
+      - name: Commit changed files
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add fixed_zhibo.txt
-          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 auto update fixed source"
+          git add fixed_zhibo.txt iptasd.txt
+          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 auto update sources"
           git push
