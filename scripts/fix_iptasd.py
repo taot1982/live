@@ -2,7 +2,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-UPSTREAM_URL = "http://203.135.100.107:7681/iptasd.txt"
+UPSTREAM_URL = "https://1525041261-lxsdafern4.ap-shanghai.tencentscf.com/?secret=badboytcl"
 OUTPUT_PATH = "iptasd.txt"
 
 def main():
