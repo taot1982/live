@@ -81,22 +81,26 @@ def extract_4k_lunbo(file_path):
 def filter_zb(file_path):
     """ZB.TXT：所有分组、频道顺序完全原样不动，只过滤指定行、文字替换"""
     out = []
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    for line in lines:
-        line_strip = line.strip()
-        if not line_strip:
-            continue
-        if "更新时间" in line_strip:
-            continue
-        if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
-            continue
-        # 分组标记 ,#genre# 这里保留！！ 不删掉分组栏，保证节目分组结构不变
-        line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
-        out.append(line_strip)
-    print(f"{file_path} 保留行数：{len(out)}")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        for line in lines:
+            line_strip = line.strip()
+            if not line_strip:
+                continue
+            if "更新时间" in line_strip:
+                continue
+            if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
+                continue
+            # 分组标记 ,#genre# 这里保留！！ 不删掉分组栏，保证节目分组结构不变
+            line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+            out.append(line_strip)
+        print(f"{file_path} 保留行数：{len(out)}")
+    except FileNotFoundError:
+        print("⚠️ ZB.TXT 文件不存在，跳过ZB分组")
+    except Exception as e:
+        print(f"⚠️ ZB读取异常：{e}")
     return out
-
 
 def extract_cctv_migu(file_path):
     """fixed_zhibo.txt：只提取【央视咪咕】整个分组（含分组头）"""
