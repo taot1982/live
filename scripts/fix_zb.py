@@ -10,7 +10,7 @@ def main():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
     try:
-        resp = requests.get(SOURCE_URL, headers=headers, timeout=20)
+        resp = requests.get(SOURCE_URL, headers=headers, timeout=30)
         resp.raise_for_status()
         raw_text = resp.text
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
