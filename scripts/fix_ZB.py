@@ -1,7 +1,7 @@
 import requests
 
 # ===================== 配置区 =====================
-SOURCE_URL = "https://sttottv.ccwu.cc/ZB.TXT"
+SOURCE_URL = "https://1525041261-gl7b7quwot.ap-hongkong.tencentscf.com?secret=badboytcl"
 OUTPUT_FILE = "ZB.TXT"
 # ==================================================
 
