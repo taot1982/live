@@ -19,10 +19,11 @@ jobs:
           UPSTREAM_URL: ${{ secrets.UPSTREAM_URL }}
         run: python scripts/fetch_iptv.py
 
-      - name: Commit & Push
+      - name: Commit & Push file
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add iptv.txt
           git diff --quiet && git diff --staged --quiet || git commit -m "auto update iptv.txt (refresh timestamp)"
           git push
+
