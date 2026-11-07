@@ -4,7 +4,7 @@ import re
 ZB_FILE = "ZB.TXT"
 IPTV_FILE = "iptv.txt"
 IPASD_FILE = "iptasd.txt"
-ZHIBO_FILE = "fixed_zhibo.txt"   # 新增源
+ZHIBO_FILE = "zhibo.txt"   # 新增源
 OUTPUT = "live.txt"
 # ============================================
 
@@ -103,7 +103,7 @@ def filter_zb(file_path):
     return out
 
 def extract_cctv_migu(file_path):
-    """fixed_zhibo.txt：只提取【央视咪咕】整个分组（含分组头）"""
+    """zhibo.txt：只提取【央视咪咕】整个分组（含分组头）"""
     out = []
     in_group = False
     try:
