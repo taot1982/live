@@ -1,107 +1,72 @@
-东方有线,#genre#
-CCTV1-综合,http://139.214.182.238:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV2-财经,http://139.214.182.238:9901/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV3-综艺,http://139.214.182.238:9901/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV4-国际,http://139.214.182.238:9901/tsfile/live/1040_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV5-体育,http://139.214.182.238:9901/tsfile/live/1045_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV5+体育赛事,http://139.214.182.238:9901/tsfile/live/1067_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV6-电影,http://139.214.182.238:9901/tsfile/live/1046_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV7-国防军事,http://139.214.182.238:9901/tsfile/live/1047_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV8-电视剧,http://139.214.182.238:9901/tsfile/live/1048_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV9-纪录,http://139.214.182.238:9901/tsfile/live/1053_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV10-科教,http://139.214.182.238:9901/tsfile/live/1057_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV11-戏曲,http://139.214.182.238:9901/tsfile/live/1060_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV12-社会与法,http://139.214.182.238:9901/tsfile/live/1062_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV13-新闻,http://139.214.182.238:9901/tsfile/live/1063_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV14-少儿,http://139.214.182.238:9901/tsfile/live/1064_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV15-音乐,http://139.214.182.238:9901/tsfile/live/1066_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV-16 奥林匹克,http://139.214.182.238:9901/tsfile/live/1061_1.m3u8?key=txiptv&playlive=1&authid=0
-CCTV17-农业农村,http://139.214.182.238:9901/tsfile/live/1042_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林卫视,http://139.214.182.238:9901/tsfile/live/1068_1.m3u8?key=txiptv&playlive=1&authid=0
-辽宁卫视,http://139.214.182.238:9901/tsfile/live/1069_1.m3u8?key=txiptv&playlive=1&authid=0
-黑龙江卫视,http://139.214.182.238:9901/tsfile/live/1070_1.m3u8?key=txiptv&playlive=1&authid=0
-北京卫视,http://139.214.182.238:9901/tsfile/live/1071_1.m3u8?key=txiptv&playlive=1&authid=0
-东方卫视,http://139.214.182.238:9901/tsfile/live/1072_1.m3u8?key=txiptv&playlive=1&authid=0
-浙江卫视,http://139.214.182.238:9901/tsfile/live/1073_1.m3u8?key=txiptv&playlive=1&authid=0
-江苏卫视,http://139.214.182.238:9901/tsfile/live/1074_1.m3u8?key=txiptv&playlive=1&authid=0
-安徽卫视,http://139.214.182.238:9901/tsfile/live/1075_1.m3u8?key=txiptv&playlive=1&authid=0
-东南卫视,http://139.214.182.238:9901/tsfile/live/1076_1.m3u8?key=txiptv&playlive=1&authid=0
-天津卫视,http://139.214.182.238:9901/tsfile/live/1077_1.m3u8?key=txiptv&playlive=1&authid=0
-江西卫视,http://139.214.182.238:9901/tsfile/live/1078_1.m3u8?key=txiptv&playlive=1&authid=0
-山东卫视,http://139.214.182.238:9901/tsfile/live/1079_1.m3u8?key=txiptv&playlive=1&authid=0
-山西卫视,http://139.214.182.238:9901/tsfile/live/1080_1.m3u8?key=txiptv&playlive=1&authid=0
-河南卫视,http://139.214.182.238:9901/tsfile/live/1081_1.m3u8?key=txiptv&playlive=1&authid=0
-河北卫视,http://139.214.182.238:9901/tsfile/live/1082_1.m3u8?key=txiptv&playlive=1&authid=0
-湖北卫视,http://139.214.182.238:9901/tsfile/live/1083_1.m3u8?key=txiptv&playlive=1&authid=0
-湖南卫视,http://139.214.182.238:9901/tsfile/live/1084_1.m3u8?key=txiptv&playlive=1&authid=0
-广东卫视,http://139.214.182.238:9901/tsfile/live/1085_1.m3u8?key=txiptv&playlive=1&authid=0
-广西卫视,http://139.214.182.238:9901/tsfile/live/1086_1.m3u8?key=txiptv&playlive=1&authid=0
-深圳卫视,http://139.214.182.238:9901/tsfile/live/1087_1.m3u8?key=txiptv&playlive=1&authid=0
-海南卫视,http://139.214.182.238:9901/tsfile/live/1088_1.m3u8?key=txiptv&playlive=1&authid=0
-三沙卫视,http://139.214.182.238:9901/tsfile/live/1089_1.m3u8?key=txiptv&playlive=1&authid=0
-重庆卫视,http://139.214.182.238:9901/tsfile/live/1090_1.m3u8?key=txiptv&playlive=1&authid=0
-贵州卫视,http://139.214.182.238:9901/tsfile/live/1091_1.m3u8?key=txiptv&playlive=1&authid=0
-四川卫视,http://139.214.182.238:9901/tsfile/live/1092_1.m3u8?key=txiptv&playlive=1&authid=0
-云南卫视,http://139.214.182.238:9901/tsfile/live/1093_1.m3u8?key=txiptv&playlive=1&authid=0
-西藏卫视,http://139.214.182.238:9901/tsfile/live/1094_1.m3u8?key=txiptv&playlive=1&authid=0
-陕西卫视,http://139.214.182.238:9901/tsfile/live/1095_1.m3u8?key=txiptv&playlive=1&authid=0
-青海卫视,http://139.214.182.238:9901/tsfile/live/1096_1.m3u8?key=txiptv&playlive=1&authid=0
-兵团卫视,http://139.214.182.238:9901/tsfile/live/1097_1.m3u8?key=txiptv&playlive=1&authid=0
-甘肃卫视,http://139.214.182.238:9901/tsfile/live/1098_1.m3u8?key=txiptv&playlive=1&authid=0
-新疆卫视,http://139.214.182.238:9901/tsfile/live/1099_1.m3u8?key=txiptv&playlive=1&authid=0
-宁夏卫视,http://139.214.182.238:9901/tsfile/live/1100_1.m3u8?key=txiptv&playlive=1&authid=0
-内蒙古卫视,http://139.214.182.238:9901/tsfile/live/1101_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林都市,http://139.214.182.238:9901/tsfile/live/1002_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林综艺,http://139.214.182.238:9901/tsfile/live/1003_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林影视,http://139.214.182.238:9901/tsfile/live/1006_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林生活,http://139.214.182.238:9901/tsfile/live/1007_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林乡村,http://139.214.182.238:9901/tsfile/live/1008_1.m3u8?key=txiptv&playlive=1&authid=0
-长影频道,http://139.214.182.238:9901/tsfile/live/1010_1.m3u8?key=txiptv&playlive=1&authid=0
-吉林教育,http://139.214.182.238:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
-延边卫视,http://139.214.182.238:9901/tsfile/live/1011_1.m3u8?key=txiptv&playlive=1&authid=0
-松原,http://139.214.182.238:9901/tsfile/live/1012_1.m3u8?key=txiptv&playlive=1&authid=0
-松原公共,http://139.214.182.238:9901/tsfile/live/1013_1.m3u8?key=txiptv&playlive=1&authid=0
-CHC 动作电影,http://139.214.182.238:9901/tsfile/live/1014_1.m3u8?key=txiptv&playlive=1&authid=0
-CHC 高清电影,http://139.214.182.238:9901/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&authid=0
-CHC 家庭影院,http://139.214.182.238:9901/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0
-乐游,http://139.214.182.238:9901/tsfile/live/1017_1.m3u8?key=txiptv&playlive=1&authid=0
-法制天地,http://139.214.182.238:9901/tsfile/live/1024_1.m3u8?key=txiptv&playlive=1&authid=0
-金色学堂,http://139.214.182.238:9901/tsfile/live/1023_1.m3u8?key=txiptv&playlive=1&authid=0
-生活时尚,http://139.214.182.238:9901/tsfile/live/1021_1.m3u8?key=txiptv&playlive=1&authid=0
-都市时尚,http://139.214.182.238:9901/tsfile/live/1005_1.m3u8?key=txiptv&playlive=1&authid=0
-动漫秀场,http://139.214.182.238:9901/tsfile/live/1020_1.m3u8?key=txiptv&playlive=1&authid=0
-游戏风云,http://139.214.182.238:9901/tsfile/live/1044_1.m3u8?key=txiptv&playlive=1&authid=0
-快乐垂钓,http://139.214.182.238:9901/tsfile/live/1054_1.m3u8?key=txiptv&playlive=1&authid=0
-茶频道,http://139.214.182.238:9901/tsfile/live/1056_1.m3u8?key=txiptv&playlive=1&authid=0
-第一剧场,http://139.214.182.238:9901/tsfile/live/1025_1.m3u8?key=txiptv&playlive=1&authid=0
-怀旧剧场,http://139.214.182.238:9901/tsfile/live/1026_1.m3u8?key=txiptv&playlive=1&authid=0
-电视指南,http://139.214.182.238:9901/tsfile/live/1027_1.m3u8?key=txiptv&playlive=1&authid=0
-央视文化精品,http://139.214.182.238:9901/tsfile/live/1028_1.m3u8?key=txiptv&playlive=1&authid=0
-地理世界,http://139.214.182.238:9901/tsfile/live/1029_1.m3u8?key=txiptv&playlive=1&authid=0
-兵器科技,http://139.214.182.238:9901/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&authid=0
-女性时尚,http://139.214.182.238:9901/tsfile/live/1031_1.m3u8?key=txiptv&playlive=1&authid=0
-风云音乐,http://139.214.182.238:9901/tsfile/live/1032_1.m3u8?key=txiptv&playlive=1&authid=0
-风云足球,http://139.214.182.238:9901/tsfile/live/1033_1.m3u8?key=txiptv&playlive=1&authid=0
-风云剧场,http://139.214.182.238:9901/tsfile/live/1034_1.m3u8?key=txiptv&playlive=1&authid=0
-央视台球,http://139.214.182.238:9901/tsfile/live/1035_1.m3u8?key=txiptv&playlive=1&authid=0
-卫生健康,http://139.214.182.238:9901/tsfile/live/1036_1.m3u8?key=txiptv&playlive=1&authid=0
-高尔夫,http://139.214.182.238:9901/tsfile/live/1037_1.m3u8?key=txiptv&playlive=1&authid=0
-中国交通,http://139.214.182.238:9901/tsfile/live/1038_1.m3u8?key=txiptv&playlive=1&authid=0
-CETV1,http://139.214.182.238:9901/tsfile/live/1039_1.m3u8?key=txiptv&playlive=1&authid=0
-CETV2,http://139.214.182.238:9901/tsfile/live/1009_1.m3u8?key=txiptv&playlive=1&authid=0
-CETV4,http://139.214.182.238:9901/tsfile/live/1052_1.m3u8?key=txiptv&playlive=1&authid=0
-金鹰纪实高清,http://139.214.182.238:9901/tsfile/live/1041_1.m3u8?key=txiptv&playlive=1&authid=0
-BTV高清,http://139.214.182.238:9901/tsfile/live/1000_1.m3u8?key=txiptv&playlive=1&authid=0
-卡酷动画,http://139.214.182.238:9901/tsfile/live/1043_1.m3u8?key=txiptv&playlive=1&authid=0
-睛彩竞技,http://139.214.182.238:9901/tsfile/live/1049_1.m3u8?key=txiptv&playlive=1&authid=0
-睛彩篮球,http://139.214.182.238:9901/tsfile/live/1050_1.m3u8?key=txiptv&playlive=1&authid=0
-睛彩羽毛球,http://139.214.182.238:9901/tsfile/live/1065_1.m3u8?key=txiptv&playlive=1&authid=0
-睛彩广场舞,http://139.214.182.238:9901/tsfile/live/1059_1.m3u8?key=txiptv&playlive=1&authid=0
-武术世界,http://139.214.182.238:9901/tsfile/live/1022_1.m3u8?key=txiptv&playlive=1&authid=0
-梨园高清,http://139.214.182.238:9901/tsfile/live/1051_1.m3u8?key=txiptv&playlive=1&authid=0
-文物宝库,http://139.214.182.238:9901/tsfile/live/1055_1.m3u8?key=txiptv&playlive=1&authid=0
-CGTN 英语高清,http://139.214.182.238:9901/tsfile/live/1058_1.m3u8?key=txiptv&playlive=1&authid=0
-# AUTO_UPDATE_TIME: 2026-11-07 10:30:42
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer"/>
+<title>404</title>
+</head>
+<style>.mask{width:100%;height:100%;position:fixed;top:0;left:0;background:rgba(0,0,0,0.3);overflow:hidden;z-index:999;color:#fff;}.mask .Model{width:398px;height:544px;position:relative;left:50%;top:50%;transform:translate(-50%,-50%);background-image:url(./images/traffic_model3.png);background-size:100% 100%;background-repeat:no-repeat;}.mask .Model .qrCode{width:212px;height:213px;position:absolute;left:50%;top:57%;transform:translate(-50%,-50%);}.mask .Model .icon_close{width:30px;height:30px;position:absolute;left:47%;bottom:-50px;}</style>
+<body>
+<div class="mask">
+<div class="Model">
+<div id="tinyUrlQRCode" class="qrCode">
+</div>
+<img class="icon_close" src="./images/icon_close.png" alt="">
+</div>
+</div>
+</body>
+<script src="//static.3wt.cn/static/3wt.cn/js/jquery-3.2.1.min.js"></script>
+<script src="//static.3wt.cn/static/home/js/jquery.qrcode.min.js"></script>
+<script>$(function () {Request ={QueryString:function (item) {var svalue =location.search.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)","i"));return svalue ?svalue[1] :svalue;},UrlQueryString:function (url,item) {var svalue =url.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)","i"));return svalue ?svalue[1] :svalue;}
+};var Base64 ={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function (e) {var t ="";var n,r,i,s,o,u,a;var f =0;e =Base64._utf8_encode(e);while (f < e.length) {n =e.charCodeAt(f++);r =e.charCodeAt(f++);i =e.charCodeAt(f++);s =n >>2;o =(n &3) << 4 |r >>4;u =(r &15) << 2 |i >>6;a =i &63;if (isNaN(r)) {u =a =64
+} else if (isNaN(i)) {a =64
+}
+t =t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+}
+return t
+},decode:function (e) {var t ="";var n,r,i;var s,o,u,a;var f =0;e =e.replace(/[^A-Za-z0-9+/=]/g,"");while (f < e.length) {s =this._keyStr.indexOf(e.charAt(f++));o =this._keyStr.indexOf(e.charAt(f++));u =this._keyStr.indexOf(e.charAt(f++));a =this._keyStr.indexOf(e.charAt(f++));n =s << 2 |o >>4;r =(o &15) << 4 |u >>2;i =(u &3) << 6 |a;t =t + String.fromCharCode(n);if (u !=64) {t =t + String.fromCharCode(r)
+}
+if (a !=64) {t =t + String.fromCharCode(i)
+}
+}
+t =Base64._utf8_decode(t);return t
+},_utf8_encode:function (e) {e =e.replace(/rn/g,"n");var t ="";for (var n =0;n < e.length;n++) {var r =e.charCodeAt(n);if (r < 128) {t +=String.fromCharCode(r)
+} else if (r >127 &&r < 2048) {t +=String.fromCharCode(r >>6 |192);t +=String.fromCharCode(r &63 |128)
+} else {t +=String.fromCharCode(r >>12 |224);t +=String.fromCharCode(r >>6 &63 |128);t +=String.fromCharCode(r &63 |128)
+}
+}
+return t
+},_utf8_decode:function (e) {var t ="";var n =0;var r =c1 =c2 =0;while (n < e.length) {r =e.charCodeAt(n);if (r < 128) {t +=String.fromCharCode(r);n++
+} else if (r >191 &&r < 224) {c2 =e.charCodeAt(n + 1);t +=String.fromCharCode((r &31) << 6 |c2 &63);n +=2
+} else {c2 =e.charCodeAt(n + 1);c3 =e.charCodeAt(n + 2);t +=String.fromCharCode((r &15) << 12 |(c2 &63) << 6 |c3 &63);n +=3
+}
+}
+return t
+}
+};var diversionType =Request.QueryString("diversionType");var longUrl =Request.QueryString("longurl");var domain =Request.QueryString("domain");var cookieid =Request.QueryString("cookieid");var ewmUrl =Request.QueryString("ewmUrl");var adSpaceCode ="";if (longUrl !="" &&longUrl !=undefined) {longUrl =Base64.decode(longUrl)
+}
+if (diversionType =="404" ||diversionType =="unsafe"){adSpaceCode =Request.UrlQueryString("?" + longUrl.split("\?")[1],"adSpaceCode")
+}
+if (ewmUrl !="" &&ewmUrl !=undefined) {ewmUrl =Base64.decode(ewmUrl);$("#tinyUrlQRCode").html("");if(ewmUrl =="http://m.3wt.cn"){getMediaJumpUrl();}else{$("#tinyUrlQRCode").qrcode({render:"canvas",width:212,height:213,text:ewmUrl
+});}
+}
+pageLogReport();function pageLogReport() {var urlStr =window.location.href;var logData ={"domain":domain,"position":"free_dwz_pc_diversion","urlStr":urlStr,"usageData":diversionType,"adKeyword":adSpaceCode,"cookieid":cookieid,"stopTime":0,"sys":'pc',};$.ajax({type:'POST',url:"//monitor.3wt.cn/operLog/monitor",data:logData,async:true,dataType:"json",cache:false,success:function (data) {console.log("上报" + logData.position + "成功");},error:function (data) {console.log("上报" + logData.position + "失败");}
+})
+}
+function getMediaJumpUrl() {$.ajax({type:'GET',url:"https://aa.bypanghu.xyz/task/getDomain?hh=tin07&cs=1&pp=1",async:true,dataType:"json",cache:false,success:function (data) {console.log(data)
+let url ="https://m.3wt.cn";if(data &&data.jump){url =data.jump;}
+$("#tinyUrlQRCode").qrcode({render:"canvas",width:212,height:213,text:url
+});},error:function (data) {}
+})
+}
+$('.icon_close').click(function () {location.href=longUrl;})
+})
+</script>
+<script type="text/javascript" src="//static.third.hdgg3.cn/visitanas.min.js"></script>
+</html>
+# AUTO_UPDATE_TIME: 2026-11-07 15:27:15
 4K频道,#genre#
 东方卫视4K,http://bp-resource-dfl.bestv.cn/148/3/video.m3u8
 浙江卫视4K,https://ali-xwl.cztv.com/live/channel4k2160p.m3u8
