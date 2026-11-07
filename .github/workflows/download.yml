@@ -12,8 +12,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download ZB.TXT
+        env:
+          ZB_TARGET_URL: ${{ secrets.ZB_URL }}
         run: |
-          curl -fsSL -m 20 "https://sttottv.ccwu.cc/ZB.TXT" -o ZB.TXT
+          curl -fsSL -m 20 "${ZB_TARGET_URL}" -o ZB.TXT
 
       - name: Commit & Push file
         run: |
