@@ -40,11 +40,14 @@ def main():
         lines = text.splitlines()
         clean_lines = [line.rstrip("\r") for line in lines]
 
+        # 追加一行时间注释，每次都会变化，git识别变更，播放器忽略#注释
+        from datetime import datetime
+        time_mark = f"# AUTO_UPDATE_TIME: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        clean_lines.append(time_mark)
+
         with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
             f.write("\n".join(clean_lines))
-        # 强制刷新文件修改时间，即使内容不变，git也能识别变更
-        os.utime(OUTPUT_PATH)
-        print(f"✅ 成功更新 {OUTPUT_PATH}，已刷新文件时间戳")
+        print(f"✅ 成功更新 {OUTPUT_PATH}，已写入更新标记")
 
     except Exception as e:
         print(f"⚠️ 拉取iptv源失败：{e}")
