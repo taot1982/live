@@ -1,8 +1,8 @@
 name: Fetch iptasd.txt
 on:
-  workflow_dispatch: # 支持手动点运行测试
+  workflow_dispatch:
   schedule:
-    - cron: '0 */12 * * *' # UTC 每12小时执行一次
+    - cron: '0 */12 * * *'
 
 jobs:
   fetch:
@@ -22,13 +22,12 @@ jobs:
         run: pip install requests urllib3
 
       - name: Run fetch_iptasd.py
-        run: fetch_iptasd.py
+        run: python fetch_iptasd.py
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add iptasd.txt
-          # 有变更才提交，无变更跳过
           git diff --quiet && git diff --staged --quiet || git commit -m "auto update iptasd.txt"
           git push
