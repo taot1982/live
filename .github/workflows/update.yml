@@ -1,46 +1,35 @@
 name: Auto Fetch & Merge IPTV Sources
 on:
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
-
-permissions:
-  contents: write
+  schedule:
+    - cron: '0 */5 * * *'
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Install python dependencies
+        run: pip install requests urllib3
 
-      - name: Install requests
-        run: pip install requests
-
-      - name: Fetch iptv.txt (a.u9c.cn)
+      - name: Fetch iptv source
         run: python scripts/fetch_iptv.py
 
-      - name: Fetch fixed_zhibo.txt
-        run: python scripts/fix.py
-
-      - name: Fetch iptasd.txt
+      - name: Fix iptasd source
         run: python scripts/fix_iptasd.py
 
-      - name: Fetch ZB.TXT
-        run: python .github/workflows/download.yml
+      - name: Fetch zhibo source（央视咪咕）
+        run: python scripts/fetch_zhibo.py
 
-      - name: Run merge.py to generate live.txt
-        run: python merge.py
+      - name: Run merge.py 合并生成 live.txt
+        run: python3 merge.py
 
-      - name: Commit & Push
+      - name: Commit & Push updated files
         run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add iptv.txt fixed_zhibo.txt iptasd.txt ZB.TXT live.txt
-          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 auto update live.txt & ZB.TXT"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT
+          git diff --quiet && git diff --staged --quiet || git commit -m "auto update live (force file change)"
           git push
