@@ -14,6 +14,10 @@ jobs:
       - name: Install python dependencies
         run: pip install requests urllib3
 
+      - name: 同步仓库最新 merge.py 代码
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/taot1982/live/refs/heads/main/merge.py" -o merge.py
+
       - name: Fetch iptv source
         run: python scripts/fetch_iptv.py
 
@@ -30,6 +34,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT
+          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT merge.py
           git diff --quiet && git diff --staged --quiet || git commit -m "auto update live (force file change)"
           git push
