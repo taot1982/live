@@ -1,6 +1,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from datetime import datetime
 
 UPSTREAM_URL = "https://1525041261-lxsdafern4.ap-shanghai.tencentscf.com/?secret=badboytcl"
 OUTPUT_PATH = "iptasd.txt"
@@ -18,6 +19,7 @@ def main():
     )
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session.mount("http://", adapter)
+    session.mount("https://", adapter)
 
     try:
         resp = session.get(UPSTREAM_URL, headers=headers, timeout=15)
@@ -38,9 +40,13 @@ def main():
         lines = text.splitlines()
         clean_lines = [line.rstrip("\r") for line in lines]
 
+        # 增加时间注释标记，每次都会变化，git识别变更，播放器忽略#注释
+        time_mark = f"# AUTO_UPDATE_TIME: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        clean_lines.append(time_mark)
+
         with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
             f.write("\n".join(clean_lines))
-        print(f"✅ 成功更新 {OUTPUT_PATH}")
+        print(f"✅ 成功更新 {OUTPUT_PATH}，已写入更新标记")
 
     except Exception as e:
         print(f"⚠️ 拉取 iptasd.txt 失败：{e}")
