@@ -4181,4 +4181,4 @@ amc电影,https://ktpremium.world/live/yv2367/23670963/995220.m3u8
 凤凰中文,http://www.zlizi.cn:4023/rtp/239.76.253.135:9000
 凤凰资讯,http://www.zlizi.cn:4023/rtp/239.76.253.134:9000
 凤凰中文,http://www.zlizi.cn:4023/rtp/239.76.246.134:1234
-凤凰资讯,http://www.zlizi.cn:4023/rtp/239.76.246.135:1234# Update at 2026-11-07T00:56:59+00:00
+凤凰资讯,http://www.zlizi.cn:4023/rtp/239.76.246.135:1234# Update at 2026-11-07T01:02:30+00:00
