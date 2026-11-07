@@ -101,7 +101,7 @@ BTV高清,http://139.214.182.238:9901/tsfile/live/1000_1.m3u8?key=txiptv&playliv
 梨园高清,http://139.214.182.238:9901/tsfile/live/1051_1.m3u8?key=txiptv&playlive=1&authid=0
 文物宝库,http://139.214.182.238:9901/tsfile/live/1055_1.m3u8?key=txiptv&playlive=1&authid=0
 CGTN 英语高清,http://139.214.182.238:9901/tsfile/live/1058_1.m3u8?key=txiptv&playlive=1&authid=0
-# AUTO_UPDATE_TIME: 2026-11-07 07:51:55
+# AUTO_UPDATE_TIME: 2026-11-07 08:08:52
 4K频道,#genre#
 东方卫视4K,http://bp-resource-dfl.bestv.cn/148/3/video.m3u8
 浙江卫视4K,https://ali-xwl.cztv.com/live/channel4k2160p.m3u8
