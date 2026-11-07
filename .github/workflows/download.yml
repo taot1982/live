@@ -2,19 +2,16 @@ name: Download ZB.TXT
 on:
   workflow_dispatch:  # 手动触发
   schedule:
-    - cron: '0 2 * * *' # 每天UTC 2点自动运行
-
+    - cron: '0 */4 * * *' # UTC时间每4小时自动运行
 jobs:
   download_job:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Download ZB.TXT
         run: |
-          curl -fsSL "https://sttottv.ccwu.cc/ZB.TXT" -o ZB.TXT
-
+          curl -fsSL "shturl.cc/7gGSajXErVohwQo2d29x" -o ZB.TXT
       - name: Commit & Push file
         run: |
           git config --global user.name "github‑actions[bot]"
