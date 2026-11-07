@@ -30,6 +30,10 @@ jobs:
       - name: Run merge.py 合并生成 live.txt
         run: python3 merge.py
 
+      - name: 强制刷新 live.txt 修改时间（内容不变也更新时间戳）
+        run: |
+          touch live.txt
+
       - name: Commit & Push updated files
         run: |
           git config --global user.name "github-actions[bot]"
