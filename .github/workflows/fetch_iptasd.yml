@@ -22,7 +22,7 @@ jobs:
         run: pip install requests urllib3
 
       - name: Run fetch_iptasd.py
-        run: python fix_iptasd.py
+        run: fetch_iptasd.py
 
       - name: Commit and Push
         run: |
