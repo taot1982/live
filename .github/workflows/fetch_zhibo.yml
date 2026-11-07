@@ -2,7 +2,7 @@ name: Fetch zhibo.txt
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时执行一次（UTC时间）
+    - cron: '0 */4 * * *'
 
 jobs:
   fetch:
@@ -11,8 +11,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install requests
-        run: pip install requests
+      - name: Install requests urllib3
+        run: pip install requests urllib3
 
       - name: Run fetch_zhibo.py
         run: python scripts/fetch_zhibo.py
