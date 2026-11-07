@@ -1,3 +1,4 @@
+import os
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -41,7 +42,9 @@ def main():
 
         with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
             f.write("\n".join(clean_lines))
-        print(f"✅ 成功更新 {OUTPUT_PATH}")
+        # 强制刷新文件修改时间，即使内容不变，git也能识别变更
+        os.utime(OUTPUT_PATH)
+        print(f"✅ 成功更新 {OUTPUT_PATH}，已刷新文件时间戳")
 
     except Exception as e:
         print(f"⚠️ 拉取iptv源失败：{e}")
