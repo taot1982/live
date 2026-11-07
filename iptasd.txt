@@ -2099,4 +2099,4 @@ CGTN广播,video://https://apicnrapp.cnr.cn/html/play.html?channelId=1120
 新疆兵团综合,video://https://apicnrapp.cnr.cn/html/play.html?channelId=512
 新疆绿色广播,video://https://apicnrapp.cnr.cn/html/play.html?channelId=1033
 
-# AUTO_UPDATE_TIME: 2026-11-07 10:30:46
+# AUTO_UPDATE_TIME: 2026-11-07 12:29:10
