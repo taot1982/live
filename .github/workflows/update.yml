@@ -30,9 +30,11 @@ jobs:
       - name: Run merge.py 合并生成 live.txt
         run: python3 merge.py
 
-      - name: 强制刷新 live.txt 修改时间（内容不变也更新时间戳）
+      - name: 强制让 live.txt 产生变更（内容不变，仅触发git提交）
         run: |
-          touch live.txt
+          # 追加一个不可见空字符，再回退，内容不变但是hash改变
+          echo "" >> live.txt
+          sed -i '$d' live.txt
 
       - name: Commit & Push updated files
         run: |
