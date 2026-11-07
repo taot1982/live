@@ -22,7 +22,7 @@ jobs:
         run: python scripts/fetch_iptv.py
 
       - name: Fix iptasd source
-        run: python scripts/fetch_iptv.py
+        run: python scripts/fetch_iptasd.py
 
       - name: Fetch zhibo source（央视咪咕）
         run: python scripts/fetch_zhibo.py
