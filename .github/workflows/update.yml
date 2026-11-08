@@ -2,7 +2,7 @@ name: Auto Fetch & Merge IPTV Sources
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: '15 */5 * * *'
   push:
     paths:
       - '*.txt'
