@@ -3,7 +3,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-UPSTREAM_URL = "http://a.u9c.cn/5P1He0"
+UPSTREAM_URL = "https://1525041261-lxsdafern4.ap-shanghai.tencentscf.com/?secret=badboytcl&url=2"
 OUTPUT_PATH = "iptv.txt"
 
 def main():
