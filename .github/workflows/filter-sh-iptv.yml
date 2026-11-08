@@ -1,4 +1,4 @@
-name: Filter IPTV
+name: Filter Shanghai IPTV
 on:
   push:
     paths:
