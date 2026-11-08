@@ -4,7 +4,8 @@ import re
 ZB_FILE = "ZB.TXT"
 IPTV_FILE = "iptv.txt"
 IPASD_FILE = "iptasd.txt"
-ZHIBO_FILE = "zhibo.txt"   # 新增源
+ZHIBO_FILE = "zhibo.txt"
+SHIPTV_FILE = "shiptv.txt"  # 新增：上海频道源文件
 OUTPUT = "live.txt"
 # ============================================
 
@@ -47,10 +48,16 @@ def filter_all_lines(file_path):
     return new_out
 
 
-def extract_4k_lunbo(file_path):
-    """iptasd.txt：只提取【4K频道】、【轮播剧场】分组内内容，保持文件原生顺序"""
-    out = []
-    in_target_group = False
+def extract_oriental_and_4k(file_path):
+    """
+    拆分：
+    orient_block：东方有线分组内容
+    other_block：4K频道、轮播剧场分组内容
+    """
+    orient_block = []
+    other_block = []
+    in_orient = False
+    in_other = False
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
     for line in lines:
@@ -61,21 +68,29 @@ def extract_4k_lunbo(file_path):
             continue
         if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
             continue
-        # 遇到分组标记
+
         if line_strip.endswith(",#genre#"):
-            # 判断是否是目标分组
-            if "4K频道" in line_strip or "轮播剧场" in line_strip:
-                in_target_group = True
-                out.append(line_strip)
-            else:
-                in_target_group = False
+            in_orient = False
+            in_other = False
+            if "东方有线" in line_strip:
+                in_orient = True
+                line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+                orient_block.append(line_strip)
+            elif "4K频道" in line_strip or "轮播剧场" in line_strip:
+                in_other = True
+                line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+                other_block.append(line_strip)
             continue
-        # 在目标分组内，就保留该行
-        if in_target_group:
+
+        if in_orient:
             line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
-            out.append(line_strip)
-    print(f"{file_path} 提取4K频道+轮播剧场行数：{len(out)}")
-    return out
+            orient_block.append(line_strip)
+        if in_other:
+            line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
+            other_block.append(line_strip)
+
+    print(f"{file_path} 东方有线：{len(orient_block)} 行，4K+轮播：{len(other_block)} 行")
+    return orient_block, other_block
 
 
 def filter_zb(file_path):
@@ -133,16 +148,47 @@ def extract_cctv_migu(file_path):
         print(f"⚠️ 文件 {file_path} 不存在，跳过央视咪咕分组")
     return out
 
+def extract_shanghai(file_path):
+    """shiptv.txt：提取【上海频道】整个分组（含分组头）"""
+    out = []
+    in_group = False
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        for line in lines:
+            line_strip = line.strip()
+            if not line_strip:
+                continue
+            if "更新时间" in line_strip:
+                continue
+            if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
+                continue
+            # 分组头：上海频道,#genre#
+            if line_strip == "上海频道,#genre#":
+                in_group = True
+                out.append(line_strip)
+                continue
+            # 遇到下一个分组头，停止读取
+            if line_strip.endswith(",#genre#") and in_group:
+                in_group = False
+                continue
+            if in_group:
+                out.append(line_strip)
+        print(f"{file_path} 提取【上海频道】分组行数：{len(out)}")
+    except FileNotFoundError:
+        print(f"⚠️ 文件 {file_path} 不存在，跳过上海频道分组")
+    return out
+
 
 def main():
-    # part1:iptv全部；part2:iptasd提取4K+轮播(包含东方有线分组)；part3:ZB.TXT；part4:新增央视咪咕分组
     part1 = filter_all_lines(IPTV_FILE)
-    part2 = extract_4k_lunbo(IPASD_FILE)
-    part4 = extract_cctv_migu(ZHIBO_FILE)   # 放在东方有线后面，即part2之后
+    orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
+    part_sh = extract_shanghai(SHIPTV_FILE)
+    part4 = extract_cctv_migu(ZHIBO_FILE)
     part3 = filter_zb(ZB_FILE)
 
-    # 拼接顺序：iptv → 4K+轮播(含东方有线) →【央视咪咕】 → ZB.TXT
-    final = part1 + part2 + part4 + part3
+    # ✅ 最终顺序：iptv → 东方有线 → 上海频道 → 4K频道+轮播剧场 → 央视咪咕 → ZB.TXT
+    final = part1 + orient_block + part_sh + other_block + part4 + part3
 
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write("\n".join(final))
