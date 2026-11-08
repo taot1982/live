@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import re
+from datetime import datetime
 
 INPUT_FILE = "iptasd.txt"
 OUTPUT_FILE = "shiptv.txt"
@@ -15,12 +15,16 @@ def main():
     in_target_group = False
     out_lines = []
 
-    # ===================== 替换配置，在这里改端口 =====================
+    # ===================== 端口替换配置区 =====================
     old_port = "8011"
     new_port = "8013"
     old_str = f":{old_port}/"
     new_str = f":{new_port}/"
-    # =================================================================
+    # =========================================================
+
+    # 写入更新时间注释（放在最顶部）
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out_lines.append(f"# 更新时间: {now_time}")
 
     for line in lines:
         if line.endswith(",#genre#"):
@@ -42,7 +46,7 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         for l in out_lines:
             f.write(l + "\n")
-    print(f"✅ 完成，已输出 {OUTPUT_FILE}，端口 {old_port} 替换为 {new_port}")
+    print(f"✅ 完成，已输出 {OUTPUT_FILE}，端口 {old_port} → {new_port}，更新时间：{now_time}")
 
 if __name__ == "__main__":
     main()
