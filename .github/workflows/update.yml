@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - '*.txt'
+      - '*.py'
     paths-ignore:
       - 'live.txt'
 
