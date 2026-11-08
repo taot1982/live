@@ -5,11 +5,9 @@ on:
     - cron: '0 */5 * * *'
   push:
     paths:
-      - 'iptv.txt'
-      - 'iptasd.txt'
-      - 'zhibo.txt'
-      - 'ZB.TXT'
-      - 'merge.py'
+      - '*.txt'
+    paths-ignore:
+      - 'live.txt'
 
 jobs:
   build:
@@ -36,6 +34,9 @@ jobs:
       - name: Fetch zhibo source（央视咪咕）
         run: python scripts/fetch_zhibo.py
 
+      - name: Run filter_sh.py 生成shiptv.txt
+        run: python3 filter_sh.py
+
       - name: Run merge.py 合并生成 live.txt
         run: python3 merge.py
 
@@ -43,7 +44,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT merge.py
+          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT shiptv.txt merge.py filter_sh.py
           if ! git diff --quiet --cached; then
             git commit -m "auto update live: source file changed"
             git push
