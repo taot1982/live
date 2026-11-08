@@ -21,7 +21,7 @@ jobs:
           python-version: "3.11"
 
       - name: Run filter script
-        run: python3 filter.py
+        run: python3 filter_sh.py
 
       - name: Commit & Push result
         run: |
