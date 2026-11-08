@@ -3,6 +3,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 */5 * * *'
+  push:
+    paths:
+      - 'iptv.txt'
+      - 'iptasd.txt'
+      - 'zhibo.txt'
+      - 'ZB.TXT'
+      - 'merge.py'
 
 jobs:
   build:
@@ -10,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install python dependencies
         run: pip install requests urllib3
@@ -30,16 +39,14 @@ jobs:
       - name: Run merge.py 合并生成 live.txt
         run: python3 merge.py
 
-      - name: 强制让 live.txt 产生变更（内容不变，仅触发git提交）
-        run: |
-          # 追加一个不可见空字符，再回退，内容不变但是hash改变
-          echo "" >> live.txt
-          sed -i '$d' live.txt
-
       - name: Commit & Push updated files
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT merge.py
-          git diff --quiet && git diff --staged --quiet || git commit -m "auto update live (force file change)"
-          git push
+          if ! git diff --quiet --cached; then
+            git commit -m "auto update live: source file changed"
+            git push
+          else
+            echo "没有文件变动，跳过提交"
+          fi
