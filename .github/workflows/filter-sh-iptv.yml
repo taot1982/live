@@ -4,7 +4,7 @@ on:
     paths:
       - 'iptasd.txt'
       - 'filter_sh.py'
-  workflow_dispatch: # 支持手动点运行
+  workflow_dispatch: # 保留手动触发
 
 jobs:
   run-filter:
@@ -28,5 +28,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add shiptv.txt
-          git commit -m "Auto update shiptv.txt from iptasd.txt" || echo "No changes"
+          git commit -m "Auto update shiptv.txt" || echo "No changes"
           git push
