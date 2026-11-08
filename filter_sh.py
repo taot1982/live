@@ -4,7 +4,7 @@ import re
 INPUT_FILE = "iptasd.txt"
 OUTPUT_FILE = "shiptv.txt"
 TARGET_GROUP = "上海频道1"
-NEW_GROUP = "上海频道"
+NEW_GROUP = "上海频道,#genre#"
 PREFIX = "http://47.99.202.156"
 
 def main():
@@ -15,28 +15,34 @@ def main():
     in_target_group = False
     out_lines = []
 
+    # ===================== 替换配置，在这里改端口 =====================
+    old_port = "8011"
+    new_port = "8013"
+    old_str = f":{old_port}/"
+    new_str = f":{new_port}/"
+    # =================================================================
+
     for line in lines:
-        # 分组标记：xxx,#genre#
         if line.endswith(",#genre#"):
             group_name = line.split(",#genre#")[0]
             if group_name == TARGET_GROUP:
                 in_target_group = True
-                out_lines.append(f"{NEW_GROUP},#genre#")
+                out_lines.append(NEW_GROUP)
             else:
                 in_target_group = False
             continue
 
         if in_target_group:
-            # 频道行格式：频道名,url
             if "," in line:
                 name, url = line.split(",", 1)
                 if url.startswith(PREFIX):
-                    out_lines.append(line)
+                    new_line = line.replace(old_str, new_str)
+                    out_lines.append(new_line)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         for l in out_lines:
             f.write(l + "\n")
-    print(f"✅ 完成，已输出 {OUTPUT_FILE}")
+    print(f"✅ 完成，已输出 {OUTPUT_FILE}，端口 {old_port} 替换为 {new_port}")
 
 if __name__ == "__main__":
     main()
