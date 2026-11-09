@@ -15,13 +15,6 @@ def main():
     in_target_group = False
     out_lines = []
 
-    # ===================== 端口替换配置区 =====================
-    old_port = "8011"
-    new_port = "8013"
-    old_str = f":{old_port}/"
-    new_str = f":{new_port}/"
-    # =========================================================
-
     # 写入更新时间注释（放在最顶部）
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     out_lines.append(f"# 更新时间: {now_time}")
@@ -40,13 +33,12 @@ def main():
             if "," in line:
                 name, url = line.split(",", 1)
                 if url.startswith(PREFIX):
-                    new_line = line.replace(old_str, new_str)
-                    out_lines.append(new_line)
+                    out_lines.append(line)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         for l in out_lines:
             f.write(l + "\n")
-    print(f"✅ 完成，已输出 {OUTPUT_FILE}，端口 {old_port} → {new_port}，更新时间：{now_time}")
+    print(f"✅ 完成，已输出 {OUTPUT_FILE}，更新时间：{now_time}")
 
 if __name__ == "__main__":
     main()
