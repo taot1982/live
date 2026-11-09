@@ -1,27 +1,34 @@
-name: Auto Run filter_sh.py
+name: Auto Run filter_sh then merge, out final live.txt
 on:
   push:
     paths:
       - 'iptasd.txt'
-  workflow_dispatch: # 保留手动按钮，随时可以手动执行
+  workflow_dispatch: # 保留手动触发
+
 jobs:
-  run-filter:
+  run-filter-and-merge:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run filter_sh.py
+
+      - name: Run filter_sh.py 生成 shiptv.txt
         run: python3 filter_sh.py
-      - name: Commit & Push result
+
+      - name: Run merge.py 合并源
+        run: python3 merge.py
+
+      - name: Commit & Push 最终结果
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add shiptv.txt
-          git commit -m "Auto update shiptv.txt [skip ci]" || echo "No changes"
+          git add shiptv.txt live.txt
+          git commit -m "Auto update shiptv + merge live [skip ci]" || echo "No changes"
           git push
