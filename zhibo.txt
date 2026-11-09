@@ -1,4 +1,4 @@
-央视一组,#genre#
+央视咪咕,#genre#
 
 
 CCTV1,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm-ZY.php?token=4e675715235da8ec82ccfdd9b6f0f7&i=0
@@ -75,7 +75,7 @@ CHC动作电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm-ZY.php?token=6819ca3
 CHC家庭影院,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm-ZY.php?token=67ffc0eeac5129f5619f0d4cb86eae
 
 
-央视咪咕,#genre#
+卫视一组,#genre#
 
 
 北京卫视,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm-ZY.php?token=b90c151a7e98d1676cae2cc1b8b2d3
