@@ -1,0 +1,27 @@
+name: Auto Run filter_sh.py
+on:
+  push:
+    paths:
+      - 'iptasd.txt'
+  workflow_dispatch: # 保留手动按钮，随时可以手动执行
+jobs:
+  run-filter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run filter_sh.py
+        run: python3 filter_sh.py
+      - name: Commit & Push result
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add shiptv.txt
+          git commit -m "Auto update shiptv.txt [skip ci]" || echo "No changes"
+          git push
