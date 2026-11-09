@@ -112,7 +112,7 @@ CGTN 英语高清,http://139.214.182.238:9901/tsfile/live/1058_1.m3u8?key=txiptv
 上海都市,http://47.99.202.156:8014/daili/shylhd.m3u8?v=llllvvw&line=0
 上海都市,http://47.99.202.156:8014/daili/shylhd.m3u8?v=llllvvw&line=1
 上海都市,http://47.99.202.156:8014/daili/shylhd.m3u8?v=llllvvw&line=2
-五星体育,http://47.99.202.156:8014/daili/wxtyhd.m3u8?v=llllvvw&line=0
+五星体育,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=wxtyhd
 五星体育,http://47.99.202.156:8014/daili/wxtyhd.m3u8?v=llllvvw&line=1
 五星体育,http://47.99.202.156:8014/daili/wxtyhd.m3u8?v=llllvvw&line=2
 游戏风云,http://47.99.202.156:8014/daili/yxfyhd.m3u8?v=llllvvw&line=0
