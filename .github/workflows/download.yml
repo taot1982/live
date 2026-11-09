@@ -2,7 +2,7 @@ name: Download ZB.TXT
 on:
   workflow_dispatch:  # 手动触发
   schedule:
-    - cron: '0 */4 * * *' # UTC时间每4小时自动运行
+    - cron: '0 */12 * * *' # UTC时间每12小时自动运行
 
 jobs:
   download_job:
