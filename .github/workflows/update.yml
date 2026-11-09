@@ -9,7 +9,6 @@ on:
       - 'iptasd.txt'
       - 'zhibo.txt'
       - 'ZB.TXT'
-      - 'shiptv.txt'
 
 jobs:
   build:
@@ -20,36 +19,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install python dependencies
-        run: pip install requests urllib3
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: 同步仓库最新 merge.py 代码
+      - name: Check if iptasd.txt changed
+        id: check_iptasd
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/taot1982/live/refs/heads/main/merge.py" -o merge.py
+          if git diff --name-only HEAD^ HEAD | grep -q 'iptasd.txt'; then
+            echo "run_filter=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_filter=false" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Fetch iptv source
-        run: python scripts/fetch_iptv.py
-
-      - name: Fix iptasd source
-        run: python scripts/fetch_iptasd.py
-
-      - name: Fetch zhibo source（央视咪咕）
-        run: python scripts/fetch_zhibo.py
-
-      - name: Run filter_sh.py 生成shiptv.txt
+      - name: Run filter_sh.py（仅iptasd.txt改动时执行）
+        if: steps.check_iptasd.outputs.run_filter == 'true'
         run: python3 filter_sh.py
 
-      - name: Run merge.py 合并生成 live.txt
+      - name: Run merge.py
         run: python3 merge.py
 
-      - name: Commit & Push updated files
+      - name: Commit & Push result
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add live.txt iptv.txt iptasd.txt zhibo.txt ZB.TXT shiptv.txt merge.py filter_sh.py
-          if ! git diff --quiet --cached; then
-            git commit -m "auto update live: source file changed [skip ci]"
-            git push
-          else
-            echo "没有文件变动，跳过提交"
-          fi
+          git add shiptv.txt live.txt
+          git commit -m "Auto update [skip ci]" || echo "No changes"
+          git push
