@@ -175,6 +175,17 @@ CGTN 英语高清,http://139.214.182.238:9901/tsfile/live/1058_1.m3u8?key=txiptv
 崇明电视台,http://47.99.202.156:8014/daili/shcmtv1.m3u8?v=llllvvw&line=0
 崇明电视台,http://47.99.202.156:8014/daili/shcmtv1.m3u8?v=llllvvw&line=1
 崇明电视台,http://47.99.202.156:8014/daili/shcmtv1.m3u8?v=llllvvw&line=2
+上海备用,#genre#
+上海新闻HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=shxwhd
+上海都市HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=shylhd
+东方影视HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=shdsjhd
+生活时尚HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=shsshd
+动漫秀场HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=dmxchd
+都市剧场HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=dsjchd
+第一财经HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=dycjhd
+欢笑剧场HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=hxjchd
+五星体育HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=wxtyhd
+哈哈炫动HD,http://63.141.230.178:82/gslb/zbdq5.m3u8?id=xdkthd
 4K频道,#genre#
 东方卫视4K,http://bp-resource-dfl.bestv.cn/148/3/video.m3u8
 浙江卫视4K,https://ali-xwl.cztv.com/live/channel4k2160p.m3u8
