@@ -61,7 +61,7 @@ def main():
 
         if ",#genre#" in line:
             group_cnt += 1
-            if group_cnt == 2:
+            if group_cnt == 1:
                 out_lines.append("央视咪咕,#genre#")
             else:
                 out_lines.append(line)
