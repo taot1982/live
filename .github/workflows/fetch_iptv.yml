@@ -2,7 +2,7 @@ name: Fetch iptv.txt
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */8 * * *'  # UTC 每8小时执行一次
+    - cron: '0 */12 * * *'  # UTC 每8小时执行一次
 
 jobs:
   fetch:
