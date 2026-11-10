@@ -159,8 +159,6 @@ def main():
     gw = [i for i in items if "组播" not in i["group"]]
 
     write(os.path.join(args.out, "live_tvbox.txt"), to_txt(items))
-    write(os.path.join(args.out, "live_tvbox_gw.txt"), to_txt(gw))
-    write(os.path.join(args.out, "live_tvbox.m3u"), to_m3u(items))
 
     ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
     stats = (
