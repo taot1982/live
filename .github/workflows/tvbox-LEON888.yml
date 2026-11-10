@@ -48,7 +48,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # 只提交三份数据文件；live_stats.txt 含时间戳，每次都会变，不入库（靠提交记录看更新时间）
-          git add live_tvbox.txt live_tvbox_gw.txt live_tvbox.m3u
+          git add live_tvbox.txt 
 
           if git diff --cached --quiet; then
             echo "内容无变化，跳过提交"
