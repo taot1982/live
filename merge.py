@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 多源直播源合并 → live.txt
-源文件：ZB.TXT / iptv.txt / iptasd.txt / live_tvbox.txt / shiptv.txt
+本机文件：ZB.TXT / iptv.txt / iptasd.txt / live_tvbox.txt / shiptv.txt
+远端订阅：贵州电信组播 txt（GitHub raw，抓不到时回退本地缓存 gz_cctv.txt）
 """
 import re
+import urllib.request
 
 # ========== 和仓库文件名严格对齐 ==========
 ZB_FILE = "ZB.TXT"
@@ -14,12 +16,41 @@ SHIPTV_FILE = "shiptv.txt"     # 上海频道源文件
 OUTPUT = "live.txt"
 # ========================================
 
+# 贵州电信组播源（央视+卫视），取 CCTV-1 之后的部分，改名为「高清央视卫视」
+GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
+          "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
+GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
+GZ_GROUP_NAME = "高清央视卫视"
+GZ_UA = "okhttp/6.0"
+
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
 # 统一用「行首 CCTV5+」判断，别再拿完整名称做 in 判断
 CCTV5_PLUS_RE = re.compile(r"^\s*CCTV5\+")
 
+# 从 CCTV-1 开始保留（(?!\d) 避免把 CCTV-10~17 误当成 CCTV-1）
+CCTV1_RE = re.compile(r"^CCTV-?1(?!\d)")
+
 # ZB.TXT 里要整组剔除的分组（分组头含这些关键字即丢弃，组内频道一并不要）
 ZB_DROP_GROUPS = ("央视频", "咪咕央卫", "测试频道")
+
+
+def fetch_text(url, timeout=25):
+    """直连抓文本（不走系统代理变量），失败返回 None"""
+    try:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        req = urllib.request.Request(url, headers={"User-Agent": GZ_UA, "Accept": "*/*"})
+        with opener.open(req, timeout=timeout) as r:
+            raw = r.read()
+    except Exception as e:
+        print(f"⚠️ 抓取远端源失败：{e}")
+        return None
+
+    for enc in ("utf-8-sig", "utf-8", "gb18030"):
+        try:
+            return raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return None
 
 
 def read_lines(file_path):
@@ -223,10 +254,58 @@ def extract_shanghai(file_path):
     return out
 
 
+def extract_gaoqing_cctv():
+    """
+    远端贵州电信组播源：删掉 CCTV-1 以上的贵州地方频道，
+    只留 CCTV-1 起的央视+卫视部分，分组改名「高清央视卫视」
+    先抓远端，抓不到就用本地缓存 GZ_CACHE
+    """
+    text = fetch_text(GZ_URL)
+
+    if text is not None:
+        lines = text.splitlines()
+        # 抓到就顺手写一份本地缓存，下次断网/限流也能用
+        try:
+            with open(GZ_CACHE, "w", encoding="utf-8", newline="\n") as f:
+                f.write("\n".join(lines) + "\n")
+        except Exception as e:
+            print(f"⚠️ 写本地缓存失败：{e}")
+        source = "远端"
+    else:
+        lines = read_lines(GZ_CACHE)
+        if lines is None:
+            print(f"⚠️ 远端抓取失败且无本地缓存 {GZ_CACHE}，跳过{GZ_GROUP_NAME}分组")
+            return []
+        source = "本地缓存"
+
+    out = []
+    started = False
+    for line in lines:
+        line_strip = line.strip()
+        if not line_strip or is_noise(line_strip):
+            continue
+        if line_strip.endswith(",#genre#"):
+            continue          # 原分组头丢弃，后面统一换成新分组名
+        if not started:
+            if CCTV1_RE.match(line_strip):
+                started = True
+            else:
+                continue      # CCTV-1 以上的地方频道，全部不要
+        out.append(line_strip)
+
+    if not out:
+        print(f"⚠️ {source}源里没找到 CCTV-1，跳过{GZ_GROUP_NAME}分组")
+        return []
+
+    print(f"贵州电信源（{source}）提取行数：{len(out)} → 分组改名「{GZ_GROUP_NAME}」")
+    return [f"{GZ_GROUP_NAME},#genre#"] + out
+
+
 def main():
     part1 = filter_all_lines(IPTV_FILE)
     orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
     part_sh = extract_shanghai(SHIPTV_FILE)
+    part_gq = extract_gaoqing_cctv()
     part4 = extract_cctv_migu(TVBOX_FILE)     # ← 原来误写成未定义的 ZHIBO_FILE
     part3 = filter_zb(ZB_FILE)
 
@@ -235,8 +314,8 @@ def main():
     if orient_block and orient_block[0] == "东方有线,#genre#" and "东方有线,#genre#" in part1:
         orient_block = orient_block[1:]
 
-    # ✅ 顺序：iptv → 东方有线 → 上海频道 → 4K频道+轮播剧场 → 前三个分组 → ZB.TXT
-    final = part1 + orient_block + part_sh + other_block + part4 + part3
+    # ✅ 顺序：iptv → 东方有线 → 上海频道 → 4K频道+轮播剧场 → 高清央视卫视 → 前三个分组 → ZB.TXT
+    final = part1 + orient_block + part_sh + other_block + part_gq + part4 + part3
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
