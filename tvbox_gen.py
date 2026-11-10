@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GitHub Actions 定时任务用：抓取上游 m3u 直播源 → 生成 TVBox / 影视仓 用的 live_tvbox_gw.txt
+GitHub Actions 定时任务用：抓取上游 m3u 直播源 → 生成 TVBox / 影视仓 用的 live_tvbox.txt
 
 输出（单个文件，UTF-8 无 BOM）：
   live_tvbox.txt    「分组,#genre#」+「频道名,url」标准直播源格式
@@ -146,7 +146,7 @@ def main():
         items = [i for i in items if "组播" not in i["group"]]
     items = reorder(items)
 
-    out_path = os.path.join(args.out, "live_tvbox_gw.txt")
+    out_path = os.path.join(args.out, "live_tvbox.txt")
     write(out_path, to_txt(items))
 
     ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
