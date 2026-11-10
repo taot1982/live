@@ -5,8 +5,6 @@ GitHub Actions 定时任务用：抓取上游 m3u 直播源 → 转成 TVBox / �
 
 输出（仓库根目录，UTF-8 无 BOM）：
   live_tvbox.txt     全量（含运营商内网组播，组播分组排在最后）
-  live_tvbox_gw.txt  公网版（剔除组播分组）
-  live_tvbox.m3u     清洗后的标准 m3u
   live_stats.txt     本次运行统计（频道数、分组数、时间）
 
 用法：
