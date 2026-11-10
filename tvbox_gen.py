@@ -4,7 +4,7 @@
 GitHub Actions 定时任务用：抓取上游 m3u 直播源 → 生成 TVBox / 影视仓 用的 live_tvbox_gw.txt
 
 输出（单个文件，UTF-8 无 BOM）：
-  live_tvbox_gw.txt    「分组,#genre#」+「频道名,url」标准直播源格式
+  live_tvbox.txt    「分组,#genre#」+「频道名,url」标准直播源格式
                        （含各省运营商地方组播分组；已剔除咪咕体育按日切分的临时赛事流）
 
 用法：
