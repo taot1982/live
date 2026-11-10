@@ -18,6 +18,9 @@ OUTPUT = "live.txt"
 # 统一用「行首 CCTV5+」判断，别再拿完整名称做 in 判断
 CCTV5_PLUS_RE = re.compile(r"^\s*CCTV5\+")
 
+# ZB.TXT 里要整组剔除的分组（分组头含这些关键字即丢弃，组内频道一并不要）
+ZB_DROP_GROUPS = ("央视频", "咪咕央卫", "测试频道")
+
 
 def read_lines(file_path):
     """统一读文件：兼容 BOM 与 GBK（Windows 存的 ZB.TXT 常见），读不到返回 None"""
@@ -120,24 +123,39 @@ def extract_oriental_and_4k(file_path):
 
 
 def filter_zb(file_path):
-    """ZB.TXT：分组结构原样保留，只过滤噪声行"""
+    """ZB.TXT：分组结构原样保留，只过滤噪声行；央视频/咪咕央卫/测试频道 三个分组整组剔除"""
     lines = read_lines(file_path)
     if lines is None:
         print(f"⚠️ ZB.TXT 文件不存在，跳过 ZB 分组")
         return []
 
     out = []
+    in_drop_group = False
+    dropped = []
+
     for line in lines:
         line_strip = line.strip()
         if not line_strip:
             continue
         if is_noise(line_strip):
             continue
-        # 分组头 ,#genre# 必须保留，否则分组结构就散了
+
+        # 分组头：判断是否属于要剔除的分组，是则整组（含分组头）跳过
+        if line_strip.endswith(",#genre#"):
+            in_drop_group = any(k in line_strip for k in ZB_DROP_GROUPS)
+            if in_drop_group:
+                dropped.append(line_strip.replace(",#genre#", ""))
+                continue
+            out.append(line_strip)
+            continue
+
+        if in_drop_group:
+            continue
+
         line_strip = line_strip.replace("吉林松原酒店 吉林联通", "东方有线")
         out.append(line_strip)
 
-    print(f"{file_path} 保留行数：{len(out)}")
+    print(f"{file_path} 保留行数：{len(out)}" + (f"，剔除分组：{'、'.join(dropped)}" if dropped else ""))
     return out
 
 
