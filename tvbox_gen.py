@@ -26,11 +26,7 @@ UA = "okhttp/6.0"
 # 上游夹带的推广/公告频道，一律丢弃
 DROP_NAMES = {"加入TG频道@tmxktg"}
 DROP_GROUPS = {"📢 频道关注"}
-
-# 「昨天11-09 / 今天11-10 / 明天11-11」这类按日期命名的分组，
-# 去掉日期后分组名才稳定，否则每天 TVBox 里都多出三个新分组
-DATE_TAIL = re.compile(r"(昨天|今天|明天)\s*\d{1,2}-\d{1,2}")
-
+DROP_GROUP_KEYWORDS = {"咪咕·体育"}
 
 def fetch(url, timeout=25, proxy=None):
     """默认直连（不走系统代理）；需要时可用 --proxy 显式指定，如 http://127.0.0.1:7890"""
