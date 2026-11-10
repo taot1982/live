@@ -4,7 +4,7 @@ import re
 ZB_FILE = "ZB.TXT"
 IPTV_FILE = "iptv.txt"
 IPASD_FILE = "iptasd.txt"
-ZHIBO_FILE = "zhibo.txt"
+TVBOX_FILE = "live_tvbox.txt"
 SHIPTV_FILE = "shiptv.txt"  # 新增：上海频道源文件
 OUTPUT = "live.txt"
 # ============================================
@@ -118,9 +118,10 @@ def filter_zb(file_path):
     return out
 
 def extract_cctv_migu(file_path):
-    """zhibo.txt：只提取【央视咪咕】整个分组（含分组头）"""
+    """live_tvbox.txt：只提取前 3 个整个分组（含分组头），其余丢弃"""
     out = []
     in_group = False
+    group_count = 0
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
@@ -132,20 +133,24 @@ def extract_cctv_migu(file_path):
                 continue
             if line_strip.startswith("#by") or line_strip.startswith("#节目数量"):
                 continue
-            # 分组头：央视咪咕,#genre#
-            if line_strip == "央视咪咕,#genre#":
-                in_group = True
-                out.append(line_strip)
-                continue
-            # 遇到下一个分组头，退出该分组
-            if line_strip.endswith(",#genre#") and in_group:
-                in_group = False
-                continue
+
+            # 分组头：xxx,#genre#
+            if line_strip.endswith(",#genre#"):
+                if group_count < 3:
+                    group_count += 1
+                    in_group = True
+                    out.append(line_strip)
+                    continue
+                else:
+                    # 第 3 个分组已收完，后面的全部不要
+                    break
+
             if in_group:
                 out.append(line_strip)
-        print(f"{file_path} 提取【央视咪咕】分组行数：{len(out)}")
+
+        print(f"{file_path} 提取前 {group_count} 个分组行数：{len(out)}")
     except FileNotFoundError:
-        print(f"⚠️ 文件 {file_path} 不存在，跳过央视咪咕分组")
+        print(f"⚠️ 文件 {file_path} 不存在，跳过")
     return out
 
 def extract_shanghai(file_path):
