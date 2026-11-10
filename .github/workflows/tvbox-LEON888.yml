@@ -77,7 +77,4 @@ jobs:
             cat live_stats.txt 2>/dev/null || echo "无统计文件（本次可能失败）"
             echo '```'
             echo ""
-            echo "订阅地址（把 <user>/<repo> 换成你的）："
-            echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_tvbox_gw.txt"
-            echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_tvbox.txt"
           } >> "$GITHUB_STEP_SUMMARY"
