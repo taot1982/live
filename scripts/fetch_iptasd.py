@@ -1,5 +1,3 @@
-# 暂停脚本，启用时注释下面这行
-exit()
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
