@@ -23,7 +23,7 @@ OUTPUT = "live.txt"
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
-GZ_GROUP_NAME = "高清央视卫视"
+GZ_GROUP_NAME = "超高清·央视卫视"
 GZ_UA = "okhttp/6.0"
 
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
