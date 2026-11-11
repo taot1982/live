@@ -35,10 +35,9 @@ ZB_DROP_GROUPS = ("央视频", "咪咕·央视", "咪咕央卫", "测试频道")
 # 名字相近但必须保留的分组（「央视频道」前缀撞「央视频」，不写这里就会被误删）
 ZB_KEEP_GROUPS = ("央视频道",)
 
-# live_tvbox.txt 里虽然有前 3 组，但要跳过不进 live.txt 的分组
-# 用「咪咕·」一次覆盖 咪咕·央视 / 咪咕·卫视 / 咪咕·地方 / 咪咕·其他
-# （这几个分组是同一套 miguvideo token 源，且上游缺「稳定源」组时会被补齐逻辑拉进来）
-TVBOX_DROP_GROUPS = ("咪咕·",)
+# live_tvbox.txt 里只保留这些分组（白名单，前缀匹配），凑满 3 组为止
+# 用白名单而不是黑名单：黑名单挡一组，补齐逻辑就会把下一组拉进来，永远堵不完
+TVBOX_KEEP_GROUPS = ("稳定源·", "央视频·")
 
 
 def zb_should_drop(group_name):
@@ -208,8 +207,8 @@ def filter_zb(file_path):
 
 def extract_cctv_migu(file_path):
     """
-    live_tvbox.txt：提取前 3 个整个分组（含分组头），其余丢弃
-    TVBOX_DROP_GROUPS 里的分组跳过不提（跳过的不计数，继续往后补足 3 组）
+    live_tvbox.txt：只提取 TVBOX_KEEP_GROUPS 白名单里的分组，凑满 3 组为止
+    白名单外的分组（咪咕·* / 央卫·* / 国内·* 等）一律跳过，且不占用「3 组」名额
     """
     lines = read_lines(file_path)
     if lines is None:
@@ -219,7 +218,7 @@ def extract_cctv_migu(file_path):
     out = []
     in_group = False
     group_count = 0
-    dropped = []
+    skipped = []
 
     for line in lines:
         line_strip = line.strip()
@@ -231,11 +230,11 @@ def extract_cctv_migu(file_path):
         if line_strip.endswith(",#genre#"):
             group_name = line_strip.replace(",#genre#", "").strip()
 
-            # 命中剔除名单：跳过该组（组内频道也不要），且不占用「前 3 组」的名额
-            if any(group_name.startswith(k) for k in TVBOX_DROP_GROUPS):
+            # 不在白名单：整组跳过（组内频道也不要），不占名额
+            if not any(group_name.startswith(k) for k in TVBOX_KEEP_GROUPS):
                 in_group = False
-                if group_name not in dropped:
-                    dropped.append(group_name)
+                if group_name not in skipped:
+                    skipped.append(group_name)
                 continue
 
             if group_count < 3:
@@ -243,13 +242,13 @@ def extract_cctv_migu(file_path):
                 in_group = True
                 out.append(line_strip)
                 continue
-            break   # 已收满 3 个有效分组，后面的不要
+            break   # 白名单分组已收满 3 组，后面的不要
 
         if in_group:
             out.append(line_strip)
 
-    print(f"{file_path} 提取前 {group_count} 个分组行数：{len(out)}"
-          + (f"，跳过分组：{'、'.join(dropped)}" if dropped else ""))
+    print(f"{file_path} 提取 {group_count} 个分组，行数：{len(out)}"
+          + (f"，跳过分组：{'、'.join(skipped)}" if skipped else ""))
     return out
 
 
