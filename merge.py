@@ -44,6 +44,8 @@ ZB_KEEP_GROUPS = ("央视频道",)
 # live_tvbox.txt 里只保留这些分组（白名单，前缀匹配），凑满 3 组为止
 # 用白名单而不是黑名单：黑名单挡一组，补齐逻辑就会把下一组拉进来，永远堵不完
 TVBOX_KEEP_GROUPS = ("稳定源·", "央视频·")
+# 上游稳定源组名带版本号（…服2 / …服1 会变），输出统一改名为固定名，避免每天分组名乱跳
+TVBOX_RENAME = {"稳定源": "稳定源·阿里云服"}
 
 # ========== 跨组匹配 + 测速排序 ==========
 # 从 live_tvbox.txt 这 4 个地方组播组里取源，匹配进 live.txt 的下面 2 个分组
@@ -66,13 +68,17 @@ SHANGHAI_UA = ("AppleCoreMedia/1.0.0.15F79 (iPhone; U; CPU OS 11_4 like Mac OS X
 UA_GROUPS = {"上海频道": SHANGHAI_UA}
 
 # UA 输出方式：
-#   "pipe"  → live.txt 里该组每行末尾追加 |User-Agent=...（支持的客户端直接生效）
+#   "proxy" → live.txt 里该组地址改写成中转地址，由 shanghai_ua_proxy.py 注入 UA（最保险，
+#             因为 TVBox 的 txt 不认 |User-Agent=，会把整串当 URL 发出去导致播不了）
 #   "m3u"   → live.txt 不动，另出 live_ua.m3u（带 #EXTVLCOPT:http-user-agent=）
-#   "proxy" → live.txt 里该组地址改写成中转地址，由 shanghai_ua_proxy.py 注入 UA（最保险）
+#   "pipe"  → 行尾追加 |User-Agent=...（多数 TVBox 不支持，仅部分 diyp 类客户端可用）
 #   "off"   → 不处理
-UA_MODE = "pipe"
+# UA 输出方式："off" = 不处理（上海频道的 UA 需求已取消）
+# 需要重启时可改回 "proxy"（配合 shanghai_ua_proxy.py）或 "m3u"（另出 live_ua.m3u）
+UA_MODE = "off"
 UA_M3U_FILE = "live_ua.m3u"
-UA_PROXY_BASE = "http://192.168.1.100:8090"   # proxy 模式下 TVBox 要能访问到这台机器
+# proxy 模式下 TVBox 要能访问到这台机器；可用环境变量 UA_PROXY_BASE 覆盖
+UA_PROXY_BASE = os.environ.get("UA_PROXY_BASE", "http://192.168.1.100:8090")
 
 # CCTV 名称后面允许出现的描述词，用于把「CCTV-1 综合」和「CCTV1」认成同一个台
 # 不在表里的（如 CCTV4欧洲 / CCTV4美洲）不参与归一，避免把不同频道认成同一个
@@ -248,50 +254,77 @@ def filter_zb(file_path):
     return out
 
 
+def tvbox_out_group_name(name):
+    """上游分组名 → 输出分组名（稳定源带版本号时统一改写）"""
+    for kw, fixed in TVBOX_RENAME.items():
+        if kw in name:
+            return fixed
+    return name
+
+
 def extract_cctv_migu(file_path):
     """
-    live_tvbox.txt：只提取 TVBOX_KEEP_GROUPS 白名单里的分组，凑满 3 组为止
-    白名单外的分组（咪咕·* / 央卫·* / 国内·* 等）一律跳过，且不占用「3 组」名额
+    live_tvbox.txt：从白名单分组里取 3 组，稳定源优先
+    —— 先把所有分组切成块，再按「稳定源· 在前，央视频· 在后」的顺序挑，
+       这样上游把稳定源排到第 4、第 5 位时也不会被 3 组上限挤掉。
+    白名单外的分组（咪咕·* / 央卫·* / 国内·* / 各地组播）一律跳过。
     """
     lines = read_lines(file_path)
     if lines is None:
         print(f"⚠️ 文件 {file_path} 不存在，跳过前三分组")
         return []
 
-    out = []
-    in_group = False
-    group_count = 0
-    skipped = []
-
+    # 1. 切成 [{name, rows}]
+    groups = []
+    cur = None
     for line in lines:
-        line_strip = line.strip()
-        if not line_strip:
+        s = line.strip()
+        if not s or is_noise(s):
             continue
-        if is_noise(line_strip):
+        if s.endswith(",#genre#"):
+            cur = {"name": s[: -len(",#genre#")].strip(), "rows": []}
+            groups.append(cur)
             continue
+        if cur is not None:
+            cur["rows"].append(s)
 
-        if line_strip.endswith(",#genre#"):
-            group_name = line_strip.replace(",#genre#", "").strip()
+    # 2. 筛白名单
+    hits = [g for g in groups if any(g["name"].startswith(k) for k in TVBOX_KEEP_GROUPS)]
+    if not hits:
+        print(f"⚠️ {file_path} 里没有白名单分组（{'、'.join(TVBOX_KEEP_GROUPS)}），跳过")
+        print(f"   文件现有分组：{'、'.join(g['name'] for g in groups[:12])}")
+        return []
 
-            # 不在白名单：整组跳过（组内频道也不要），不占名额
-            if not any(group_name.startswith(k) for k in TVBOX_KEEP_GROUPS):
-                in_group = False
-                if group_name not in skipped:
-                    skipped.append(group_name)
-                continue
+    # 3. 稳定源优先，其余按原顺序补足 3 组（改名后去重，防止两个稳定源组撞名）
+    primary = [g for g in hits if "稳定源" in g["name"]]
+    others = [g for g in hits if "稳定源" not in g["name"]]
+    chosen, chosen_names = [], set()
+    for g in primary + others:
+        out_name = tvbox_out_group_name(g["name"])
+        if out_name in chosen_names:
+            continue
+        chosen_names.add(out_name)
+        chosen.append((g, out_name))
+        if len(chosen) == 3:
+            break
 
-            if group_count < 3:
-                group_count += 1
-                in_group = True
-                out.append(line_strip)
-                continue
-            break   # 白名单分组已收满 3 组，后面的不要
+    if not primary:
+        print(f"⚠️ {file_path} 里本次没有「稳定源·…」分组（上游可能未下发），"
+              f"已用 {'、'.join(n for _g, n in chosen)} 顶上")
 
-        if in_group:
-            out.append(line_strip)
+    # 4. 拼输出（分组名按 TVBOX_RENAME 统一改写）
+    out = []
+    for g, out_name in chosen:
+        if out_name != g["name"]:
+            print(f"分组改名：{g['name']} → {out_name}")
+        out.append(f"{out_name},#genre#")
+        out.extend(g["rows"])
 
-    print(f"{file_path} 提取 {group_count} 个分组，行数：{len(out)}"
-          + (f"，跳过分组：{'、'.join(skipped)}" if skipped else ""))
+    skipped = [g["name"] for g in groups if g not in [c[0] for c in chosen]]
+    print(f"{file_path} 提取 {len(chosen)} 个分组：{'、'.join(n for _g, n in chosen)}，"
+          f"行数：{len(out)}")
+    if skipped:
+        print(f"   跳过分组：{'、'.join(skipped)}")
     return out
 
 
@@ -765,8 +798,11 @@ def main():
         with open(UA_M3U_FILE, "w", encoding="utf-8", newline="\n") as f:
             f.write(m3u_text)
         print(f"已生成带 UA 的播放列表：{UA_M3U_FILE}")
+    elif UA_MODE == "proxy" and UA_GROUPS:
+        print(f"已把以下分组改写成 UA 中转地址：「{'、'.join(UA_GROUPS)}」 → {UA_PROXY_BASE}")
+        print(f"   记得先在这台机器上跑：python3 shanghai_ua_proxy.py，且 UA_PROXY_BASE 要是局域网可访问的 IP")
     elif UA_MODE == "pipe" and UA_GROUPS:
-        print(f"已给以下分组追加 UA：「{'、'.join(UA_GROUPS)}」")
+        print(f"⚠️ pipe 模式已启用（多数 TVBox 不认 |User-Agent=，播不了就改 UA_MODE = \"proxy\"）")
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
