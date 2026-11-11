@@ -20,7 +20,7 @@ OUTPUT = "live.txt"
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
-GZ_GROUP_NAME = "高清央视卫视"
+GZ_GROUP_NAME = "超高清·央视卫视"
 GZ_UA = "okhttp/6.0"
 
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
@@ -31,9 +31,12 @@ CCTV5_PLUS_RE = re.compile(r"^\s*CCTV5\+")
 CCTV1_RE = re.compile(r"^CCTV-?1(?!\d)")
 
 # ZB.TXT 里要整组剔除的分组：分组名「等于或以其开头」才丢（组内频道一并不要）
-ZB_DROP_GROUPS = ("央视频", "咪咕央卫", "测试频道")
+ZB_DROP_GROUPS = ("央视频", "咪咕·央视", "咪咕央卫", "测试频道")
 # 名字相近但必须保留的分组（「央视频道」前缀撞「央视频」，不写这里就会被误删）
 ZB_KEEP_GROUPS = ("央视频道",)
+
+# live_tvbox.txt 里虽然有前 3 组，但要跳过不进 live.txt 的分组
+TVBOX_DROP_GROUPS = ("咪咕·央视",)
 
 
 def zb_should_drop(group_name):
@@ -202,7 +205,10 @@ def filter_zb(file_path):
 
 
 def extract_cctv_migu(file_path):
-    """live_tvbox.txt：只提取前 3 个整个分组（含分组头），其余丢弃"""
+    """
+    live_tvbox.txt：提取前 3 个整个分组（含分组头），其余丢弃
+    TVBOX_DROP_GROUPS 里的分组跳过不提（跳过的不计数，继续往后补足 3 组）
+    """
     lines = read_lines(file_path)
     if lines is None:
         print(f"⚠️ 文件 {file_path} 不存在，跳过前三分组")
@@ -211,6 +217,7 @@ def extract_cctv_migu(file_path):
     out = []
     in_group = False
     group_count = 0
+    dropped = []
 
     for line in lines:
         line_strip = line.strip()
@@ -220,17 +227,27 @@ def extract_cctv_migu(file_path):
             continue
 
         if line_strip.endswith(",#genre#"):
+            group_name = line_strip.replace(",#genre#", "").strip()
+
+            # 命中剔除名单：跳过该组（组内频道也不要），且不占用「前 3 组」的名额
+            if any(group_name.startswith(k) for k in TVBOX_DROP_GROUPS):
+                in_group = False
+                if group_name not in dropped:
+                    dropped.append(group_name)
+                continue
+
             if group_count < 3:
                 group_count += 1
                 in_group = True
                 out.append(line_strip)
                 continue
-            break   # 第 3 个分组已收完，后面的不要
+            break   # 已收满 3 个有效分组，后面的不要
 
         if in_group:
             out.append(line_strip)
 
-    print(f"{file_path} 提取前 {group_count} 个分组行数：{len(out)}")
+    print(f"{file_path} 提取前 {group_count} 个分组行数：{len(out)}"
+          + (f"，跳过分组：{'、'.join(dropped)}" if dropped else ""))
     return out
 
 
