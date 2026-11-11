@@ -473,6 +473,73 @@ CGTN俄语,http://8.137.121.66:20241/609006446
 发现之旅,http://8.137.121.66:20241/624878970
 中学生,http://8.137.121.66:20241/708869532
 CGTN,http://8.137.121.66:20241/609017205
+央视频道,#genre#
+//http://51.68.34.78:20022/all.txt
+//fi4.bot-hosting.cloud:25238
+CCTV-1 综合,http://1mv3n3493d.apps.bot-hosting.cloud/cctv1.m3u8
+CCTV-2 财经,http://1mv3n3493d.apps.bot-hosting.cloud/cctv2.m3u8
+CCTV-3 综艺,http://1mv3n3493d.apps.bot-hosting.cloud/cctv3.m3u8
+CCTV-4 中文国际,http://1mv3n3493d.apps.bot-hosting.cloud/cctv4.m3u8
+CCTV-5 体育,http://1mv3n3493d.apps.bot-hosting.cloud/cctv5.m3u8
+CCTV-5+ 体育赛事,http://1mv3n3493d.apps.bot-hosting.cloud/cctv5p.m3u8
+CCTV-6 电影,http://1mv3n3493d.apps.bot-hosting.cloud/cctv6.m3u8
+CCTV-7 国防军事,http://1mv3n3493d.apps.bot-hosting.cloud/cctv7.m3u8
+CCTV-8 电视剧,http://1mv3n3493d.apps.bot-hosting.cloud/cctv8.m3u8
+CCTV-9 纪录,http://1mv3n3493d.apps.bot-hosting.cloud/cctv9.m3u8
+CCTV-10 科教,http://1mv3n3493d.apps.bot-hosting.cloud/cctv10.m3u8
+CCTV-11 戏曲,http://1mv3n3493d.apps.bot-hosting.cloud/cctv11.m3u8
+CCTV-12 社会与法,http://1mv3n3493d.apps.bot-hosting.cloud/cctv12.m3u8
+CCTV-13 新闻,http://1mv3n3493d.apps.bot-hosting.cloud/cctv13.m3u8
+CCTV-14 少儿,http://1mv3n3493d.apps.bot-hosting.cloud/cctv14.m3u8
+CCTV-15 音乐,http://1mv3n3493d.apps.bot-hosting.cloud/cctv15.m3u8
+CCTV-16 奥林匹克,http://1mv3n3493d.apps.bot-hosting.cloud/cctv16.m3u8
+CCTV-16 4K,http://1mv3n3493d.apps.bot-hosting.cloud/cctv164k.m3u8
+CCTV-17 农业农村,http://1mv3n3493d.apps.bot-hosting.cloud/cctv17.m3u8
+CCTV-4K 超高清,http://1mv3n3493d.apps.bot-hosting.cloud/cctv4k.m3u8
+CCTV-8K 超高清,http://1mv3n3493d.apps.bot-hosting.cloud/cctv8k.m3u8
+CGTN,http://1mv3n3493d.apps.bot-hosting.cloud/cgtn.m3u8
+CGTN 法语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnfr.m3u8
+CGTN 俄语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnru.m3u8
+CGTN 阿拉伯语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnar.m3u8
+CGTN 西班牙语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnes.m3u8
+CGTN 纪录,http://1mv3n3493d.apps.bot-hosting.cloud/cgtndoc.m3u8
+CCTV 风云剧场,http://1mv3n3493d.apps.bot-hosting.cloud/cctvfyjc.m3u8
+CCTV 第一剧场,http://1mv3n3493d.apps.bot-hosting.cloud/cctvdyjc.m3u8
+CCTV 怀旧剧场,http://1mv3n3493d.apps.bot-hosting.cloud/cctvhjjc.m3u8
+CETV-1,http://1mv3n3493d.apps.bot-hosting.cloud/cetv1.m3u8
+国学频道,http://1mv3n3493d.apps.bot-hosting.cloud/guoxue.m3u8
+CCTV-1 综合,http://45.192.97.170:8880/play/192.m3u8
+CCTV-2 财经,http://45.192.97.170:8880/play/193.m3u8
+CCTV-3 综艺,http://45.192.97.170:8880/play/194.m3u8
+CCTV-4 中文国际,http://45.192.97.170:8880/play/195.m3u8
+CCTV-5 体育,http://45.192.97.170:8880/play/196.m3u8
+CCTV-5+ 体育赛事,http://45.192.97.170:8880/play/197.m3u8
+CCTV-6 电影,http://45.192.97.170:8880/play/198.m3u8
+CCTV-7 国防军事,http://45.192.97.170:8880/play/199.m3u8
+CCTV-8 电视剧,http://45.192.97.170:8880/play/200.m3u8
+CCTV-9 纪录,http://45.192.97.170:8880/play/201.m3u8
+CCTV-10 科教,http://45.192.97.170:8880/play/202.m3u8
+CCTV-11 戏曲,http://45.192.97.170:8880/play/203.m3u8
+CCTV-12 社会与法,http://45.192.97.170:8880/play/204.m3u8
+CCTV-13 新闻,http://45.192.97.170:8880/play/205.m3u8
+CCTV-14 少儿,http://45.192.97.170:8880/play/206.m3u8
+CCTV-15 音乐,http://45.192.97.170:8880/play/207.m3u8
+CCTV-16 奥林匹克,http://45.192.97.170:8880/play/208.m3u8
+CCTV-16 4K,http://45.192.97.170:8880/play/209.m3u8
+CCTV-17 农业农村,http://45.192.97.170:8880/play/210.m3u8
+CCTV-4K 超高清,http://45.192.97.170:8880/play/211.m3u8
+CCTV-8K 超高清,http://45.192.97.170:8880/play/212.m3u8
+CGTN,http://45.192.97.170:8880/play/213.m3u8
+CGTN 法语,http://45.192.97.170:8880/play/214.m3u8
+CGTN 俄语,http://45.192.97.170:8880/play/215.m3u8
+CGTN 阿拉伯语,http://45.192.97.170:8880/play/216.m3u8
+CGTN 西班牙语,http://45.192.97.170:8880/play/217.m3u8
+CGTN 纪录,http://45.192.97.170:8880/play/218.m3u8
+CCTV 风云剧场,http://45.192.97.170:8880/play/219.m3u8
+CCTV 第一剧场,http://45.192.97.170:8880/play/220.m3u8
+CCTV 怀旧剧场,http://45.192.97.170:8880/play/221.m3u8
+CETV-1,http://45.192.97.170:8880/play/222.m3u8
+国学频道,http://45.192.97.170:8880/play/223.m3u8
 卫视频道,#genre#
 北京卫视,http://1mv3n3493d.apps.bot-hosting.cloud/bjws.m3u8
 江苏卫视,http://1mv3n3493d.apps.bot-hosting.cloud/jsws.m3u8
