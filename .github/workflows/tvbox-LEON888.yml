@@ -4,7 +4,7 @@ on:
   schedule:
     # 每 3 小时跑一次（GitHub 免费额度下足够；想更勤可改成 "0 */1 * * *"）
     # 注意：GitHub 定时任务在高峰期可能延迟几分钟到半小时
-    - cron: '0 */2 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch: {}          # 网页上可手动 Run workflow
   push:
     branches: [ main ]
