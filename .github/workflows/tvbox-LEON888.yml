@@ -10,7 +10,7 @@ on:
     branches: [ main ]
     paths:                        # 脚本或工作流本身改动时也跑一次
       - 'tvbox_gen.py'
-      - '.github/workflows/tvbox.yml'
+      - '.github/workflows/tvbox-LEON888.yml'
 
 # 同一时间只允许一个任务在跑，避免两次运行同时提交打架
 concurrency:
