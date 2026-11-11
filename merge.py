@@ -4,6 +4,8 @@
 本机文件：ZB.TXT / iptv.txt / iptasd.txt / live_tvbox.txt / shiptv.txt
 远端订阅：贵州电信组播 txt（GitHub raw，抓不到时回退本地缓存 gz_cctv.txt）
 """
+import json
+import os
 import re
 import sys
 import time
@@ -50,6 +52,13 @@ MATCH_TARGET_GROUPS = ("央视频道", "卫视频道")
 SPEED_TIMEOUT = 4.0        # 单条源测速超时（秒）
 SPEED_WORKERS = 32         # 并发线程数
 SPEED_UA = "okhttp/6.0"
+SPEED_DROP_DEAD = True     # True=剔除测速无响应的源（全组皆死时保留原源一条，避免频道消失）
+
+# 兼顾电信/联通：两条线路各跑一次，测速结果存成 json，第二次会自动合并
+# 用法：python3 merge_sources.py --net dx   （上海电信宽带下跑）
+#       python3 merge_sources.py --net lt   （上海联通宽带下跑，会自动读上一步的 dx 结果）
+SPEED_REPORT_DIR = "speed_reports"
+SPEED_NET_TAGS = {"dx": "电信", "lt": "联通"}
 
 # CCTV 名称后面允许出现的描述词，用于把「CCTV-1 综合」和「CCTV1」认成同一个台
 # 不在表里的（如 CCTV4欧洲 / CCTV4美洲）不参与归一，避免把不同频道认成同一个
@@ -448,11 +457,67 @@ def probe_all(urls):
     return result
 
 
-def match_and_speed_sort(lines):
+def save_speed_report(tag, speeds):
+    """把本次测速结果存成 speed_reports/<tag>.json，供另一条线路合并用"""
+    if not tag:
+        return
+    try:
+        os.makedirs(SPEED_REPORT_DIR, exist_ok=True)
+        path = os.path.join(SPEED_REPORT_DIR, f"{tag}.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({"tag": tag, "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+                       "urls": speeds}, f, ensure_ascii=False)
+        print(f"测速报告已保存：{path}（线路：{SPEED_NET_TAGS.get(tag, tag)}）")
+    except Exception as e:
+        print(f"⚠️ 测速报告保存失败：{e}")
+
+
+def load_speed_reports():
+    """读取 speed_reports/*.json，返回 {tag: {url: 秒数或 None}}"""
+    reports = {}
+    if not os.path.isdir(SPEED_REPORT_DIR):
+        return reports
+    for fn in sorted(os.listdir(SPEED_REPORT_DIR)):
+        if not fn.endswith(".json"):
+            continue
+        tag = fn[:-5]
+        try:
+            with open(os.path.join(SPEED_REPORT_DIR, fn), "r", encoding="utf-8") as f:
+                reports[tag] = json.load(f).get("urls", {})
+        except Exception as e:
+            print(f"⚠️ 测速报告 {fn} 读取失败：{e}")
+    return reports
+
+
+def merged_speed_of(url, reports, current_tag):
+    """
+    合并多条线路的测速结论：
+      任一条线路能通 → 保留，取最快的那条耗时作为排序依据
+      所有测过的线路都不通 → None（剔除）
+      没测过的 → 很大值（保留但排后面）
+    """
+    vals = []
+    for tag, data in reports.items():
+        if url in data:
+            vals.append((tag, data[url]))
+    if not vals:
+        return float("inf")
+    alive = [v for _t, v in vals if v is not None]
+    if not alive:
+        return None
+    best = min(alive)
+    if current_tag:
+        cur = [v for t, v in vals if t == current_tag and v is not None]
+        if cur:
+            best = min(best, cur[0] * 0.95)   # 当前线路的源略微优先，避免每次都挑到另一条线的最佳
+    return best
+
+
+def match_and_speed_sort(lines, current_tag=None):
     """
     把 live_tvbox 地方组播组里的源，按频道名匹配进「央视频道」「卫视频道」两组，
     保持原有的频道顺序，只把每个频道自己的多条源按测速结果重排（快的在前）。
-    测不通过的源不删除，排到该频道最后。
+    测不通的源直接剔除；电信/联通两条线路任一能通即保留。
     """
     pool = collect_match_pool(TVBOX_FILE)
     if not pool:
@@ -511,19 +576,67 @@ def match_and_speed_sort(lines):
         print("⚠️ 目标分组里没有可测速的频道行，跳过")
         return lines
 
-    # 3. 并发测速
+    # 3. 并发测速（本次线路）
     print(f"测速中：{len(urls_to_probe)} 条源，超时 {SPEED_TIMEOUT}s，并发 {SPEED_WORKERS} ...")
     t0 = time.time()
     speeds = probe_all(sorted(urls_to_probe))
     ok = sum(1 for v in speeds.values() if v is not None)
     fail = len(speeds) - ok
     print(f"测速完成：可用 {ok} 条 / 失败 {fail} 条，耗时 {time.time() - t0:.1f}s")
+    save_speed_report(current_tag, speeds)
 
-    # 4. 每个频道内部按速度排序（快的在前，失败垫底，保持原有的相对顺序）
+    # 3.1 合并电信/联通多条线路的测速结论
+    reports = load_speed_reports()
+    if current_tag:
+        reports[current_tag] = speeds
+    if len(reports) > 1:
+        tags = "、".join(SPEED_NET_TAGS.get(t, t) for t in reports)
+        print(f"双线路合并：已载入 {tags} 共 {len(reports)} 份测速结果")
+    else:
+        only = SPEED_NET_TAGS.get(next(iter(reports), ""), "未知")
+        print(f"⚠️ 目前只有【{only}】一份测速结果，只覆盖单条线路："
+              f"仅在另一条线路可用的源会被当作不通剔除。")
+        print(f"   要真正兼顾上海电信 + 上海联通，请在另一条宽带下再跑一次 "
+              f"（--net {'lt' if only == '电信' else 'dx'}），结果会自动合并。")
+
+    # 4. 每个频道内部按速度排序：两条线路都不通的源剔除，快的在前
+    all_dead_channels = []
+    dropped_dead = 0
+    only_dx = only_lt = both = 0
+
     for i, cands in plans.items():
-        cands.sort(key=lambda c: (0, speeds.get(c[1])) if speeds.get(c[1]) is not None else (1, 0))
         name = lines[i].split(",", 1)[0].strip()
-        plans[i] = [f"{name},{u}" for _n, u in cands]
+
+        scored, dead = [], []
+        for c in cands:
+            v = merged_speed_of(c[1], reports, current_tag) if len(reports) > 1 \
+                else (speeds.get(c[1]) if speeds.get(c[1]) is not None else None)
+            if v is None:
+                dead.append(c)
+            else:
+                scored.append((c, v))
+                if len(reports) > 1:
+                    dx = reports.get("dx", {}).get(c[1])
+                    lt = reports.get("lt", {}).get(c[1])
+                    if dx is not None and lt is not None:
+                        both += 1
+                    elif dx is not None:
+                        only_dx += 1
+                    elif lt is not None:
+                        only_lt += 1
+
+        dropped_dead += len(dead)
+        if not scored:
+            # 全线都不通：保留原标题源一条，否则这个频道会整个从分组里消失
+            if SPEED_DROP_DEAD:
+                scored = [(cands[0], float("inf"))]
+                dropped_dead -= 1
+                all_dead_channels.append(name)
+            else:
+                scored = [(c, float("inf")) for c in cands]
+
+        scored.sort(key=lambda cv: cv[1])
+        plans[i] = [f"{name},{u}" for (c, _v) in scored for u in [c[1]]]
 
     # 5. 回填，频道顺序不动，只替换每个频道自己的行
     out, i = [], 0
@@ -536,10 +649,33 @@ def match_and_speed_sort(lines):
             i += 1
 
     print(f"跨组匹配：{hit_channels} 个频道命中 {hit_sources} 条地方组播源，已按速度重排")
+    if len(reports) > 1:
+        print(f"双线路覆盖：双通 {both} 条 / 仅电信 {only_dx} 条 / 仅联通 {only_lt} 条（都保留）")
+    if SPEED_DROP_DEAD:
+        print(f"剔除无响应源：{dropped_dead} 条")
+    if all_dead_channels:
+        print(f"⚠️ 以下 {len(all_dead_channels)} 个频道所有源都无响应，已保留原标题源一条："
+              f"{'、'.join(all_dead_channels)}")
     return out
 
 
+def parse_args(argv):
+    """解析命令行：--no-speed 跳过测速；--net dx|lt 指定本次运行所在线路"""
+    no_speed = "--no-speed" in argv
+    net = None
+    for i, a in enumerate(argv):
+        if a == "--net" and i + 1 < len(argv):
+            net = argv[i + 1]
+        elif a.startswith("--net="):
+            net = a.split("=", 1)[1].strip()
+    if net and net not in SPEED_NET_TAGS:
+        print(f"⚠️ 未知线路 --net {net}，可选：{'、'.join(SPEED_NET_TAGS)}，已忽略")
+        net = None
+    return no_speed, net
+
+
 def main():
+    no_speed, net = parse_args(sys.argv[1:])
     part1 = filter_all_lines(IPTV_FILE)
     orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
     part_sh = extract_shanghai(SHIPTV_FILE)
@@ -556,10 +692,13 @@ def main():
     final = part1 + orient_block + part_sh + other_block + part_gq + part4 + part3
 
     # 跨组匹配 + 测速排序（--no-speed 可跳过，快速调试用）
-    if "--no-speed" in sys.argv:
+    if no_speed:
         print("⏩ 已跳过跨组匹配与测速（--no-speed）")
     else:
-        final = match_and_speed_sort(final)
+        if net:
+            print(f"本次线路：{SPEED_NET_TAGS[net]}（测速结果将存入 "
+                  f"{SPEED_REPORT_DIR}/{net}.json，并与另一条线路的结果合并）")
+        final = match_and_speed_sort(final, net)
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
