@@ -66,12 +66,24 @@ MATCH_TARGET_GROUPS = ("央视频道", "卫视频道")
 # 从 live_hongkong.txt 这 2 个分组取源，并入 live.txt 的指定分组：
 #   同名频道 → 源归到同一行（多条源按测速排序、剔除不通的）
 #   新频道   → 追加到该分组末尾（同样按测速排序、剔除不通的）
+# ========== 输出前分组改名 ==========
+# 只改「分组头」的显示名，不动组内频道；在跨组匹配/测速/港澳台并入全部做完之后才执行，
+# 所以 MATCH_TARGET_GROUPS 等逻辑仍然按原组名（央视频道 / 卫视频道）工作。
+GROUP_RENAME_OUT = {
+    "央视频道": "备用·央视频道",
+    "卫视频道": "备用·卫视频道",
+}
+
 HK_FILE = "live_hongkong.txt"
 HK_MERGE_GROUPS = ("台湾·四季台湾", "繁体·🔮港澳台直播")
 HK_TARGET_GROUP = "新闻频道"
 
 SPEED_TIMEOUT = 6.0        # 单条源测速超时（秒）；宁可多等也别误杀慢但能播的源
-SPEED_WORKERS = 32         # 并发线程数
+SPEED_WORKERS = 32         # 并发线程数（上限）
+# 同一主机最多同时测几条：港台源常常几十条指向同一个 IP:端口，
+# 一口气并发过去对方会限流/握手排队，全部超时被误判成死源（四季台湾整组曾因此全灭）
+SPEED_PER_HOST = 4
+SPEED_HOST_CONCURRENCY = 8   # 同时处理几台主机（× SPEED_PER_HOST ≈ 32 条并发）
 SPEED_UA = "okhttp/6.0"
 SPEED_DROP_DEAD = True     # True=剔除测速无响应的源
 SPEED_DROP_DEAD_CHANNEL = True   # True=某频道所有源都不通时，连频道标题一起删；False=保留原标题源一条
@@ -655,14 +667,37 @@ def probe_speed(url, timeout=SPEED_TIMEOUT):
     return best
 
 
+def _host_of(url):
+    try:
+        return (urllib.parse.urlparse(url).hostname or url).lower()
+    except Exception:
+        return url
+
+
 def probe_all(urls):
-    """并发测速，返回 {url: 秒数或 None}"""
+    """
+    并发测速，返回 {url: 秒数或 None}
+    按主机分组限流：同一主机最多 SPEED_PER_HOST 条同时在测，
+    避免几十条源打向同一个 IP:端口时对方限流导致集体超时误判。
+    """
     result = {}
     if not urls:
         return result
-    with ThreadPoolExecutor(max_workers=SPEED_WORKERS) as ex:
-        for url, cost in zip(urls, ex.map(probe_speed, urls)):
-            result[url] = cost
+
+    by_host = {}
+    for u in urls:
+        by_host.setdefault(_host_of(u), []).append(u)
+
+    def _one_host(host_urls):
+        out = {}
+        with ThreadPoolExecutor(max_workers=min(SPEED_PER_HOST, len(host_urls))) as ex:
+            for u, cost in zip(host_urls, ex.map(probe_speed, host_urls)):
+                out[u] = cost
+        return out
+
+    with ThreadPoolExecutor(max_workers=SPEED_HOST_CONCURRENCY) as ex:
+        for part in ex.map(_one_host, list(by_host.values())):
+            result.update(part)
     return result
 
 
@@ -931,6 +966,49 @@ def score_of(url, speeds, reports, current_tag):
     return float("inf")
 
 
+def check_hk():
+    """
+    诊断用：--hk-check
+    逐个分组打印港澳台源的存活情况，用来看清「频道没并进来」到底是上游源死了，还是脚本没匹配上。
+    """
+    lines = read_lines(HK_FILE)
+    if lines is None:
+        print(f"⚠️ 找不到 {HK_FILE}，先在本地生成一份（hongkong_gen.py 或 update.py --hk）")
+        return
+    groups = {g["name"]: g for g in parse_tvbox_groups(lines)}
+
+    for gname in HK_MERGE_GROUPS:
+        g = groups.get(gname)
+        if not g:
+            # 分组名对不上时，列出文件里真实的分组名，方便改配置
+            near = [n for n in groups if any(k in n for k in ("台湾", "台灣", "港澳", "港台"))]
+            print(f"❌ 没有「{gname}」分组；文件里相近的分组：{'、'.join(near) if near else '无'}")
+            continue
+
+        chans = {}
+        for row in g["rows"]:
+            if "," not in row:
+                continue
+            n, u = row.split(",", 1)
+            n, u = n.strip(), u.strip()
+            if u.lower().startswith("http"):
+                chans.setdefault(n, []).append(u)
+
+        urls = sorted({u for v in chans.values() for u in v})
+        print(f"\n[{gname}] {len(chans)} 个频道 / {len(urls)} 条源，测速中…")
+        sp = probe_all(urls)
+        alive = {u for u, v in sp.items() if v is not None}
+        dead_chan = [n for n, us in chans.items() if not any(u in alive for u in us)]
+        ok = sum(1 for u in urls if u in alive)
+        print(f"  源存活 {ok} / {len(urls)}；频道有可用源 {len(chans) - len(dead_chan)} / {len(chans)}")
+        if dead_chan:
+            print(f"  全死频道（{len(dead_chan)} 个，会被整条丢弃）：{'、'.join(dead_chan)}")
+        # 抽样看几条死源，判断是 404 网页还是连不上
+        dead_urls = [u for u in urls if u not in alive][:3]
+        for u in dead_urls:
+            print(f"    死源示例：{u}")
+
+
 def merge_hk_into_news(lines, current_tag=None):
     """
     把 live_hongkong.txt 的「台湾·四季台湾」「繁体·🔮港澳台直播」并入 live.txt 的「新闻频道」：
@@ -1086,6 +1164,27 @@ def merge_hk_into_news(lines, current_tag=None):
     return lines
 
 
+def apply_group_rename(lines):
+    """
+    最后一步：把分组头的名字换掉（组内频道与顺序都不变）。
+    换名只影响 live.txt 的显示，不影响前面按原组名做的匹配。
+    """
+    out, renamed = [], []
+    for line in lines:
+        s = line.strip()
+        if s.endswith(",#genre#"):
+            name = s[: -len(",#genre#")].strip()
+            new = GROUP_RENAME_OUT.get(name)
+            if new:
+                out.append(f"{new},#genre#")
+                renamed.append(f"{name} → {new}")
+                continue
+        out.append(line)
+    if renamed:
+        print("分组改名：" + "、".join(renamed))
+    return out
+
+
 def apply_group_ua(lines):
     """
     给 UA_GROUPS 里指定的分组强制 User-Agent：
@@ -1151,6 +1250,9 @@ def main():
     if "--check" in sys.argv[1:]:
         check_tvbox_groups(TVBOX_FILE)
         return
+    if "--hk-check" in sys.argv[1:]:
+        check_hk()
+        return
     part1 = filter_all_lines(IPTV_FILE)
     orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
     part_sh = extract_shanghai(SHIPTV_FILE)
@@ -1195,6 +1297,9 @@ def main():
         print(f"   记得先在这台机器上跑：python3 shanghai_ua_proxy.py，且 UA_PROXY_BASE 要是局域网可访问的 IP")
     elif UA_MODE == "pipe" and UA_GROUPS:
         print(f"⚠️ pipe 模式已启用（多数 TVBox 不认 |User-Agent=，播不了就改 UA_MODE = \"proxy\"）")
+
+    # 输出前把「央视频道 / 卫视频道」改成「备用·央视频道 / 备用·卫视频道」
+    final = apply_group_rename(final)
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
