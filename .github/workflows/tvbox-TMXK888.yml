@@ -9,9 +9,8 @@ on:
   push:
     branches: [ main ]
     paths:                        # 脚本或工作流本身改动时也跑一次
-      - 'tvbox_gen.py'
       - 'hongkong_gen.py'
-      - '.github/workflows/tvbox.yml'
+      - '.github/workflows/tvbox-TMXK888.yml'
 
 # 同一时间只允许一个任务在跑，避免两次运行同时提交打架
 concurrency:
@@ -37,17 +36,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch & convert live source
-        env:
-          # 上游地址放 Secret 里（Settings → Secrets and variables → Actions → New repository secret）
-          # 没配 Secret 时回退到脚本内置的默认地址
-          SOURCE_URL: ${{ secrets.SOURCE_URL != '' && secrets.SOURCE_URL || 'https://dotv.tmxk.kdns.fr/live.m3u?key=LEON888' }}
-        run: |
-          set -o pipefail
-          # 默认保留各省运营商地方组播（11 个分组，排在列表末尾）
-          # 只想留纯公网源时，在命令末尾加 --no-multicast
-          python3 tvbox_gen.py --out . | tee /tmp/stats.txt
-
       - name: Fetch & convert HK source
         continue-on-error: true     # 港澳台源挂了不影响主源提交
         env:
@@ -60,7 +48,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add live_tvbox_gw.txt live_hongkong.txt
+          git live_hongkong.txt
 
           if git diff --cached --quiet; then
             echo "内容无变化，跳过提交"
@@ -95,6 +83,5 @@ jobs:
             echo '```'
             echo ""
             echo "订阅地址（把 <user>/<repo> 换成你的）："
-            echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_tvbox_gw.txt"
             echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_hongkong.txt"
           } >> "$GITHUB_STEP_SUMMARY"
