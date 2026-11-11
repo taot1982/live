@@ -5,7 +5,10 @@
 远端订阅：贵州电信组播 txt（GitHub raw，抓不到时回退本地缓存 gz_cctv.txt）
 """
 import re
+import sys
+import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 # ========== 和仓库文件名严格对齐 ==========
 ZB_FILE = "ZB.TXT"
@@ -20,7 +23,7 @@ OUTPUT = "live.txt"
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
-GZ_GROUP_NAME = "超高清·央视卫视"
+GZ_GROUP_NAME = "高清央视卫视"
 GZ_UA = "okhttp/6.0"
 
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
@@ -38,6 +41,23 @@ ZB_KEEP_GROUPS = ("央视频道",)
 # live_tvbox.txt 里只保留这些分组（白名单，前缀匹配），凑满 3 组为止
 # 用白名单而不是黑名单：黑名单挡一组，补齐逻辑就会把下一组拉进来，永远堵不完
 TVBOX_KEEP_GROUPS = ("稳定源·", "央视频·")
+
+# ========== 跨组匹配 + 测速排序 ==========
+# 从 live_tvbox.txt 这 4 个地方组播组里取源，匹配进 live.txt 的下面 2 个分组
+MATCH_SOURCE_GROUPS = ("山东电信", "河南电信", "重庆联通", "河北联通")
+MATCH_TARGET_GROUPS = ("央视频道", "卫视频道")
+
+SPEED_TIMEOUT = 4.0        # 单条源测速超时（秒）
+SPEED_WORKERS = 32         # 并发线程数
+SPEED_UA = "okhttp/6.0"
+
+# CCTV 名称后面允许出现的描述词，用于把「CCTV-1 综合」和「CCTV1」认成同一个台
+# 不在表里的（如 CCTV4欧洲 / CCTV4美洲）不参与归一，避免把不同频道认成同一个
+CCTV_REST_OK = {
+    "", "综合", "财经", "综艺", "中文国际", "体育", "体育赛事", "电影",
+    "国防军事", "电视剧", "纪录", "科教", "戏曲", "新闻", "少儿", "音乐",
+    "农业农村", "社会与法", "高清", "频道", "高清综合", "新闻频道",
+}
 
 
 def zb_should_drop(group_name):
@@ -330,6 +350,195 @@ def extract_gaoqing_cctv():
     return [f"{GZ_GROUP_NAME},#genre#"] + out
 
 
+def ch_key(name):
+    """
+    频道名归一化，用于跨组匹配：
+      「CCTV-1 综合」「CCTV1」「CCTV-1综合」 → CCTV1
+      「CCTV5+ 体育赛事」「CCTV5+」          → CCTV5+
+      「湖南卫视」「湖南卫视高清」            → 湖南卫视
+    不在 CCTV_REST_OK 里的（CCTV4欧洲/美洲）保持原样，不会被误合并。
+    """
+    s = name.strip().upper()
+    s = re.sub(r"[\s\-·_]+", "", s)
+    for sfx in ("高清", "超清", "蓝光"):
+        if s.endswith(sfx):
+            s = s[: -len(sfx)]
+            break
+    m = re.match(r"^CCTV(\d{1,2})(\+)?(.*)$", s)
+    if m:
+        num, plus, rest = m.group(1), m.group(2), m.group(3)
+        if rest in CCTV_REST_OK:
+            return "CCTV%d%s" % (int(num), "+" if plus else "")
+        return "RAW:" + s
+    return s
+
+
+def collect_match_pool(file_path):
+    """从 live_tvbox.txt 的 4 个地方组播组里收集 {频道key: [(名称, url), ...]}"""
+    lines = read_lines(file_path)
+    if lines is None:
+        print(f"⚠️ 文件 {file_path} 不存在，跳过跨组匹配")
+        return {}
+
+    pool = {}
+    cur = None
+    for line in lines:
+        s = line.strip()
+        if not s or is_noise(s):
+            continue
+        if s.endswith(",#genre#"):
+            cur = s[: -len(",#genre#")]
+            continue
+        if not cur or not any(cur.startswith(g) for g in MATCH_SOURCE_GROUPS):
+            continue
+        if "," not in s:
+            continue
+        name, url = s.split(",", 1)
+        url = url.strip()
+        if not url.lower().startswith("http"):
+            continue
+        pool.setdefault(ch_key(name), []).append((name.strip(), url))
+
+    # 同一频道下重复 URL 去重（河南电信这类组里同一节目常有两个落地 IP）
+    uniq_pool = {}
+    for k, items in pool.items():
+        seen, uniq = set(), []
+        for name, url in items:
+            if url in seen:
+                continue
+            seen.add(url)
+            uniq.append((name, url))
+        uniq_pool[k] = uniq
+
+    total = sum(len(v) for v in uniq_pool.values())
+    print(f"{file_path} 地方组播池：{len(uniq_pool)} 个频道 / {total} 条源"
+          f"（来源：{'、'.join(MATCH_SOURCE_GROUPS)}）")
+    return uniq_pool
+
+
+def probe_speed(url, timeout=SPEED_TIMEOUT):
+    """测一条源：返回响应头到达耗时（秒），失败返回 None。直连，不走系统代理"""
+    try:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        req = urllib.request.Request(url, headers={
+            "User-Agent": SPEED_UA,
+            "Accept": "*/*",
+            "Range": "bytes=0-1023",
+        })
+        t0 = time.time()
+        with opener.open(req, timeout=timeout) as r:
+            ttfb = time.time() - t0
+            try:
+                r.read(1024)      # 只取一小口，之后直接断开
+            except Exception:
+                pass
+        return ttfb
+    except Exception:
+        return None
+
+
+def probe_all(urls):
+    """并发测速，返回 {url: 秒数或 None}"""
+    result = {}
+    if not urls:
+        return result
+    with ThreadPoolExecutor(max_workers=SPEED_WORKERS) as ex:
+        for url, cost in zip(urls, ex.map(probe_speed, urls)):
+            result[url] = cost
+    return result
+
+
+def match_and_speed_sort(lines):
+    """
+    把 live_tvbox 地方组播组里的源，按频道名匹配进「央视频道」「卫视频道」两组，
+    保持原有的频道顺序，只把每个频道自己的多条源按测速结果重排（快的在前）。
+    测不通过的源不删除，排到该频道最后。
+    """
+    pool = collect_match_pool(TVBOX_FILE)
+    if not pool:
+        return lines
+
+    # 1. 定位目标分组的行区间 [头行, 下一组头行)
+    ranges, start = [], None
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if not s.endswith(",#genre#"):
+            continue
+        if start is not None:
+            ranges.append((start, i))
+            start = None
+        if s[: -len(",#genre#")] in MATCH_TARGET_GROUPS:
+            start = i
+    if start is not None:
+        ranges.append((start, len(lines)))
+
+    if not ranges:
+        print("⚠️ live.txt 里没有「央视频道 / 卫视频道」分组，跳过跨组匹配与测速")
+        return lines
+
+    # 2. 逐频道组装备选源
+    plans = {}          # 行号 -> 该频道排好序后的多条源
+    urls_to_probe = set()
+    hit_channels = 0
+    hit_sources = 0
+    for gs, ge in ranges:
+        for i in range(gs + 1, ge):
+            s = lines[i].strip()
+            if "," not in s:
+                continue
+            name, url = s.split(",", 1)
+            name, url = name.strip(), url.strip()
+            if not url.lower().startswith("http"):
+                continue
+
+            cands = [(name, url)]
+            extra = pool.get(ch_key(name), [])
+            if extra:
+                hit_channels += 1
+                hit_sources += len(extra)
+                cands.extend(extra)
+
+            seen, uniq = set(), []
+            for _n, u in cands:
+                if u in seen:
+                    continue
+                seen.add(u)
+                uniq.append((_n, u))
+            plans[i] = uniq
+            urls_to_probe.update(u for _n, u in uniq)
+
+    if not plans:
+        print("⚠️ 目标分组里没有可测速的频道行，跳过")
+        return lines
+
+    # 3. 并发测速
+    print(f"测速中：{len(urls_to_probe)} 条源，超时 {SPEED_TIMEOUT}s，并发 {SPEED_WORKERS} ...")
+    t0 = time.time()
+    speeds = probe_all(sorted(urls_to_probe))
+    ok = sum(1 for v in speeds.values() if v is not None)
+    fail = len(speeds) - ok
+    print(f"测速完成：可用 {ok} 条 / 失败 {fail} 条，耗时 {time.time() - t0:.1f}s")
+
+    # 4. 每个频道内部按速度排序（快的在前，失败垫底，保持原有的相对顺序）
+    for i, cands in plans.items():
+        cands.sort(key=lambda c: (0, speeds.get(c[1])) if speeds.get(c[1]) is not None else (1, 0))
+        name = lines[i].split(",", 1)[0].strip()
+        plans[i] = [f"{name},{u}" for _n, u in cands]
+
+    # 5. 回填，频道顺序不动，只替换每个频道自己的行
+    out, i = [], 0
+    while i < len(lines):
+        if i in plans:
+            out.extend(plans[i])
+            i += 1
+        else:
+            out.append(lines[i])
+            i += 1
+
+    print(f"跨组匹配：{hit_channels} 个频道命中 {hit_sources} 条地方组播源，已按速度重排")
+    return out
+
+
 def main():
     part1 = filter_all_lines(IPTV_FILE)
     orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
@@ -345,6 +554,12 @@ def main():
 
     # ✅ 顺序：iptv → 东方有线 → 上海频道 → 4K频道+轮播剧场 → 高清央视卫视 → 前三个分组 → ZB.TXT
     final = part1 + orient_block + part_sh + other_block + part_gq + part4 + part3
+
+    # 跨组匹配 + 测速排序（--no-speed 可跳过，快速调试用）
+    if "--no-speed" in sys.argv:
+        print("⏩ 已跳过跨组匹配与测速（--no-speed）")
+    else:
+        final = match_and_speed_sort(final)
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
