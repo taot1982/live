@@ -1,0 +1,100 @@
+name: TVBox Live-HonKong Source Auto Build
+
+on:
+  schedule:
+    # 每 3 小时跑一次（GitHub 免费额度下足够；想更勤可改成 "0 */1 * * *"）
+    # 注意：GitHub 定时任务在高峰期可能延迟几分钟到半小时
+    - cron: '0 */3 * * *'
+  workflow_dispatch: {}          # 网页上可手动 Run workflow
+  push:
+    branches: [ main ]
+    paths:                        # 脚本或工作流本身改动时也跑一次
+      - 'tvbox_gen.py'
+      - 'hongkong_gen.py'
+      - '.github/workflows/tvbox.yml'
+
+# 同一时间只允许一个任务在跑，避免两次运行同时提交打架
+concurrency:
+  group: tvbox-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write              # 需要写权限才能把生成的文件提交回仓库
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch & convert live source
+        env:
+          # 上游地址放 Secret 里（Settings → Secrets and variables → Actions → New repository secret）
+          # 没配 Secret 时回退到脚本内置的默认地址
+          SOURCE_URL: ${{ secrets.SOURCE_URL != '' && secrets.SOURCE_URL || 'https://dotv.tmxk.kdns.fr/live.m3u?key=LEON888' }}
+        run: |
+          set -o pipefail
+          # 默认保留各省运营商地方组播（11 个分组，排在列表末尾）
+          # 只想留纯公网源时，在命令末尾加 --no-multicast
+          python3 tvbox_gen.py --out . | tee /tmp/stats.txt
+
+      - name: Fetch & convert HK source
+        continue-on-error: true     # 港澳台源挂了不影响主源提交
+        env:
+          HK_URL: ${{ secrets.HK_URL != '' && secrets.HK_URL || 'https://5gtv.tmxk.kdns.fr/live.m3u?key=TMXK888' }}
+        run: |
+          set -o pipefail
+          python3 hongkong_gen.py --out . | tee /tmp/stats_hk.txt
+
+      - name: Commit & push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add live_tvbox_gw.txt live_hongkong.txt
+
+          if git diff --cached --quiet; then
+            echo "内容无变化，跳过提交"
+            exit 0
+          fi
+
+          git commit -m "auto: rebuild tvbox live source ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+
+          # 推送失败（远端有新提交）时，rebase 后重试，最多 3 次
+          for i in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "推送成功"; exit 0
+            fi
+            echo "第 $i 次推送失败，拉取远端后重试"
+            git pull --rebase --autostash origin main || true
+            sleep 3
+          done
+          echo "推送最终失败"; exit 1
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### 本次生成结果"
+            echo '```'
+            cat /tmp/stats.txt 2>/dev/null || echo "无统计输出（本次可能失败）"
+            echo '```'
+            echo ""
+            echo "### 港澳台生成结果"
+            echo '```'
+            cat /tmp/stats_hk.txt 2>/dev/null || echo "无统计输出（本次可能失败）"
+            echo '```'
+            echo ""
+            echo "订阅地址（把 <user>/<repo> 换成你的）："
+            echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_tvbox_gw.txt"
+            echo "- https://raw.githubusercontent.com/<user>/<repo>/main/live_hongkong.txt"
+          } >> "$GITHUB_STEP_SUMMARY"
