@@ -20,7 +20,7 @@ OUTPUT = "live.txt"
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
-GZ_GROUP_NAME = "超高清·央视卫视"
+GZ_GROUP_NAME = "高清央视卫视"
 GZ_UA = "okhttp/6.0"
 
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
@@ -30,8 +30,18 @@ CCTV5_PLUS_RE = re.compile(r"^\s*CCTV5\+")
 # 从 CCTV-1 开始保留（(?!\d) 避免把 CCTV-10~17 误当成 CCTV-1）
 CCTV1_RE = re.compile(r"^CCTV-?1(?!\d)")
 
-# ZB.TXT 里要整组剔除的分组（分组头含这些关键字即丢弃，组内频道一并不要）
+# ZB.TXT 里要整组剔除的分组：分组名「等于或以其开头」才丢（组内频道一并不要）
 ZB_DROP_GROUPS = ("央视频", "咪咕央卫", "测试频道")
+# 名字相近但必须保留的分组（「央视频道」前缀撞「央视频」，不写这里就会被误删）
+ZB_KEEP_GROUPS = ("央视频道",)
+
+
+def zb_should_drop(group_name):
+    """判断 ZB 的分组名是否要整组剔除：白名单优先，再按前缀匹配"""
+    group_name = group_name.strip()
+    if group_name in ZB_KEEP_GROUPS:
+        return False
+    return any(group_name.startswith(k) for k in ZB_DROP_GROUPS)
 
 
 def fetch_text(url, timeout=25):
@@ -173,9 +183,10 @@ def filter_zb(file_path):
 
         # 分组头：判断是否属于要剔除的分组，是则整组（含分组头）跳过
         if line_strip.endswith(",#genre#"):
-            in_drop_group = any(k in line_strip for k in ZB_DROP_GROUPS)
+            group_name = line_strip.replace(",#genre#", "").strip()
+            in_drop_group = zb_should_drop(group_name)
             if in_drop_group:
-                dropped.append(line_strip.replace(",#genre#", ""))
+                dropped.append(group_name)
                 continue
             out.append(line_strip)
             continue
