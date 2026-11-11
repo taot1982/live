@@ -38,7 +38,7 @@ jobs:
 
       - name: Fetch & convert HK source
         env:
-          HK_URL: ${{ secrets.HK_URL != '' && secrets.HK_URL || 'shturl.cc/Jhhab9TkV4LjfVT0ltPS46Xdk9hp65Jgs9YJ' }}
+          HK_URL: ${{ secrets.HK_URL != '' && secrets.HK_URL || 'https://5gtv.tmxk.kdns.fr/live.m3u?key=TMXK888' }}
         run: |
           set -o pipefail
           python3 hongkong_gen.py --out . | tee /tmp/stats_hk.txt
