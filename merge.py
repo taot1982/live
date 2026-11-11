@@ -22,11 +22,11 @@ SHIPTV_FILE = "shiptv.txt"     # 上海频道源文件
 OUTPUT = "live.txt"
 # ========================================
 
-# 贵州电信组播源（央视+卫视），取 CCTV-1 之后的部分，改名为「超高清·央视卫视」
+# 贵州电信组播源（央视+卫视），取 CCTV-1 之后的部分，改名为「高清央视卫视」
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
-GZ_GROUP_NAME = "超高清·央视卫视"
+GZ_GROUP_NAME = "高清央视卫视"
 GZ_UA = "okhttp/6.0"
 
 # CCTV5+ 的频道名写法不统一：CCTV5+体育赛事 / CCTV5+ 体育赛事 / CCTV5+,体育赛事
@@ -46,16 +46,35 @@ ZB_KEEP_GROUPS = ("央视频道",)
 TVBOX_KEEP_GROUPS = ("稳定源·", "央视频·")
 # 上游稳定源组名带版本号（…服2 / …服1 会变），输出统一改名为固定名，避免每天分组名乱跳
 TVBOX_RENAME = {"稳定源": "稳定源·阿里云服"}
+# 上游 m3u 被墙时，本地 live_tvbox.txt 就抓不到「稳定源·阿里云服2」。
+# 填你 GitHub 仓库里 Actions 产物的 raw 地址（海外跑，能抓到），按顺序尝试，命中为止。
+# 例：["https://raw.githubusercontent.com/<用户名>/<仓库>/main/live_tvbox_gw.txt",
+#      "https://cdn.jsdelivr.net/gh/<用户名>/<仓库>@main/live_tvbox_gw.txt"]
+TVBOX_REMOTE_URLS = [
+    # "https://raw.githubusercontent.com/q1017673817/iptv/main/live_tvbox_gw.txt",
+]
+
+# 上游随机不下发稳定源组时用它上次的成果兜底，保证 live.txt 里这组不会凭空消失
+STABLE_CACHE = "stable_group_cache.txt"
 
 # ========== 跨组匹配 + 测速排序 ==========
 # 从 live_tvbox.txt 这 4 个地方组播组里取源，匹配进 live.txt 的下面 2 个分组
 MATCH_SOURCE_GROUPS = ("山东电信", "河南电信", "重庆联通", "河北联通")
 MATCH_TARGET_GROUPS = ("央视频道", "卫视频道")
 
-SPEED_TIMEOUT = 4.0        # 单条源测速超时（秒）
+# ========== 港澳台源并入 live.txt ==========
+# 从 live_hongkong.txt 这 2 个分组取源，并入 live.txt 的指定分组：
+#   同名频道 → 源归到同一行（多条源按测速排序、剔除不通的）
+#   新频道   → 追加到该分组末尾（同样按测速排序、剔除不通的）
+HK_FILE = "live_hongkong.txt"
+HK_MERGE_GROUPS = ("台湾·四季台湾", "繁体·🔮港澳台直播")
+HK_TARGET_GROUP = "新闻频道"
+
+SPEED_TIMEOUT = 6.0        # 单条源测速超时（秒）；宁可多等也别误杀慢但能播的源
 SPEED_WORKERS = 32         # 并发线程数
 SPEED_UA = "okhttp/6.0"
-SPEED_DROP_DEAD = True     # True=剔除测速无响应的源（全组皆死时保留原源一条，避免频道消失）
+SPEED_DROP_DEAD = True     # True=剔除测速无响应的源
+SPEED_DROP_DEAD_CHANNEL = True   # True=某频道所有源都不通时，连频道标题一起删；False=保留原标题源一条
 
 # 兼顾电信/联通：两条线路各跑一次，测速结果存成 json，第二次会自动合并
 # 用法：python3 merge_sources.py --net dx   （上海电信宽带下跑）
@@ -254,6 +273,103 @@ def filter_zb(file_path):
     return out
 
 
+def parse_tvbox_groups(lines):
+    """把 txt 切成分组块：[{"name": 分组名, "rows": [频道行...]}]"""
+    groups, cur = [], None
+    for line in lines:
+        s = line.strip()
+        if not s or is_noise(s):
+            continue
+        if s.endswith(",#genre#"):
+            cur = {"name": s[: -len(",#genre#")].strip(), "rows": []}
+            groups.append(cur)
+            continue
+        if cur is not None:
+            cur["rows"].append(s)
+    return groups
+
+
+def fetch_stable_group_from_remote():
+    """
+    本地 live_tvbox.txt 缺稳定源组时，从 GitHub 上的 Actions 产物里捞
+    （Actions 跑在海外，能访问被墙的 dotv 域名，所以它的产物里有这组）
+    TVBOX_REMOTE_URLS 里按顺序尝试，命中就返回 {"name","rows"}
+    """
+    for url in TVBOX_REMOTE_URLS:
+        print(f"本地缺稳定源，尝试远端产物：{url}")
+        txt = fetch_text(url)
+        if not txt:
+            continue
+        for g in parse_tvbox_groups(txt.splitlines()):
+            if "稳定源" in g["name"] and g["rows"]:
+                print(f"远端取到稳定源分组「{g['name']}」：{len(g['rows'])} 个频道")
+                return g
+        print(f"   该地址里没有稳定源分组")
+    return None
+
+
+def tvbox_should_keep(group_name):
+    """
+    白名单判断：先把空格和各种间隔点去掉再比前缀，
+    这样「稳定源·阿里云服2」「稳定源 阿里云服2」「稳定源-阿里云服2」都能命中；
+    而「央卫·央视频道」去掉分隔符后是「央卫央视频道」，不会误判成央视频。
+    """
+    flat = re.sub(r"[\s·・•.．_\-]+", "", group_name)
+    return any(flat.startswith(re.sub(r"[\s·・•.．_\-]+", "", k)) for k in TVBOX_KEEP_GROUPS)
+
+
+def save_stable_cache(rows):
+    """把本次拿到的稳定源分组存一份，供上游不下发时兜底"""
+    try:
+        with open(STABLE_CACHE, "w", encoding="utf-8", newline="\n") as f:
+            f.write(f"{TVBOX_RENAME['稳定源']},#genre#\n" + "\n".join(rows) + "\n")
+        print(f"稳定源已缓存：{STABLE_CACHE}（{len(rows)} 个频道）")
+    except Exception as e:
+        print(f"⚠️ 稳定源缓存写入失败：{e}")
+
+
+def load_stable_cache():
+    """读缓存，返回频道行（不含分组头），没有则返回 None"""
+    lines = read_lines(STABLE_CACHE)
+    if not lines:
+        return None
+    rows = [l.strip() for l in lines if l.strip() and not l.strip().endswith(",#genre#")]
+    return rows or None
+
+
+def check_tvbox_groups(file_path):
+    """--check 诊断：把 live_tvbox.txt 里的分组名、行数、字符码点全打出来"""
+    lines = read_lines(file_path)
+    if lines is None:
+        print(f"⚠️ 读不到 {file_path}")
+        return
+    print(f"诊断 {file_path}：共 {len(lines)} 行")
+
+    groups, cur = [], None
+    for line in lines:
+        s = line.strip()
+        if not s:
+            continue
+        if s.endswith(",#genre#"):
+            cur = {"name": s[: -len(",#genre#")], "rows": []}
+            groups.append(cur)
+            continue
+        if cur is not None:
+            cur["rows"].append(s)
+
+    for g in groups:
+        keep = tvbox_should_keep(g["name"])
+        mark = "保留" if keep else "跳过"
+        print(f"  [{mark}] {g['name']!r}  {len(g['rows'])} 个频道")
+
+    if not any("稳定源" in g["name"] for g in groups):
+        print("  ⚠️ 整个文件里没有含「稳定源」字样的分组")
+        for raw in lines:
+            if "稳定" in raw or "阿里云" in raw:
+                print(f"     疑似相关行：{raw.strip()!r}")
+                break
+
+
 def tvbox_out_group_name(name):
     """上游分组名 → 输出分组名（稳定源带版本号时统一改写）"""
     for kw, fixed in TVBOX_RENAME.items():
@@ -275,21 +391,10 @@ def extract_cctv_migu(file_path):
         return []
 
     # 1. 切成 [{name, rows}]
-    groups = []
-    cur = None
-    for line in lines:
-        s = line.strip()
-        if not s or is_noise(s):
-            continue
-        if s.endswith(",#genre#"):
-            cur = {"name": s[: -len(",#genre#")].strip(), "rows": []}
-            groups.append(cur)
-            continue
-        if cur is not None:
-            cur["rows"].append(s)
+    groups = parse_tvbox_groups(lines)
 
     # 2. 筛白名单
-    hits = [g for g in groups if any(g["name"].startswith(k) for k in TVBOX_KEEP_GROUPS)]
+    hits = [g for g in groups if tvbox_should_keep(g["name"])]
     if not hits:
         print(f"⚠️ {file_path} 里没有白名单分组（{'、'.join(TVBOX_KEEP_GROUPS)}），跳过")
         print(f"   文件现有分组：{'、'.join(g['name'] for g in groups[:12])}")
@@ -308,9 +413,26 @@ def extract_cctv_migu(file_path):
         if len(chosen) == 3:
             break
 
+    # 3.1 本地没有稳定源 → 先试 GitHub 远端产物，再试本地缓存
+    if not primary and TVBOX_REMOTE_URLS:
+        remote = fetch_stable_group_from_remote()
+        if remote:
+            primary = [remote]
+            chosen.insert(0, (remote, tvbox_out_group_name(remote["name"])))
+
     if not primary:
-        print(f"⚠️ {file_path} 里本次没有「稳定源·…」分组（上游可能未下发），"
-              f"已用 {'、'.join(n for _g, n in chosen)} 顶上")
+        cache_rows = load_stable_cache()
+        if cache_rows:
+            chosen.insert(0, ({"name": TVBOX_RENAME["稳定源"], "rows": cache_rows}, TVBOX_RENAME["稳定源"]))
+            print(f"⚠️ {file_path} 里本次没有「稳定源·…」分组（上游被墙/未下发），"
+                  f"已用本地缓存 {STABLE_CACHE} 兜底（{len(cache_rows)} 个频道，可能不是最新）")
+        else:
+            print(f"⚠️ {file_path} 里本次没有「稳定源·…」分组，又拿不到远端产物、也没有缓存，"
+                  f"已用 {'、'.join(n for _g, n in chosen)} 顶上")
+            print(f"   解决办法：把 GitHub 仓库里 live_tvbox_gw.txt 的 raw 地址填进 TVBOX_REMOTE_URLS")
+    else:
+        # 拿到了就刷新缓存，供下次抽风时用
+        save_stable_cache(primary[0]["rows"])
 
     # 4. 拼输出（分组名按 TVBOX_RENAME 统一改写）
     out = []
@@ -472,25 +594,65 @@ def collect_match_pool(file_path):
     return uniq_pool
 
 
-def probe_speed(url, timeout=SPEED_TIMEOUT):
-    """测一条源：返回响应头到达耗时（秒），失败返回 None。直连，不走系统代理"""
+SPEED_RETRY = 2            # 每条源最多测几次，取最快的一次（抖动大的源不至于被误杀）
+SPEED_PROBE_BYTES = 2048   # 实际读多少字节，用于判断“能不能播”
+# 返回这些开头的不是流，是网页/错误页 → 当死源
+SPEED_BAD_BODY = (b"<!doctype", b"<html", b"<?xml", b"<head", b"<body", b"<error", b"not found")
+# 每条线路可选的独立代理（有联通代理时，一次跑完两条线）：SPEED_PROXY_DX / SPEED_PROXY_LT
+SPEED_PROXY = {"dx": os.environ.get("SPEED_PROXY_DX", ""),
+               "lt": os.environ.get("SPEED_PROXY_LT", "")}
+_CURRENT_PROXY = None      # 由 main 按 --net 设置
+
+
+def _probe_once(url, timeout, proxy):
+    """测一次：返回 (耗时, 是否像真流)；连不上返回 (None, False)"""
+    if proxy:
+        handlers = [urllib.request.ProxyHandler({"http": proxy, "https": proxy})]
+    else:
+        handlers = [urllib.request.ProxyHandler({})]
+    opener = urllib.request.build_opener(*handlers)
+    req = urllib.request.Request(url, headers={
+        "User-Agent": SPEED_UA,
+        "Accept": "*/*",
+        "Range": f"bytes=0-{SPEED_PROBE_BYTES - 1}",
+    })
+    t0 = time.time()
     try:
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-        req = urllib.request.Request(url, headers={
-            "User-Agent": SPEED_UA,
-            "Accept": "*/*",
-            "Range": "bytes=0-1023",
-        })
-        t0 = time.time()
         with opener.open(req, timeout=timeout) as r:
             ttfb = time.time() - t0
-            try:
-                r.read(1024)      # 只取一小口，之后直接断开
-            except Exception:
-                pass
-        return ttfb
+            head = r.read(SPEED_PROBE_BYTES)
+            ctype = (r.headers.get("Content-Type") or "").lower()
     except Exception:
-        return None
+        return None, False
+
+    if head[:1] == b"\x1f\x8b":                 # gzip 压缩的肯定是网页
+        return ttfb, False
+    if "text/html" in ctype:
+        return ttfb, False
+    low = head[:64].strip().lower()
+    if any(low.startswith(m) for m in SPEED_BAD_BODY):
+        return ttfb, False
+    if not head:                                # 200 但一个字节都没有
+        return ttfb, False
+    return ttfb, True
+
+
+def probe_speed(url, timeout=SPEED_TIMEOUT):
+    """
+    判断一条源“能不能播”并给出耗时：
+      首字节到达 + 前 2KB 确实是流数据（不是网页/错误页）才算能播
+      最多测 SPEED_RETRY 次，取最快的一次
+      能播返回耗时（秒），不能播返回 None
+    """
+    best = None
+    for _ in range(max(1, SPEED_RETRY)):
+        ttfb, ok = _probe_once(url, timeout, _CURRENT_PROXY)
+        if not ok:
+            continue
+        best = ttfb if best is None else min(best, ttfb)
+        if best <= 0.5:            # 已经很快，不用再测
+            break
+    return best
 
 
 def probe_all(urls):
@@ -505,16 +667,29 @@ def probe_all(urls):
 
 
 def save_speed_report(tag, speeds):
-    """把本次测速结果存成 speed_reports/<tag>.json，供另一条线路合并用"""
+    """
+    把本次测速结果合并进 speed_reports/<tag>.json
+    —— 一次运行里会有两轮测速（央卫跨组匹配、港澳台并入），这里必须累加，
+       直接覆盖会导致前一轮的结果丢失，双线路合并时误判成死源。
+    """
     if not tag:
         return
     try:
         os.makedirs(SPEED_REPORT_DIR, exist_ok=True)
         path = os.path.join(SPEED_REPORT_DIR, f"{tag}.json")
+        merged = {}
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    merged = json.load(f).get("urls", {}) or {}
+            except Exception:
+                merged = {}
+        merged.update(speeds)
         with open(path, "w", encoding="utf-8") as f:
             json.dump({"tag": tag, "time": time.strftime("%Y-%m-%d %H:%M:%S"),
-                       "urls": speeds}, f, ensure_ascii=False)
-        print(f"测速报告已保存：{path}（线路：{SPEED_NET_TAGS.get(tag, tag)}）")
+                       "urls": merged}, f, ensure_ascii=False)
+        print(f"测速报告已合并保存：{path}（线路：{SPEED_NET_TAGS.get(tag, tag)}，"
+              f"累计 {len(merged)} 条）")
     except Exception as e:
         print(f"⚠️ 测速报告保存失败：{e}")
 
@@ -674,11 +849,14 @@ def match_and_speed_sort(lines, current_tag=None):
 
         dropped_dead += len(dead)
         if not scored:
-            # 全线都不通：保留原标题源一条，否则这个频道会整个从分组里消失
+            # 全线都不通：默认把频道标题也删掉；SPEED_DROP_DEAD_CHANNEL=False 时才保留原源一条
+            all_dead_channels.append(name)
+            if SPEED_DROP_DEAD_CHANNEL:
+                plans[i] = []                      # 空列表 = 整行删除
+                continue
             if SPEED_DROP_DEAD:
                 scored = [(cands[0], float("inf"))]
                 dropped_dead -= 1
-                all_dead_channels.append(name)
             else:
                 scored = [(c, float("inf")) for c in cands]
 
@@ -701,9 +879,211 @@ def match_and_speed_sort(lines, current_tag=None):
     if SPEED_DROP_DEAD:
         print(f"剔除无响应源：{dropped_dead} 条")
     if all_dead_channels:
-        print(f"⚠️ 以下 {len(all_dead_channels)} 个频道所有源都无响应，已保留原标题源一条："
+        how = "已整条删除（标题+源）" if SPEED_DROP_DEAD_CHANNEL else "已保留原标题源一条"
+        print(f"以下 {len(all_dead_channels)} 个频道所有源都无响应，{how}："
               f"{'、'.join(all_dead_channels)}")
     return out
+
+
+def hk_key(name):
+    """
+    港澳台频道名归一化（在 ch_key 基础上再放宽）：
+      「翡翠台4K(字幕)」「翡翠台4K（字幕）」「翡翠台HD」 → 翡翠台
+      「鳳凰中文」「凤凰中文」保持各自（不做繁简转换）
+    """
+    s = ch_key(name)
+    s = re.sub(r"\s*[（(][^）)]*[）)]\s*$", "", s)     # 去掉末尾括号注释
+    s = re.sub(r"(?i)(4K|8K|HD|FHD|高清|超清|蓝光)$", "", s)
+    return s
+
+
+def collect_hk_pool(file_path):
+    """从 live_hongkong.txt 的指定分组里取源，返回 {归一化频道名: [(原名, url), ...]}"""
+    lines = read_lines(file_path)
+    if lines is None:
+        return {}
+    pool = {}
+    for g in parse_tvbox_groups(lines):
+        if g["name"] not in HK_MERGE_GROUPS:
+            continue
+        for row in g["rows"]:
+            if "," not in row:
+                continue
+            name, url = row.split(",", 1)
+            name, url = name.strip(), url.strip()
+            if not name or not url.lower().startswith("http"):
+                continue
+            pool.setdefault(hk_key(name), []).append((name, url))
+    return pool
+
+
+def score_of(url, speeds, reports, current_tag):
+    """
+    单条源的综合耗时：
+      多线路 → 交给 merged_speed_of 合并
+      单线路 → 测过且失败返回 None（死源）；测过成功返回耗时；没测过返回 inf（保留但排后面）
+    """
+    if len(reports) > 1:
+        return merged_speed_of(url, reports, current_tag)
+    if url in speeds:
+        v = speeds[url]
+        return v if v is not None else None
+    return float("inf")
+
+
+def merge_hk_into_news(lines, current_tag=None):
+    """
+    把 live_hongkong.txt 的「台湾·四季台湾」「繁体·🔮港澳台直播」并入 live.txt 的「新闻频道」：
+      · 同名频道：港台源挂到原频道后面，与原有源一起测速排序（快的在前），不通的剔除
+      · 新频道：追加到分组末尾，先按各自最快源排序，全部不通的直接不写入
+      · 原有频道的顺序完全不变
+    """
+    pool = collect_hk_pool(HK_FILE)
+    if not pool:
+        print(f"⚠️ 没读到港澳台源（{HK_FILE} 缺失或没有 {'、'.join(HK_MERGE_GROUPS)}），跳过并入")
+        return lines
+
+    total_src = sum(len(v) for v in pool.values())
+    print(f"港澳台源：{len(pool)} 个频道 / {total_src} 条源（来自 "
+          f"{'、'.join(HK_MERGE_GROUPS)}）")
+
+    # 1. 定位目标分组
+    gs = None
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if s.endswith(",#genre#") and s[: -len(",#genre#")].strip() == HK_TARGET_GROUP:
+            gs = i
+            break
+    if gs is None:
+        print(f"⚠️ live.txt 里没有「{HK_TARGET_GROUP}」分组，已在末尾新建该组")
+        lines = list(lines) + [f"{HK_TARGET_GROUP},#genre#"]
+        gs = len(lines) - 1
+
+    ge = gs + 1
+    while ge < len(lines) and not lines[ge].strip().endswith(",#genre#"):
+        ge += 1
+
+    # 2. 组内已有频道行
+    rows = []
+    for i in range(gs + 1, ge):
+        s = lines[i].strip()
+        if not s or "," not in s:
+            continue
+        name, url = s.split(",", 1)
+        name, url = name.strip(), url.strip()
+        if url.lower().startswith("http"):
+            rows.append((name, url))
+
+    # 3. 同名归并
+    plans, new_items = [], []          # plans: [(名, [(名,url)...])]
+    used_keys, urls_to_probe = set(), set()
+    hit_channels = hit_sources = 0
+
+    for name, url in rows:
+        cands = [(name, url)]
+        key = hk_key(name)
+        extra = pool.get(key, [])
+        if extra:
+            used_keys.add(key)
+            hit_channels += 1
+            hit_sources += len(extra)
+            cands.extend(extra)
+        seen, uniq = set(), []
+        for c in cands:
+            if c[1] in seen:
+                continue
+            seen.add(c[1])
+            uniq.append(c)
+        plans.append([name, uniq])
+        urls_to_probe.update(u for _n, u in uniq)
+
+    for key, lst in pool.items():
+        if key in used_keys or not lst:
+            continue
+        seen, uniq = set(), []
+        for c in lst:
+            if c[1] in seen:
+                continue
+            seen.add(c[1])
+            uniq.append(c)
+        new_items.append([lst[0][0], uniq])
+        urls_to_probe.update(u for _n, u in uniq)
+
+    if not urls_to_probe:
+        print("⚠️ 没有可测速的源，跳过港澳台并入")
+        return lines
+
+    # 4. 测速
+    print(f"测速中：{len(urls_to_probe)} 条源，超时 {SPEED_TIMEOUT}s，并发 {SPEED_WORKERS} ...")
+    t0 = time.time()
+    speeds = probe_all(sorted(urls_to_probe))
+    ok = sum(1 for v in speeds.values() if v is not None)
+    print(f"测速完成：可用 {ok} 条 / 失败 {len(speeds) - ok} 条，耗时 {time.time() - t0:.1f}s")
+    save_speed_report(current_tag, speeds)
+
+    reports = load_speed_reports()
+    if current_tag:
+        reports[current_tag] = speeds
+
+    # 5. 排序 + 剔除：原有频道（顺序不变）
+    dropped = dead_kept = 0
+    dead_names = []
+    out_existing = []
+    for name, cands in plans:
+        scored = []
+        for c in cands:
+            v = score_of(c[1], speeds, reports, current_tag)
+            if v is None:
+                dropped += 1
+            else:
+                scored.append((c, v))
+        if not scored:
+            dead_names.append(name)
+            if SPEED_DROP_DEAD_CHANNEL:
+                continue                                  # 全死：连标题一起删掉
+            if SPEED_DROP_DEAD:
+                scored = [(cands[0], float("inf"))]        # 配置成保留时才留一条
+                dropped -= 1
+                dead_kept += 1
+            else:
+                scored = [(c, float("inf")) for c in cands]
+        scored.sort(key=lambda cv: cv[1])
+        out_existing.extend(f"{name},{c[1]}" for c, _v in scored)
+
+    # 5.1 新频道：先各自按速度排源，再按“最快源耗时”决定在组末尾的先后
+    new_sorted, new_dropped, new_skipped = [], 0, []
+    for name, cands in new_items:
+        scored = []
+        for c in cands:
+            v = score_of(c[1], speeds, reports, current_tag)
+            if v is None:
+                new_dropped += 1
+            else:
+                scored.append((c, v))
+        if not scored:
+            new_skipped.append(name)                     # 新频道全不通，整条不写入
+            continue
+        scored.sort(key=lambda cv: cv[1])
+        new_sorted.append((name, scored))
+
+    new_sorted.sort(key=lambda t: t[1][0][1])            # t[1][0][1] = 该频道最快源的耗时
+    for name, scored in new_sorted:
+        out_existing.extend(f"{name},{c[1]}" for c, _v in scored)
+
+    # 6. 回填
+    new_block = [f"{HK_TARGET_GROUP},#genre#"] + out_existing
+    lines = lines[:gs] + new_block + lines[ge:]
+
+    print(f"港澳台并入「{HK_TARGET_GROUP}」：命中同名频道 {hit_channels} 个（并入 {hit_sources} 条源），"
+          f"新增频道 {len(new_sorted)} 个")
+    if SPEED_DROP_DEAD:
+        print(f"剔除无响应源：{dropped + new_dropped} 条")
+    if new_skipped:
+        print(f"跳过 {len(new_skipped)} 个新频道（全部源无响应）：{'、'.join(new_skipped)}")
+    if dead_names:
+        how = "已整条删除（标题+源）" if SPEED_DROP_DEAD_CHANNEL else "已保留原标题源一条"
+        print(f"{len(dead_names)} 个原有频道所有源都无响应，{how}：{'、'.join(dead_names)}")
+    return lines
 
 
 def apply_group_ua(lines):
@@ -768,6 +1148,9 @@ def parse_args(argv):
 
 def main():
     no_speed, net = parse_args(sys.argv[1:])
+    if "--check" in sys.argv[1:]:
+        check_tvbox_groups(TVBOX_FILE)
+        return
     part1 = filter_all_lines(IPTV_FILE)
     orient_block, other_block = extract_oriental_and_4k(IPASD_FILE)
     part_sh = extract_shanghai(SHIPTV_FILE)
@@ -788,9 +1171,18 @@ def main():
         print("⏩ 已跳过跨组匹配与测速（--no-speed）")
     else:
         if net:
+            px = SPEED_PROXY.get(net)
             print(f"本次线路：{SPEED_NET_TAGS[net]}（测速结果将存入 "
-                  f"{SPEED_REPORT_DIR}/{net}.json，并与另一条线路的结果合并）")
+                  f"{SPEED_REPORT_DIR}/{net}.json，并与另一条线路的结果合并）"
+                  + (f"，走代理 {px}" if px else "，直连"))
+            globals()["_CURRENT_PROXY"] = px or None
         final = match_and_speed_sort(final, net)
+
+    # 港澳台源并入「新闻频道」（--no-speed 时同样跳过，因为它必须测速才能排）
+    if no_speed:
+        pass
+    else:
+        final = merge_hk_into_news(final, net)
 
     # 指定分组强制 User-Agent（上海频道的源只认 AppleCoreMedia）
     final, m3u_text = apply_group_ua(final)
