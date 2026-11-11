@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import time
+import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
@@ -59,6 +60,19 @@ SPEED_DROP_DEAD = True     # True=剔除测速无响应的源（全组皆死时�
 #       python3 merge_sources.py --net lt   （上海联通宽带下跑，会自动读上一步的 dx 结果）
 SPEED_REPORT_DIR = "speed_reports"
 SPEED_NET_TAGS = {"dx": "电信", "lt": "联通"}
+
+# ========== 指定分组强制 User-Agent ==========
+SHANGHAI_UA = ("AppleCoreMedia/1.0.0.15F79 (iPhone; U; CPU OS 11_4 like Mac OS X; zh_cn)")
+UA_GROUPS = {"上海频道": SHANGHAI_UA}
+
+# UA 输出方式：
+#   "pipe"  → live.txt 里该组每行末尾追加 |User-Agent=...（支持的客户端直接生效）
+#   "m3u"   → live.txt 不动，另出 live_ua.m3u（带 #EXTVLCOPT:http-user-agent=）
+#   "proxy" → live.txt 里该组地址改写成中转地址，由 shanghai_ua_proxy.py 注入 UA（最保险）
+#   "off"   → 不处理
+UA_MODE = "pipe"
+UA_M3U_FILE = "live_ua.m3u"
+UA_PROXY_BASE = "http://192.168.1.100:8090"   # proxy 模式下 TVBox 要能访问到这台机器
 
 # CCTV 名称后面允许出现的描述词，用于把「CCTV-1 综合」和「CCTV1」认成同一个台
 # 不在表里的（如 CCTV4欧洲 / CCTV4美洲）不参与归一，避免把不同频道认成同一个
@@ -659,6 +673,51 @@ def match_and_speed_sort(lines, current_tag=None):
     return out
 
 
+def apply_group_ua(lines):
+    """
+    给 UA_GROUPS 里指定的分组强制 User-Agent：
+      pipe 模式：该组每行改成「名称,url|User-Agent=...」
+      m3u  模式：live.txt 原样，另生成带 #EXTVLCOPT 的 m3u
+    返回 (处理后的 lines, m3u 文本或 None)
+    """
+    if UA_MODE == "off" or not UA_GROUPS:
+        return lines, None
+
+    out = []
+    m3u = ["#EXTM3U"]
+    cur = None
+    for line in lines:
+        s = line.strip()
+        if not s:
+            continue
+        if s.endswith(",#genre#"):
+            cur = s[: -len(",#genre#")]
+            out.append(s)          # 分组头在两种模式下都保留
+            continue
+
+        has_url = "," in s and s.split(",", 1)[1].strip().lower().startswith("http")
+        if cur in UA_GROUPS and has_url:
+            name, url = s.split(",", 1)
+            ua = UA_GROUPS[cur]
+            if UA_MODE == "pipe":
+                out.append(f"{name.strip()},{url.rstrip()}|User-Agent={ua}")
+            elif UA_MODE == "proxy":
+                enc = urllib.parse.quote(url.strip(), safe="")
+                out.append(f"{name.strip()},{UA_PROXY_BASE}/p?u={enc}")
+            else:
+                out.append(s)      # m3u 模式：live.txt 保持原样
+                m3u.append(f'#EXTINF:-1 group-title="{cur}",{name.strip()}')
+                m3u.append(f"#EXTVLCOPT:http-user-agent={ua}")
+                m3u.append(url.rstrip())
+            continue
+
+        out.append(s)
+
+    if UA_MODE == "m3u":
+        return out, "\n".join(m3u) + "\n" if len(m3u) > 1 else None
+    return out, None
+
+
 def parse_args(argv):
     """解析命令行：--no-speed 跳过测速；--net dx|lt 指定本次运行所在线路"""
     no_speed = "--no-speed" in argv
@@ -699,6 +758,15 @@ def main():
             print(f"本次线路：{SPEED_NET_TAGS[net]}（测速结果将存入 "
                   f"{SPEED_REPORT_DIR}/{net}.json，并与另一条线路的结果合并）")
         final = match_and_speed_sort(final, net)
+
+    # 指定分组强制 User-Agent（上海频道的源只认 AppleCoreMedia）
+    final, m3u_text = apply_group_ua(final)
+    if m3u_text:
+        with open(UA_M3U_FILE, "w", encoding="utf-8", newline="\n") as f:
+            f.write(m3u_text)
+        print(f"已生成带 UA 的播放列表：{UA_M3U_FILE}")
+    elif UA_MODE == "pipe" and UA_GROUPS:
+        print(f"已给以下分组追加 UA：「{'、'.join(UA_GROUPS)}」")
 
     with open(OUTPUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(final) + "\n")
