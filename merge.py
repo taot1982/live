@@ -22,7 +22,7 @@ SHIPTV_FILE = "shiptv.txt"     # 上海频道源文件
 OUTPUT = "live.txt"
 # ========================================
 
-# 贵州电信组播源（央视+卫视），取 CCTV-1 之后的部分，改名为「高清央视卫视」
+# 贵州电信组播源（央视+卫视），取 CCTV-1 之后的部分，改名为「超高清·央视卫视」
 GZ_URL = ("https://raw.githubusercontent.com/q1017673817/iptvz/refs/heads/main/"
           "%E7%BB%84%E6%92%AD_%E8%B4%B5%E5%B7%9E%E7%94%B5%E4%BF%A1.txt")
 GZ_CACHE = "gz_cctv.txt"       # 抓取失败时的本地兜底文件
