@@ -1012,20 +1012,55 @@ def check_hk():
 def merge_hk_into_news(lines, current_tag=None):
     """
     把 live_hongkong.txt 的「台湾·四季台湾」「繁体·🔮港澳台直播」并入 live.txt 的「新闻频道」：
-      · 同名频道：港台源挂到原频道后面，与原有源一起测速排序（快的在前），不通的剔除
-      · 新频道：追加到分组末尾，先按各自最快源排序，全部不通的直接不写入
-      · 原有频道的顺序完全不变
+      · 不测速、不筛源，所有源原样保留
+      · 同名频道（按归一化名）归到同一行，新源接在原有源后面
+      · 顺序：原有频道保持原顺序 → 台湾频道 → 港澳频道（HK_MERGE_GROUPS 的顺序即优先级）
     """
-    pool = collect_hk_pool(HK_FILE)
-    if not pool:
-        print(f"⚠️ 没读到港澳台源（{HK_FILE} 缺失或没有 {'、'.join(HK_MERGE_GROUPS)}），跳过并入")
+    src = read_lines(HK_FILE)
+    if src is None:
+        print(f"⚠️ 没读到港澳台源（{HK_FILE} 不存在），跳过并入")
         return lines
 
-    total_src = sum(len(v) for v in pool.values())
-    print(f"港澳台源：{len(pool)} 个频道 / {total_src} 条源（来自 "
-          f"{'、'.join(HK_MERGE_GROUPS)}）")
+    groups = {g["name"]: g for g in parse_tvbox_groups(src)}
 
-    # 1. 定位目标分组
+    # 1. 按组优先级收集：同 key 的频道合并源，记录它属于台湾(rank 0) 还是港澳(rank 1)
+    pool, order = {}, []
+    for rank, gname in enumerate(HK_MERGE_GROUPS):
+        g = groups.get(gname)
+        if not g:
+            near = [n for n in groups if any(k in n for k in ("台湾", "台灣", "港澳", "港台"))]
+            print(f"⚠️ {HK_FILE} 里没有「{gname}」分组"
+                  + (f"，相近的有：{'、'.join(near)}" if near else "")
+                  + "，跳过该组")
+            continue
+        for row in g["rows"]:
+            if "," not in row:
+                continue
+            name, url = row.split(",", 1)
+            name, url = name.strip(), url.strip()
+            if not name or not url.lower().startswith("http"):
+                continue
+            key = hk_key(name)
+            if not key:
+                continue
+            ent = pool.get(key)
+            if ent is None:
+                ent = {"name": name, "urls": [], "rank": rank}
+                pool[key] = ent
+                order.append(key)
+            if url not in ent["urls"]:
+                ent["urls"].append(url)
+
+    if not pool:
+        print(f"⚠️ 没读到港澳台源（{HK_FILE} 缺失或分组名对不上），跳过并入")
+        return lines
+
+    taiwan = [k for k in order if pool[k]["rank"] == 0]
+    hk = [k for k in order if pool[k]["rank"] == 1]
+    print(f"港澳台源：{len(pool)} 个频道 / {sum(len(v['urls']) for v in pool.values())} 条源"
+          f"（台湾 {len(taiwan)} 个、港澳 {len(hk)} 个）")
+
+    # 2. 定位目标分组
     gs = None
     for i, l in enumerate(lines):
         s = l.strip()
@@ -1041,7 +1076,7 @@ def merge_hk_into_news(lines, current_tag=None):
     while ge < len(lines) and not lines[ge].strip().endswith(",#genre#"):
         ge += 1
 
-    # 2. 组内已有频道行
+    # 3. 组内原有频道（顺序原样保留）
     rows = []
     for i in range(gs + 1, ge):
         s = lines[i].strip()
@@ -1050,117 +1085,43 @@ def merge_hk_into_news(lines, current_tag=None):
         name, url = s.split(",", 1)
         name, url = name.strip(), url.strip()
         if url.lower().startswith("http"):
-            rows.append((name, url))
+            rows.append([name, [url]])
 
-    # 3. 同名归并
-    plans, new_items = [], []          # plans: [(名, [(名,url)...])]
-    used_keys, urls_to_probe = set(), set()
+    # 4. 同名归并：港台源接到同 key 的原有频道后面
     hit_channels = hit_sources = 0
-
-    for name, url in rows:
-        cands = [(name, url)]
-        key = hk_key(name)
-        extra = pool.get(key, [])
-        if extra:
-            used_keys.add(key)
+    used = set()
+    for row in rows:
+        key = hk_key(row[0])
+        ent = pool.get(key)
+        if not ent or key in used:
+            continue
+        used.add(key)
+        added = 0
+        for u in ent["urls"]:
+            if u not in row[1]:
+                row[1].append(u)
+                added += 1
+        if added:
             hit_channels += 1
-            hit_sources += len(extra)
-            cands.extend(extra)
-        seen, uniq = set(), []
-        for c in cands:
-            if c[1] in seen:
-                continue
-            seen.add(c[1])
-            uniq.append(c)
-        plans.append([name, uniq])
-        urls_to_probe.update(u for _n, u in uniq)
+            hit_sources += added
 
-    for key, lst in pool.items():
-        if key in used_keys or not lst:
+    # 5. 新频道：台湾在前，港澳在后（各自按文件里的原始顺序）
+    new_blocks = []
+    for k in taiwan + hk:
+        if k in used:
             continue
-        seen, uniq = set(), []
-        for c in lst:
-            if c[1] in seen:
-                continue
-            seen.add(c[1])
-            uniq.append(c)
-        new_items.append([lst[0][0], uniq])
-        urls_to_probe.update(u for _n, u in uniq)
+        used.add(k)
+        new_blocks.append([pool[k]["name"], pool[k]["urls"]])
 
-    if not urls_to_probe:
-        print("⚠️ 没有可测速的源，跳过港澳台并入")
-        return lines
-
-    # 4. 测速
-    print(f"测速中：{len(urls_to_probe)} 条源，超时 {SPEED_TIMEOUT}s，并发 {SPEED_WORKERS} ...")
-    t0 = time.time()
-    speeds = probe_all(sorted(urls_to_probe))
-    ok = sum(1 for v in speeds.values() if v is not None)
-    print(f"测速完成：可用 {ok} 条 / 失败 {len(speeds) - ok} 条，耗时 {time.time() - t0:.1f}s")
-    save_speed_report(current_tag, speeds)
-
-    reports = load_speed_reports()
-    if current_tag:
-        reports[current_tag] = speeds
-
-    # 5. 排序 + 剔除：原有频道（顺序不变）
-    dropped = dead_kept = 0
-    dead_names = []
-    out_existing = []
-    for name, cands in plans:
-        scored = []
-        for c in cands:
-            v = score_of(c[1], speeds, reports, current_tag)
-            if v is None:
-                dropped += 1
-            else:
-                scored.append((c, v))
-        if not scored:
-            dead_names.append(name)
-            if SPEED_DROP_DEAD_CHANNEL:
-                continue                                  # 全死：连标题一起删掉
-            if SPEED_DROP_DEAD:
-                scored = [(cands[0], float("inf"))]        # 配置成保留时才留一条
-                dropped -= 1
-                dead_kept += 1
-            else:
-                scored = [(c, float("inf")) for c in cands]
-        scored.sort(key=lambda cv: cv[1])
-        out_existing.extend(f"{name},{c[1]}" for c, _v in scored)
-
-    # 5.1 新频道：先各自按速度排源，再按“最快源耗时”决定在组末尾的先后
-    new_sorted, new_dropped, new_skipped = [], 0, []
-    for name, cands in new_items:
-        scored = []
-        for c in cands:
-            v = score_of(c[1], speeds, reports, current_tag)
-            if v is None:
-                new_dropped += 1
-            else:
-                scored.append((c, v))
-        if not scored:
-            new_skipped.append(name)                     # 新频道全不通，整条不写入
-            continue
-        scored.sort(key=lambda cv: cv[1])
-        new_sorted.append((name, scored))
-
-    new_sorted.sort(key=lambda t: t[1][0][1])            # t[1][0][1] = 该频道最快源的耗时
-    for name, scored in new_sorted:
-        out_existing.extend(f"{name},{c[1]}" for c, _v in scored)
+    out_existing = [f"{n},{u}" for n, us in rows for u in us]
+    out_new = [f"{n},{u}" for n, us in new_blocks for u in us]
 
     # 6. 回填
-    new_block = [f"{HK_TARGET_GROUP},#genre#"] + out_existing
-    lines = lines[:gs] + new_block + lines[ge:]
+    lines = lines[:gs] + [f"{HK_TARGET_GROUP},#genre#"] + out_existing + out_new + lines[ge:]
 
-    print(f"港澳台并入「{HK_TARGET_GROUP}」：命中同名频道 {hit_channels} 个（并入 {hit_sources} 条源），"
-          f"新增频道 {len(new_sorted)} 个")
-    if SPEED_DROP_DEAD:
-        print(f"剔除无响应源：{dropped + new_dropped} 条")
-    if new_skipped:
-        print(f"跳过 {len(new_skipped)} 个新频道（全部源无响应）：{'、'.join(new_skipped)}")
-    if dead_names:
-        how = "已整条删除（标题+源）" if SPEED_DROP_DEAD_CHANNEL else "已保留原标题源一条"
-        print(f"{len(dead_names)} 个原有频道所有源都无响应，{how}：{'、'.join(dead_names)}")
+    print(f"港澳台并入「{HK_TARGET_GROUP}」：同名频道 {hit_channels} 个（并入 {hit_sources} 条源），"
+          f"新增频道 {len(new_blocks)} 个（台湾 {len([b for b in new_blocks if hk_key(b[0]) in taiwan])} 个、"
+          f"港澳 {len([b for b in new_blocks if hk_key(b[0]) in hk])} 个），未测速、未筛源")
     return lines
 
 
@@ -1280,11 +1241,8 @@ def main():
             globals()["_CURRENT_PROXY"] = px or None
         final = match_and_speed_sort(final, net)
 
-    # 港澳台源并入「新闻频道」（--no-speed 时同样跳过，因为它必须测速才能排）
-    if no_speed:
-        pass
-    else:
-        final = merge_hk_into_news(final, net)
+    # 港澳台源并入「新闻频道」（纯归并、不测速，--no-speed 时也执行）
+    final = merge_hk_into_news(final, net)
 
     # 指定分组强制 User-Agent（上海频道的源只认 AppleCoreMedia）
     final, m3u_text = apply_group_ua(final)
