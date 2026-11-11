@@ -36,7 +36,9 @@ ZB_DROP_GROUPS = ("央视频", "咪咕·央视", "咪咕央卫", "测试频道")
 ZB_KEEP_GROUPS = ("央视频道",)
 
 # live_tvbox.txt 里虽然有前 3 组，但要跳过不进 live.txt 的分组
-TVBOX_DROP_GROUPS = ("咪咕·央视",)
+# 用「咪咕·」一次覆盖 咪咕·央视 / 咪咕·卫视 / 咪咕·地方 / 咪咕·其他
+# （这几个分组是同一套 miguvideo token 源，且上游缺「稳定源」组时会被补齐逻辑拉进来）
+TVBOX_DROP_GROUPS = ("咪咕·",)
 
 
 def zb_should_drop(group_name):
