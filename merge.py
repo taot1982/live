@@ -35,6 +35,17 @@ CCTV5_PLUS_RE = re.compile(r"^\s*CCTV5\+")
 # 从 CCTV-1 开始保留（(?!\d) 避免把 CCTV-10~17 误当成 CCTV-1）
 CCTV1_RE = re.compile(r"^CCTV-?1(?!\d)")
 
+# iptv.txt 的头部不是标准「组名,#genre#」，而是两行说明：
+#
+#   by cqshushu | 公众号：医工学习日志
+#   类型：吉林松原酒店 吉林联通 | 节目数量：102
+#   CCTV1-综合,http://...
+#
+# 这两行不是频道（留着会被当成频道名写进 live.txt），而且它们描述的这个分组
+# 在输出里统一叫「东方有线」——不管上面写的是哪个来源。
+IPTV_HEADER_KEYWORDS = ("类型：", "节目数量", "公众号")
+IPTV_FIRST_GROUP_NAME = "东方有线"
+
 # ZB.TXT 里要整组剔除的分组：分组名「等于或以其开头」才丢（组内频道一并不要）
 ZB_DROP_GROUPS = ("央视频", "咪咕·央视", "咪咕央卫", "测试频道")
 # 名字相近但必须保留的分组（「央视频道」前缀撞「央视频」，不写这里就会被误删）
@@ -168,22 +179,36 @@ def is_noise(line_strip):
 
 
 def filter_all_lines(file_path):
-    """iptv.txt：过滤噪声行，强制 CCTV5+体育赛事 紧跟在 CCTV5-体育 后面"""
+    """
+    iptv.txt：过滤噪声行 + 把头部说明行换成分组头「东方有线」，并强制 CCTV5+体育赛事
+    紧跟在 CCTV5-体育 后面
+    """
     lines = read_lines(file_path)
     if lines is None:
         print(f"⚠️ 文件 {file_path} 不存在，跳过 iptv 分组")
         return []
 
     out = []
+    header_emitted = False      # 「东方有线」分组头只输出一次
     for line in lines:
         line_strip = line.strip()
         if not line_strip:
             continue
         if is_noise(line_strip):
             continue
+        # iptv.txt 的头部说明行（by … / 类型：… | 节目数量：…）：
+        # 第一次遇到时输出一个「东方有线,#genre#」当分组头，其余情况直接丢弃。
+        # 判断放在 ,#genre# 之前只为兼容「类型：…#genre#」这种写法；
+        # 真正的分组头不含这些关键词，不会被吃掉。
+        if any(k in line_strip for k in IPTV_HEADER_KEYWORDS):
+            if not header_emitted:
+                out.append(f"{IPTV_FIRST_GROUP_NAME},#genre#")
+                header_emitted = True
+            continue
+
         if line_strip.endswith(",#genre#"):
             continue
-        line_strip = line_strip.replace("#类型：吉林松原酒店 吉林联通", "东方有线,#genre#")
+
         out.append(line_strip)
 
     # 分离 CCTV5+ 行
