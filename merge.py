@@ -170,7 +170,7 @@ def read_lines(file_path):
     print(f"⚠️ {file_path} 编码无法识别（试过 utf-8 / gb18030）")
     return None
     
-#def filter_all_lines(file_path):
+def filter_all_lines(file_path):
     """
     iptv.txt：过滤噪声行 + 把头部说明行换成分组头「东方有线」，并强制 CCTV5+体育赛事
     紧跟在 CCTV5-体育 后面
