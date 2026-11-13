@@ -171,14 +171,14 @@ def read_lines(file_path):
     return None
 
 
-def is_noise(line_strip):
+#def is_noise(line_strip):
     """三类噪声行：更新时间、#by、#节目数量"""
     if "更新时间" in line_strip:
         return True
     return line_strip.startswith("#by") or line_strip.startswith("#节目数量")
 
 
-def filter_all_lines(file_path):
+＃def filter_all_lines(file_path):
     """
     iptv.txt：过滤噪声行 + 把头部说明行换成分组头「东方有线」，并强制 CCTV5+体育赛事
     紧跟在 CCTV5-体育 后面
