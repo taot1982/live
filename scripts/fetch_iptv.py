@@ -63,22 +63,46 @@ def main():
         lines = text.splitlines()
         clean_lines = []
         dropped_sd = 0
+        cctv1_first_removed = False
+        shanghai_lines = []
+        other_lines = []
+        # 上海频道关键词，可自行增减
+        shanghai_keywords = ["上海", "东方卫视", "上视", "纪实人文", "都市", "五星体育", "哈哈炫动"]
+
         for line in lines:
             line = line.rstrip("\r")
             processed = process_channel_line(line)
             if processed is None:
                 dropped_sd += 1
                 continue
-            clean_lines.append(processed)
+
+            # 删除CCTV1第一个源
+            if processed.startswith("CCTV1,") and not cctv1_first_removed:
+                cctv1_first_removed = True
+                continue
+
+            # 区分上海频道 和 其他频道
+            if "#genre#" not in processed:
+                name_part = processed.split(",")[0]
+                if any(k in name_part for k in shanghai_keywords):
+                    shanghai_lines.append(processed)
+                    continue
+            other_lines.append(processed)
+
+        # 合并：原有内容 + 新增【上海地方频道】分组
+        final_lines = other_lines
+        if shanghai_lines:
+            final_lines.append("上海地方频道,#genre#")
+            final_lines.extend(shanghai_lines)
 
         # 追加一行时间注释，每次都会变化，git识别变更，播放器忽略#注释
         from datetime import datetime
         time_mark = f"# AUTO_UPDATE_TIME: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        clean_lines.append(time_mark)
+        final_lines.append(time_mark)
 
         with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
-            f.write("\n".join(clean_lines))
-        print(f"✅ 成功更新 {OUTPUT_PATH}，剔除SD频道 {dropped_sd} 条，已写入更新标记")
+            f.write("\n".join(final_lines))
+        print(f"✅ 成功更新 {OUTPUT_PATH}，剔除SD频道 {dropped_sd} 条，已删除CCTV1第一个源，上海频道独立分组")
 
     except Exception as e:
         print(f"⚠️ 拉取iptv源失败：{e}")
