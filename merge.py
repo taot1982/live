@@ -170,10 +170,15 @@ def read_lines(file_path):
     print(f"⚠️ {file_path} 编码无法识别（试过 utf-8 / gb18030）")
     return None
     
+def is_noise(line_strip):
+    """三类噪声行：更新时间、#by、#节目数量"""
+    if "更新时间" in line_strip:
+        return True
+    return line_strip.startswith("#by") or line_strip.startswith("#节目数量")
+
 def filter_all_lines(file_path):
     """
-    iptv.txt：过滤噪声行 + 把头部说明行换成分组头「东方有线」，并强制 CCTV5+体育赛事
-    紧跟在 CCTV5-体育 后面
+    iptv.txt：仅过滤噪声行，保留文件内已经预制好的分组头与顺序，不再修改分组、不再移动CCTV5+
     """
     lines = read_lines(file_path)
     if lines is None:
@@ -181,54 +186,16 @@ def filter_all_lines(file_path):
         return []
 
     out = []
-    header_emitted = False      # 「东方有线」分组头只输出一次
     for line in lines:
         line_strip = line.strip()
         if not line_strip:
             continue
+        # 过滤噪声注释行
         if is_noise(line_strip):
             continue
-        # iptv.txt 的头部说明行（by … / 类型：… | 节目数量：…）：
-        # 第一次遇到时输出一个「东方有线,#genre#」当分组头，其余情况直接丢弃。
-        # 判断放在 ,#genre# 之前只为兼容「类型：…#genre#」这种写法；
-        # 真正的分组头不含这些关键词，不会被吃掉。
-        if any(k in line_strip for k in IPTV_HEADER_KEYWORDS):
-            if not header_emitted:
-                out.append(f"{IPTV_FIRST_GROUP_NAME},#genre#")
-                header_emitted = True
-            continue
-
-        if line_strip.endswith(",#genre#"):
-            continue
-
+        # 直接保留：分组行(#genre#)、频道行全部原样，不再丢弃分组头
         out.append(line_strip)
 
-    # ========== 【暂停：CCTV5+后置逻辑】==========
-    # # 分离 CCTV5+ 行
-    # cctv5_plus = None
-    # rest = []
-    # for l in out:
-    #     if CCTV5_PLUS_RE.match(l):
-    #         cctv5_plus = l
-    #     else:
-    #         rest.append(l)
-
-    # new_out = []
-    # for l in rest:
-    #     new_out.append(l)
-    #     # 碰到 CCTV5-体育，立刻把 CCTV5+ 塞在它后面
-    #     if "CCTV5-体育" in l and cctv5_plus is not None:
-    #         new_out.append(cctv5_plus)
-    #         cctv5_plus = None
-    # # 兜底：没找到 CCTV5-体育 就放末尾，不丢频道
-    # if cctv5_plus is not None:
-    #     new_out.append(cctv5_plus)
-
-    # print(f"{file_path} 保留行数：{len(new_out)}")
-    # return new_out
-# ============================================
-
-    # 【暂停该排序逻辑，直接原样返回】
     print(f"{file_path} 保留行数：{len(out)}")
     return out
 
