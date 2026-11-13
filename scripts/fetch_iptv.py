@@ -7,13 +7,25 @@ from urllib3.util.retry import Retry
 UPSTREAM_URL = "https://1525041261-lxsdafern4.ap-shanghai.tencentscf.com/?secret=badboytcl&url=2"
 OUTPUT_PATH = "iptv.txt"
 
+# 上海频道关键词，可自行增减
+SHANGHAI_KEYWORDS = ["上海", "东方卫视", "上视", "纪实人文", "都市", "五星体育", "哈哈炫动"]
+
 def process_channel_line(line):
-    """处理频道行：返回处理后的行；若是SD频道返回None表示删除"""
+    """处理频道行：返回处理后的行；SD频道返回None；注释/说明行返回None"""
     if not line.strip():
         return None
-    # 分组行（#genre#）不做频道名处理，原样保留
+
+    # 删除 #by、#节目数量、#类型 这类说明行
+    if line.strip().startswith("#by"):
+        return None
+    if line.strip().startswith("#节目数量"):
+        return None
+    if line.strip().startswith("#类型"):
+        return None
+
+    # 分组行（#genre#）不做频道名处理，原样保留（后面会统一重建分组，这里先过滤）
     if "#genre#" in line:
-        return line
+        return None
 
     # 频道行格式：名称,url（按最后一个逗号拆分，避免URL里带逗号）
     if "," not in line:
@@ -61,19 +73,18 @@ def main():
             text = raw.decode("utf-8", errors="replace")
 
         lines = text.splitlines()
-        clean_lines = []
-        dropped_sd = 0
-        cctv1_first_removed = False
         shanghai_lines = []
         other_lines = []
-        # 上海频道关键词，可自行增减
-        shanghai_keywords = ["上海", "东方卫视", "上视", "纪实人文", "都市", "五星体育", "哈哈炫动"]
+        dropped_sd = 0
+        cctv1_first_removed = False
 
         for line in lines:
             line = line.rstrip("\r")
             processed = process_channel_line(line)
             if processed is None:
-                dropped_sd += 1
+                # 区分统计：SD剔除 与 注释行跳过
+                if re.search(r"SD", line, re.IGNORECASE):
+                    dropped_sd += 1
                 continue
 
             # 删除CCTV1第一个源
@@ -81,19 +92,20 @@ def main():
                 cctv1_first_removed = True
                 continue
 
-            # 区分上海频道 和 其他频道
-            if "#genre#" not in processed:
-                name_part = processed.split(",")[0]
-                if any(k in name_part for k in shanghai_keywords):
-                    shanghai_lines.append(processed)
-                    continue
-            other_lines.append(processed)
+            name_part = processed.split(",")[0]
+            if any(k in name_part for k in SHANGHAI_KEYWORDS):
+                shanghai_lines.append(processed)
+            else:
+                other_lines.append(processed)
 
-        # 合并：原有内容 + 新增【上海地方频道】分组
-        final_lines = other_lines
+        # 重组：上海电信/联通 在前，东方有线 在后
+        final_lines = []
         if shanghai_lines:
-            final_lines.append("上海地方频道,#genre#")
+            final_lines.append("上海电信/联通,#genre#")
             final_lines.extend(shanghai_lines)
+        if other_lines:
+            final_lines.append("东方有线,#genre#")
+            final_lines.extend(other_lines)
 
         # 追加一行时间注释，每次都会变化，git识别变更，播放器忽略#注释
         from datetime import datetime
@@ -102,7 +114,7 @@ def main():
 
         with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
             f.write("\n".join(final_lines))
-        print(f"✅ 成功更新 {OUTPUT_PATH}，剔除SD频道 {dropped_sd} 条，已删除CCTV1第一个源，上海频道独立分组")
+        print(f"✅ 成功更新 {OUTPUT_PATH}，剔除SD频道 {dropped_sd} 条；上海 {len(shanghai_lines)} 条，东方有线 {len(other_lines)} 条")
 
     except Exception as e:
         print(f"⚠️ 拉取iptv源失败：{e}")
