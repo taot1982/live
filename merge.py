@@ -211,29 +211,34 @@ def filter_all_lines(file_path):
 
         out.append(line_strip)
 
-    # 分离 CCTV5+ 行
-    ＃cctv5_plus = None
-    ＃rest = []
-    ＃for l in out:
-        if CCTV5_PLUS_RE.match(l):
-            cctv5_plus = l
-        else:
-            rest.append(l)
+    # ========== 【暂停：CCTV5+后置逻辑】==========
+    # # 分离 CCTV5+ 行
+    # cctv5_plus = None
+    # rest = []
+    # for l in out:
+    #     if CCTV5_PLUS_RE.match(l):
+    #         cctv5_plus = l
+    #     else:
+    #         rest.append(l)
 
-    new_out = []
-    ＃or l in rest:
-        new_out.append(l)
-        # 碰到 CCTV5-体育，立刻把 CCTV5+ 塞在它后面
-        if "CCTV5-体育" in l and cctv5_plus is not None:
-            new_out.append(cctv5_plus)
-            cctv5_plus = None
-    # 兜底：没找到 CCTV5-体育 就放末尾，不丢频道
-    if cctv5_plus is not None:
-        new_out.append(cctv5_plus)
+    # new_out = []
+    # for l in rest:
+    #     new_out.append(l)
+    #     # 碰到 CCTV5-体育，立刻把 CCTV5+ 塞在它后面
+    #     if "CCTV5-体育" in l and cctv5_plus is not None:
+    #         new_out.append(cctv5_plus)
+    #         cctv5_plus = None
+    # # 兜底：没找到 CCTV5-体育 就放末尾，不丢频道
+    # if cctv5_plus is not None:
+    #     new_out.append(cctv5_plus)
 
-    print(f"{file_path} 保留行数：{len(new_out)}")
-    return new_out
+    # print(f"{file_path} 保留行数：{len(new_out)}")
+    # return new_out
+# ============================================
 
+    # 【暂停该排序逻辑，直接原样返回】
+    print(f"{file_path} 保留行数：{len(out)}")
+    return out
 
 def extract_oriental_and_4k(file_path):
     """iptasd.txt：拆出 东方有线 / 4K频道 / 轮播剧场 三块内容（含分组头）"""
