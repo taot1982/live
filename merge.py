@@ -220,8 +220,8 @@ def filter_all_lines(file_path):
         else:
             rest.append(l)
 
-    new_out = []
-    for l in rest:
+    ＃new_out = []
+    or l in rest:
         new_out.append(l)
         # 碰到 CCTV5-体育，立刻把 CCTV5+ 塞在它后面
         if "CCTV5-体育" in l and cctv5_plus is not None:
