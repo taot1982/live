@@ -67,6 +67,15 @@ TVBOX_REMOTE_URLS = [
 # 上游随机不下发稳定源组时用它上次的成果兜底，保证 live.txt 里这组不会凭空消失
 STABLE_CACHE = "stable_group_cache.txt"
 
+# ========== zhibo.txt「央视咪咕」源并入「稳定源·阿里云服」 ==========
+# zhibo.txt 里「央视咪咕」分组的源，按频道名匹配到 live.txt 的「稳定源·阿里云服」分组：
+#   · 同名频道：新源测速后接在原有源后面（原有源保持原顺序，只剔除测不通的）
+#   · 新频道  ：追加到该组末尾，源同样测速排序、剔除不通的
+# zhibo.txt 不存在时自动退回 ZB.TXT 里找同名分组
+ZB_EXTRA_FILE = "zhibo.txt"
+ZB_EXTRA_GROUP = "央视咪咕"
+ZB_EXTRA_TARGET = TVBOX_RENAME["稳定源"]     # 稳定源·阿里云服
+
 # ========== 跨组匹配 + 测速排序 ==========
 # 从 live_tvbox.txt 这 4 个地方组播组里取源，匹配进 live.txt 的下面 2 个分组
 MATCH_SOURCE_GROUPS = ("山东电信", "河南电信", "重庆联通", "河北联通")
@@ -1173,6 +1182,161 @@ def insert_block_after_group(lines, block, group_name):
     return lines[:ge] + block + lines[ge:]
 
 
+def collect_zhibo_pool():
+    """从 zhibo.txt 的「央视咪咕」分组收源，返回 {频道key: [(名称, url), ...]}"""
+    src, lines = ZB_EXTRA_FILE, read_lines(ZB_EXTRA_FILE)
+    if lines is None and ZB_EXTRA_FILE != ZB_FILE:
+        lines = read_lines(ZB_FILE)
+        if lines is not None:
+            src = ZB_FILE
+            print(f"⚠️ 没找到 {ZB_EXTRA_FILE}，改从 {src} 里找「{ZB_EXTRA_GROUP}」分组")
+    if lines is None:
+        print(f"⚠️ {ZB_EXTRA_FILE} 与 {ZB_FILE} 都不存在，跳过「{ZB_EXTRA_GROUP}」并入")
+        return {}
+
+    groups = parse_tvbox_groups(lines)
+    pick = [g for g in groups if g["name"].strip() == ZB_EXTRA_GROUP] \
+        or [g for g in groups if ZB_EXTRA_GROUP in g["name"]]
+    if not pick:
+        print(f"⚠️ {src} 里没有「{ZB_EXTRA_GROUP}」分组，跳过并入；"
+              f"现有分组：{'、'.join(g['name'] for g in groups[:12])}")
+        return {}
+
+    pool = {}
+    for g in pick:
+        for row in g["rows"]:
+            if "," not in row:
+                continue
+            name, url = row.split(",", 1)
+            name, url = name.strip(), url.strip()
+            if not name or not url.lower().startswith("http"):
+                continue
+            key = ch_key(name)
+            if not key:
+                continue
+            lst = pool.setdefault(key, [])
+            if url not in [u for _n, u in lst]:
+                lst.append((name, url))
+
+    print(f"{src}「{ZB_EXTRA_GROUP}」：{len(pool)} 个频道 / "
+          f"{sum(len(v) for v in pool.values())} 条源")
+    return pool
+
+
+def merge_zhibo_into_stable(lines, current_tag=None):
+    """
+    zhibo.txt「央视咪咕」→ live.txt「稳定源·阿里云服」：
+      同名频道：新源测速后接在原有源后面（原有源顺序不动，只剔不通的）
+      新频道  ：追加到该组末尾，源测速排序
+      测不通的源一律剔除；频道所有源都不通时整条删除（同 SPEED_DROP_DEAD_CHANNEL）
+    """
+    pool = collect_zhibo_pool()
+    if not pool:
+        return lines
+
+    # 1. 定位目标分组「稳定源·阿里云服」
+    gs = None
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if s.endswith(",#genre#") and s[: -len(",#genre#")].strip() == ZB_EXTRA_TARGET:
+            gs = i
+            break
+    if gs is None:
+        print(f"⚠️ live.txt 里没有「{ZB_EXTRA_TARGET}」分组，跳过「{ZB_EXTRA_GROUP}」并入")
+        return lines
+    ge = gs + 1
+    while ge < len(lines) and not lines[ge].strip().endswith(",#genre#"):
+        ge += 1
+
+    # 2. 组内原有频道 → [[名称, [原有源...]], ...]（每个频道行一条源，顺序原样）
+    rows = []
+    for i in range(gs + 1, ge):
+        s = lines[i].strip()
+        if not s or "," not in s:
+            continue
+        name, url = s.split(",", 1)
+        name, url = name.strip(), url.strip()
+        if not url.lower().startswith("http"):
+            continue
+        rows.append([name, [url]])
+
+    # 3. 同名归并：把「央视咪咕」的源挂到对应频道原有源的后面
+    used = set()
+    hit_channels = hit_sources = 0
+    for row in rows:
+        key = ch_key(row[0])
+        ent = pool.get(key)
+        if not ent or key in used:
+            continue
+        used.add(key)
+        hit_channels += 1
+        for _n, u in ent:
+            if u not in row[1]:
+                row[1].append(u)
+                hit_sources += 1
+
+    # 4. 「央视咪咕」独有频道（稳定源组里没有的），按文件顺序排在组尾
+    new_rows = []
+    for key, ent in pool.items():
+        if key in used:
+            continue
+        used.add(key)
+        new_rows.append([ent[0][0], [u for _n, u in ent]])
+
+    all_urls = sorted({u for _n, us in rows for u in us} | {u for _n, us in new_rows for u in us})
+    if not all_urls:
+        return lines
+
+    # 5. 测速（与跨组匹配共用同一份报告，电信/联通结果自动合并）
+    print(f"「{ZB_EXTRA_GROUP}」并入测速：{len(all_urls)} 条源，超时 {SPEED_TIMEOUT}s ...")
+    t0 = time.time()
+    speeds = probe_all(all_urls)
+    ok = sum(1 for v in speeds.values() if v is not None)
+    print(f"测速完成：可用 {ok} 条 / 失败 {len(all_urls) - ok} 条，耗时 {time.time() - t0:.1f}s")
+    save_speed_report(current_tag, speeds)
+
+    reports = load_speed_reports()
+    if current_tag:
+        reports[current_tag] = speeds
+
+    def alive(u):
+        return score_of(u, speeds, reports, current_tag) is not None
+
+    def cost(u):
+        return score_of(u, speeds, reports, current_tag)
+
+    # 6. 重建分组：原有源在前（原顺序），「央视咪咕」并入的源按测速排序接在后面
+    out, dropped, dead_channels = [], 0, []
+    for name, urls in rows:
+        keep_orig = [u for u in urls[:1] if alive(u)]
+        dropped += len(urls[:1]) - len(keep_orig)
+        extra = [u for u in urls[1:] if alive(u)]
+        dropped += len(urls[1:]) - len(extra)
+        extra.sort(key=cost)
+        if not keep_orig and not extra:
+            dead_channels.append(name)
+            continue
+        out += [f"{name},{u}" for u in keep_orig + extra]
+
+    for name, urls in new_rows:
+        live_urls = [u for u in urls if alive(u)]
+        dropped += len(urls) - len(live_urls)
+        live_urls.sort(key=cost)
+        if not live_urls:
+            dead_channels.append(name)
+            continue
+        out += [f"{name},{u}" for u in live_urls]
+
+    lines = lines[: gs + 1] + out + lines[ge:]
+    print(f"「{ZB_EXTRA_GROUP}」并入「{ZB_EXTRA_TARGET}」：同名频道 {hit_channels} 个"
+          f"（并入 {hit_sources} 条源，排在原有源之后），新增频道 {len(new_rows)} 个，"
+          f"剔除无响应源 {dropped} 条")
+    if dead_channels:
+        print(f"以下 {len(dead_channels)} 个频道所有源都不通，已整条删除："
+              f"{'、'.join(dead_channels)}")
+    return lines
+
+
 def apply_group_rename(lines):
     """
     最后一步：把分组头的名字换掉（组内频道与顺序都不变）。
@@ -1288,6 +1452,9 @@ def main():
                   + (f"，走代理 {px}" if px else "，直连"))
             globals()["_CURRENT_PROXY"] = px or None
         final = match_and_speed_sort(final, net)
+
+        # zhibo.txt「央视咪咕」源并入「稳定源·阿里云服」（测速后接在原有源后面）
+        final = merge_zhibo_into_stable(final, net)
 
     # 港澳台源并入「新闻频道」（纯归并、不测速，--no-speed 时也执行）
     final = merge_hk_into_news(final, net)
