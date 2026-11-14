@@ -88,6 +88,11 @@ HK_FILE = "live_hongkong.txt"
 HK_MERGE_GROUPS = ("台湾·四季台湾", "繁体·🔮港澳台直播")
 HK_TARGET_GROUP = "新闻频道"
 
+# ========== 远端 cat 源：提取「体育大全」分组，插到「新闻频道」后面 ==========
+SPORT_URL = "https://raw.githubusercontent.com/fleung49/star/refs/heads/main/cat"
+SPORT_TARGET_GROUP = "😎cloudcdn Mix"   # 上游 m3u 里的原分组名
+SPORT_NEW_GROUP = "体育大全"             # 输出分组名
+
 SPEED_TIMEOUT = 6.0        # 单条源测速超时（秒）；宁可多等也别误杀慢但能播的源
 SPEED_WORKERS = 32         # 并发线程数（上限）
 # 同一主机最多同时测几条：港台源常常几十条指向同一个 IP:端口，
@@ -1113,6 +1118,61 @@ def merge_hk_into_news(lines, current_tag=None):
     return lines
 
 
+def fetch_sport_group():
+    """
+    远端 cat 源（m3u）：提取 😎cloudcdn Mix 分组，改名「体育大全」，返回 txt 分组块；
+    抓取失败 / 分组不存在时返回 []，不阻断主流程。
+    """
+    text = fetch_text(SPORT_URL)
+    if text is None:
+        print(f"⚠️ 远端 cat 源抓取失败，跳过「{SPORT_NEW_GROUP}」分组")
+        return []
+
+    rows = []
+    cur_name = None
+    for line in text.splitlines():
+        s = line.strip()
+        if s.startswith("#EXTINF"):
+            m = re.search(r'group-title="([^"]*)"', s)
+            if m and m.group(1) == SPORT_TARGET_GROUP:
+                cur_name = s.split(",", 1)[1].strip() if "," in s else ""
+            else:
+                cur_name = None
+        elif cur_name and s:
+            rows.append(f"{cur_name},{s}")
+            cur_name = None
+
+    if not rows:
+        print(f"⚠️ 远端 cat 源里没有「{SPORT_TARGET_GROUP}」分组，跳过「{SPORT_NEW_GROUP}」")
+        return []
+
+    print(f"远端 cat 源提取「{SPORT_TARGET_GROUP}」：{len(rows)} 个频道 → 改名「{SPORT_NEW_GROUP}」")
+    return [f"{SPORT_NEW_GROUP},#genre#"] + rows
+
+
+def insert_block_after_group(lines, block, group_name):
+    """把 block 整块插到 group_name 分组结束之后（下一组头之前）；找不到该分组则追加末尾"""
+    if not block:
+        return lines
+
+    gs = None
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if s.endswith(",#genre#") and s[: -len(",#genre#")].strip() == group_name:
+            gs = i
+            break
+
+    if gs is None:
+        print(f"⚠️ live.txt 里没有「{group_name}」分组，「{SPORT_NEW_GROUP}」追加到末尾")
+        return list(lines) + block
+
+    ge = gs + 1
+    while ge < len(lines) and not lines[ge].strip().endswith(",#genre#"):
+        ge += 1
+
+    return lines[:ge] + block + lines[ge:]
+
+
 def apply_group_rename(lines):
     """
     最后一步：把分组头的名字换掉（组内频道与顺序都不变）。
@@ -1231,6 +1291,10 @@ def main():
 
     # 港澳台源并入「新闻频道」（纯归并、不测速，--no-speed 时也执行）
     final = merge_hk_into_news(final, net)
+
+    # 远端 cat 源「体育大全」插到「新闻频道」分组后面
+    sport_block = fetch_sport_group()
+    final = insert_block_after_group(final, sport_block, HK_TARGET_GROUP)
 
     # 指定分组强制 User-Agent（上海频道的源只认 AppleCoreMedia）
     final, m3u_text = apply_group_ua(final)
