@@ -123,6 +123,11 @@ CETV-1,http://8w97qbaxj0.apps.bot-hosting.cloud/cetv1.m3u8
 青海卫视,http://8w97qbaxj0.apps.bot-hosting.cloud/qhws.m3u8
 西藏卫视,http://8w97qbaxj0.apps.bot-hosting.cloud/xizangws.m3u8
 新疆卫视,http://8w97qbaxj0.apps.bot-hosting.cloud/xjws.m3u8
+4K·卫视4K频,#genre#
+湖南卫视4K,http://45.192.97.170:8880/play/20.m3u8
+浙江卫视4K,http://45.192.97.170:8880/play/6561.m3u8
+东方卫视4K,http://45.192.97.170:8880/play/10115.m3u8
+江苏卫视4K,http://45.192.97.170:8880/play/10116.m3u8
 咪咕·央视,#genre#
 CCTV1综合,http://8.137.121.66:20241/608807420
 CCTV2财经,http://8.137.121.66:20241/631780532
