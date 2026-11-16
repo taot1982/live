@@ -126,7 +126,7 @@ BesTV电影介绍,http://218.80.109.128:4022/rtp/233.18.204.116:5140
 百事通画面,http://218.80.109.128:4022/rtp/233.18.204.167:5140
 无信号,http://218.80.109.128:4022/rtp/233.18.204.216:5140
 无信号,http://218.80.109.128:4022/rtp/233.18.204.208:5140
-# AUTO_UPDATE_TIME: 2026-11-16 00:49:59
+# AUTO_UPDATE_TIME: 2026-11-16 14:45:46
 上海频道,#genre#
 上海新闻综合,http://47.99.202.156:8014/daili/shxwhd.m3u8?v=llllvvw&line=0
 上海新闻综合,http://47.99.202.156:8014/daili/shxwhd.m3u8?v=llllvvw&line=1
@@ -1071,107 +1071,95 @@ IPTV15音乐现场,http://221.220.132.128:8012/rtp/239.3.1.70:4120
 睛彩广场舞,http://221.220.132.128:8012/rtp/239.3.1.128:8001
 稳定源·阿里云服,#genre#
 CCTV-1 综合,http://45.192.97.170:8880/play/6936.m3u8
-CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d9ac63518b7a9e6c94d768a074ff9d&i=2
-CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d9ac63518b7a9e6c94d768a074ff9d&i=0
-CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d9ac63518b7a9e6c94d768a074ff9d&i=1
+CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e105d127724e664bbc95d64b015d7e&i=2
+CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e105d127724e664bbc95d64b015d7e&i=1
+CCTV-1 综合,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e105d127724e664bbc95d64b015d7e&i=0
 CCTV-2 财经,http://45.192.97.170:8880/play/6937.m3u8
-CCTV-2 财经,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f38b888a0679f394911d4c038d0434&i=0
-CCTV-2 财经,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f38b888a0679f394911d4c038d0434&i=1
-CCTV-2 财经,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f38b888a0679f394911d4c038d0434&i=2
+CCTV-2 财经,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=975a9ba534ad3669a02f1278dd33e0&i=0
+CCTV-2 财经,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=975a9ba534ad3669a02f1278dd33e0&i=1
 CCTV-3 综艺,http://45.192.97.170:8880/play/6938.m3u8
-CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6fd95cfb99295d0a7e6128f19dfeac&i=2
-CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6fd95cfb99295d0a7e6128f19dfeac&i=1
-CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6fd95cfb99295d0a7e6128f19dfeac&i=0
+CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8a554eb5d762bcb3e0c62ef2731afe&i=2
+CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8a554eb5d762bcb3e0c62ef2731afe&i=1
+CCTV-3 综艺,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8a554eb5d762bcb3e0c62ef2731afe&i=0
 CCTV-4 中文国际,http://45.192.97.170:8880/play/6939.m3u8
-CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c2df17626175ab538381b15600e086&i=2
-CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c2df17626175ab538381b15600e086&i=0
-CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c2df17626175ab538381b15600e086&i=1
+CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d6bc635ef678b24b461f892f889492&i=2
+CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d6bc635ef678b24b461f892f889492&i=0
+CCTV-4 中文国际,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d6bc635ef678b24b461f892f889492&i=1
 CCTV-5 体育,http://45.192.97.170:8880/play/6940.m3u8
-CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=14ea6385a4826465cca8eb702265de&i=2
-CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=14ea6385a4826465cca8eb702265de&i=1
-CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=14ea6385a4826465cca8eb702265de&i=0
+CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=86b372ff09abb1ec20319f74b0e02f&i=2
+CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=86b372ff09abb1ec20319f74b0e02f&i=0
+CCTV-5 体育,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=86b372ff09abb1ec20319f74b0e02f&i=1
 CCTV-5+ 体育赛事,http://45.192.97.170:8880/play/6941.m3u8
-CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5a177e2ca4c5f97781eb6f2525b439&i=2
-CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5a177e2ca4c5f97781eb6f2525b439&i=1
-CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5a177e2ca4c5f97781eb6f2525b439&i=0
+CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5518e8f07085041781cad66a720954&i=2
+CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5518e8f07085041781cad66a720954&i=0
+CCTV-5+ 体育赛事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=5518e8f07085041781cad66a720954&i=1
 CCTV-6 电影,http://45.192.97.170:8880/play/6942.m3u8
-CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8ebc5a7415b4b4392b2c92879dbfb5&i=2
-CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8ebc5a7415b4b4392b2c92879dbfb5&i=1
-CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8ebc5a7415b4b4392b2c92879dbfb5&i=0
+CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=a83dca17a4424f5b8ac7e64e1ee89d&i=2
+CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=a83dca17a4424f5b8ac7e64e1ee89d&i=1
+CCTV-6 电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=a83dca17a4424f5b8ac7e64e1ee89d&i=0
 CCTV-7 国防军事,http://45.192.97.170:8880/play/6943.m3u8
-CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=7870f3eb1f760838591cace731f27f&i=2
-CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=7870f3eb1f760838591cace731f27f&i=1
-CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=7870f3eb1f760838591cace731f27f&i=0
+CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c39f1da42cd49e618958d226c7a57d&i=2
+CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c39f1da42cd49e618958d226c7a57d&i=0
+CCTV-7 国防军事,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c39f1da42cd49e618958d226c7a57d&i=1
 CCTV-8 电视剧,http://45.192.97.170:8880/play/6944.m3u8
-CCTV-8 电视剧,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e94c3803b217841226221a948af7dd&i=2
-CCTV-8 电视剧,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e94c3803b217841226221a948af7dd&i=1
-CCTV-8 电视剧,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e94c3803b217841226221a948af7dd&i=0
+CCTV-8 电视剧,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c5a8878f17ab08902363bfd11a90c1&i=1
+CCTV-8 电视剧,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=c5a8878f17ab08902363bfd11a90c1&i=0
 CCTV-9 纪录,http://45.192.97.170:8880/play/6945.m3u8
-CCTV-9 纪录,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d028150c7a0de476573f59c2036a36&i=1
-CCTV-9 纪录,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d028150c7a0de476573f59c2036a36&i=0
+CCTV-9 纪录,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=08ad84c5fd17a9fe8309618bba5dde&i=2
+CCTV-9 纪录,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=08ad84c5fd17a9fe8309618bba5dde&i=1
+CCTV-9 纪录,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=08ad84c5fd17a9fe8309618bba5dde&i=0
 CCTV-10 科教,http://45.192.97.170:8880/play/6946.m3u8
-CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=aec6702eb20468870b21fc2729da9c&i=2
-CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=aec6702eb20468870b21fc2729da9c&i=0
-CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=aec6702eb20468870b21fc2729da9c&i=1
-CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=31551282322443acad52f49caf336d&i=2
-CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=31551282322443acad52f49caf336d&i=1
-CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=31551282322443acad52f49caf336d&i=0
-CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3592de303ad56c61dc90c3520ca395&i=2
-CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3592de303ad56c61dc90c3520ca395&i=1
-CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3592de303ad56c61dc90c3520ca395&i=0
+CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=47fb15c0c18a98a89fb20950df9e7f&i=2
+CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=47fb15c0c18a98a89fb20950df9e7f&i=1
+CCTV-10 科教,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=47fb15c0c18a98a89fb20950df9e7f&i=0
+CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3f6f95a67b30f4d30ee5116a57b55d&i=2
+CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3f6f95a67b30f4d30ee5116a57b55d&i=1
+CCTV-11 戏曲,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=3f6f95a67b30f4d30ee5116a57b55d&i=0
+CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=4907cdccf8641c5c0f81a3cee5fd51&i=2
+CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=4907cdccf8641c5c0f81a3cee5fd51&i=0
+CCTV-12 社会与法,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=4907cdccf8641c5c0f81a3cee5fd51&i=1
 CCTV-13 新闻,http://45.192.97.170:8880/play/6949.m3u8
-CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8323a68771a74e7c247a7b28b435da&i=2
-CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8323a68771a74e7c247a7b28b435da&i=0
-CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=8323a68771a74e7c247a7b28b435da&i=1
-CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f9088d549d95c9807f8a3542a4aa19&i=1
-CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f9088d549d95c9807f8a3542a4aa19&i=2
-CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f9088d549d95c9807f8a3542a4aa19&i=0
-CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0de0b778485264940f95fc148d53be&i=2
-CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0de0b778485264940f95fc148d53be&i=1
-CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0de0b778485264940f95fc148d53be&i=0
-CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d0086265ceddc2590584e8c646fddc&i=2
-CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d0086265ceddc2590584e8c646fddc&i=0
-CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=d0086265ceddc2590584e8c646fddc&i=1
+CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=2cb7fcafda4509310dc4f27b30b3e1&i=2
+CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=2cb7fcafda4509310dc4f27b30b3e1&i=0
+CCTV-13 新闻,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=2cb7fcafda4509310dc4f27b30b3e1&i=1
+CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6cc5cc4846faeb3b4d97dbd707c9e3&i=2
+CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6cc5cc4846faeb3b4d97dbd707c9e3&i=1
+CCTV-14 少儿,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6cc5cc4846faeb3b4d97dbd707c9e3&i=0
+CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0db92114fbcc8aa8c179d1b503670a&i=1
+CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0db92114fbcc8aa8c179d1b503670a&i=2
+CCTV-15 音乐,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=0db92114fbcc8aa8c179d1b503670a&i=0
+CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6eebc3dab85c94f270bb188735da45&i=2
+CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6eebc3dab85c94f270bb188735da45&i=1
+CCTV-17 农业农村,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=6eebc3dab85c94f270bb188735da45&i=0
 CCTV-8K 超高清,http://45.192.97.170:8880/play/6954.m3u8
-CGTN,http://45.192.97.170:8880/play/6955.m3u8
-CGTN 法语,http://45.192.97.170:8880/play/6956.m3u8
-CGTN 俄语,http://45.192.97.170:8880/play/6957.m3u8
 CGTN 阿拉伯语,http://45.192.97.170:8880/play/6958.m3u8
-CGTN 西班牙语,http://45.192.97.170:8880/play/6959.m3u8
-CGTN 纪录,http://45.192.97.170:8880/play/6960.m3u8
 北京卫视,http://45.192.97.170:8880/play/6964.m3u8
 江苏卫视,http://45.192.97.170:8880/play/6965.m3u8
 东方卫视,http://45.192.97.170:8880/play/6966.m3u8
 浙江卫视,http://45.192.97.170:8880/play/6967.m3u8
 湖南卫视,http://45.192.97.170:8880/play/6968.m3u8
 湖北卫视,http://45.192.97.170:8880/play/6969.m3u8
-广东卫视,http://45.192.97.170:8880/play/6970.m3u8
 广西卫视,http://45.192.97.170:8880/play/6971.m3u8
 黑龙江卫视,http://45.192.97.170:8880/play/6972.m3u8
 海南卫视,http://45.192.97.170:8880/play/6973.m3u8
 重庆卫视,http://45.192.97.170:8880/play/6974.m3u8
 深圳卫视,http://45.192.97.170:8880/play/6975.m3u8
-四川卫视,http://45.192.97.170:8880/play/6976.m3u8
 河南卫视,http://45.192.97.170:8880/play/6977.m3u8
 东南卫视,http://45.192.97.170:8880/play/6978.m3u8
 贵州卫视,http://45.192.97.170:8880/play/6979.m3u8
 江西卫视,http://45.192.97.170:8880/play/6980.m3u8
-辽宁卫视,http://45.192.97.170:8880/play/6981.m3u8
-安徽卫视,http://45.192.97.170:8880/play/6982.m3u8
-河北卫视,http://45.192.97.170:8880/play/6983.m3u8
 山东卫视,http://45.192.97.170:8880/play/6984.m3u8
 吉林卫视,http://45.192.97.170:8880/play/6986.m3u8
 陕西卫视,http://45.192.97.170:8880/play/6987.m3u8
 宁夏卫视,http://45.192.97.170:8880/play/6988.m3u8
 内蒙古卫视,http://45.192.97.170:8880/play/6989.m3u8
 云南卫视,http://45.192.97.170:8880/play/6990.m3u8
-山西卫视,http://45.192.97.170:8880/play/6991.m3u8
 青海卫视,http://45.192.97.170:8880/play/6992.m3u8
 西藏卫视,http://45.192.97.170:8880/play/6993.m3u8
-CCTV16,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=707f70b5e44d65fb6bb5340e8383cf
-CHC影迷电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=cf04fa9e8bdc5d92a4464ecb152dcb
-CHC动作电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=fc63be6d025506376f5e51cc988227
-CHC家庭影院,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=e1791d201ee6f836597a81a73d1f5e
+CCTV16,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=b409514bf9eb915a2a9f106fcda831
+CHC影迷电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=993a4ed361582a4daed2d8de584f8e
+CHC动作电影,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=61ee1dd64e98fa66d520f7f6a29762
+CHC家庭影院,http://smzb.bypbwxx.top/zhibo/lvdou/zhibojm.php?token=f0fe2cec0fe3e883308b9c2d5f9b44
 央视频·央视频道,#genre#
 CCTV-1 综合,http://8w97qbaxj0.apps.bot-hosting.cloud/cctv1.m3u8
 CCTV-2 财经,http://8w97qbaxj0.apps.bot-hosting.cloud/cctv2.m3u8
@@ -1241,70 +1229,73 @@ CETV-1,http://8w97qbaxj0.apps.bot-hosting.cloud/cetv1.m3u8
 //http://51.68.34.78:20022/all.txt
 //fi4.bot-hosting.cloud:25238
 CCTV-1 综合,http://211.158.164.250:8888/udp/225.0.4.74:7980
-CCTV-1 综合,http://144.255.31.42:6688/udp/239.21.1.120:5002
 CCTV-1 综合,http://1.192.240.71:8188/rtp/239.16.20.1:10010
+CCTV-1 综合,http://144.255.31.42:6688/udp/239.21.1.120:5002
 CCTV-1 综合,http://1mv3n3493d.apps.bot-hosting.cloud/cctv1.m3u8
 CCTV-2 财经,http://211.158.164.250:8888/udp/225.0.4.132:7980
 CCTV-2 财经,http://144.255.31.42:6688/udp/239.21.1.151:5002
 CCTV-2 财经,http://1.192.240.71:8188/rtp/239.16.20.2:10020
+CCTV-2 财经,http://1mv3n3493d.apps.bot-hosting.cloud/cctv2.m3u8
 CCTV-3 综艺,http://211.158.164.250:8888/udp/225.0.4.142:7980
 CCTV-3 综艺,http://1.192.240.71:8188/rtp/239.16.20.3:10030
 CCTV-3 综艺,http://144.255.31.42:6688/udp/239.21.2.45:5002
-CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.1.154:5002
 CCTV-4 中文国际,http://211.158.164.250:8888/udp/225.0.4.176:7980
-CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.2.29:5002
 CCTV-4 中文国际,http://1.192.240.71:8188/rtp/239.16.20.4:10040
+CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.2.29:5002
+CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.1.154:5002
 CCTV-5 体育,http://211.158.164.250:8888/udp/225.0.4.143:7980
-CCTV-5 体育,http://144.255.31.42:6688/udp/239.21.2.46:5002
 CCTV-5 体育,http://1.192.240.71:8188/rtp/239.16.20.53:10530
-CCTV-5+ 体育赛事,http://144.255.31.42:6688/udp/239.21.1.142:5002
+CCTV-5 体育,http://144.255.31.42:6688/udp/239.21.2.46:5002
 CCTV-5+ 体育赛事,http://211.158.164.250:8888/udp/225.0.4.73:7980
 CCTV-5+ 体育赛事,http://1.192.240.71:8188/rtp/239.16.20.5:10050
+CCTV-5+ 体育赛事,http://144.255.31.42:6688/udp/239.21.1.142:5002
 CCTV-6 电影,http://211.158.164.250:8888/udp/225.0.4.144:7980
 CCTV-6 电影,http://144.255.31.42:6688/udp/239.21.2.47:5002
 CCTV-6 电影,http://1.192.240.71:8188/rtp/239.16.20.6:10060
-CCTV-7 国防军事,http://211.158.164.250:8888/udp/225.0.4.127:7980
+CCTV-6 电影,http://1mv3n3493d.apps.bot-hosting.cloud/cctv6.m3u8
 CCTV-7 国防军事,http://144.255.31.42:6688/udp/239.21.1.152:5002
+CCTV-7 国防军事,http://211.158.164.250:8888/udp/225.0.4.127:7980
 CCTV-7 国防军事,http://1.192.240.71:8188/rtp/239.16.20.51:10510
-CCTV-8 电视剧,http://144.255.31.42:6688/udp/239.21.2.48:5002
 CCTV-8 电视剧,http://211.158.164.250:8888/udp/225.0.4.137:7980
 CCTV-8 电视剧,http://1.192.240.71:8188/rtp/239.16.20.8:10080
+CCTV-8 电视剧,http://144.255.31.42:6688/udp/239.21.2.48:5002
+CCTV-8 电视剧,http://1mv3n3493d.apps.bot-hosting.cloud/cctv8.m3u8
 CCTV-9 纪录,http://211.158.164.250:8888/udp/225.0.4.131:7980
 CCTV-9 纪录,http://1.192.240.71:8188/rtp/239.16.20.9:10090
 CCTV-9 纪录,http://144.255.31.42:6688/udp/239.21.1.153:5002
-CCTV-10 科教,http://211.158.164.250:8888/udp/225.0.4.130:7980
 CCTV-10 科教,http://144.255.31.42:6688/udp/239.21.1.155:5002
+CCTV-10 科教,http://211.158.164.250:8888/udp/225.0.4.130:7980
 CCTV-10 科教,http://1.192.240.71:8188/rtp/239.16.20.10:10100
+CCTV-10 科教,http://1mv3n3493d.apps.bot-hosting.cloud/cctv10.m3u8
 CCTV-11 戏曲,http://211.158.164.250:8888/udp/225.0.4.218:7980
 CCTV-11 戏曲,http://1.192.240.71:8188/rtp/239.16.20.11:10110
 CCTV-11 戏曲,http://144.255.31.42:6688/udp/239.21.2.2:5002
+CCTV-11 戏曲,http://1mv3n3493d.apps.bot-hosting.cloud/cctv11.m3u8
 CCTV-12 社会与法,http://211.158.164.250:8888/udp/225.0.4.129:7980
 CCTV-12 社会与法,http://144.255.31.42:6688/udp/239.21.1.156:5002
 CCTV-12 社会与法,http://1.192.240.71:8188/rtp/239.16.20.12:10120
+CCTV-12 社会与法,http://1mv3n3493d.apps.bot-hosting.cloud/cctv12.m3u8
 CCTV-13 新闻,http://211.158.164.250:8888/udp/225.0.4.219:7980
 CCTV-13 新闻,http://1.192.240.71:8188/rtp/239.16.20.13:10130
 CCTV-13 新闻,http://144.255.31.42:6688/udp/239.21.2.3:5002
+CCTV-13 新闻,http://1mv3n3493d.apps.bot-hosting.cloud/cctv13.m3u8
 CCTV-14 少儿,http://211.158.164.250:8888/udp/225.0.4.128:7980
 CCTV-14 少儿,http://1.192.240.71:8188/rtp/239.16.20.14:10140
 CCTV-14 少儿,http://144.255.31.42:6688/udp/239.21.1.157:5002
-CCTV-15 音乐,http://211.158.164.250:8888/udp/225.0.4.220:7980
+CCTV-14 少儿,http://1mv3n3493d.apps.bot-hosting.cloud/cctv14.m3u8
 CCTV-15 音乐,http://144.255.31.42:6688/udp/239.21.2.4:5002
 CCTV-15 音乐,http://1.192.240.71:8188/rtp/239.16.20.15:10150
-CCTV-17 农业农村,http://211.158.164.250:8888/udp/225.0.4.179:7980
+CCTV-15 音乐,http://211.158.164.250:8888/udp/225.0.4.220:7980
 CCTV-17 农业农村,http://1.192.240.71:8188/rtp/239.16.20.7:10070
+CCTV-17 农业农村,http://211.158.164.250:8888/udp/225.0.4.179:7980
 CCTV-17 农业农村,http://144.255.31.42:6688/udp/239.21.1.186:5002
-CGTN,http://1mv3n3493d.apps.bot-hosting.cloud/cgtn.m3u8
-CGTN 法语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnfr.m3u8
+CCTV-17 农业农村,http://1mv3n3493d.apps.bot-hosting.cloud/cctv17.m3u8
 CGTN 俄语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnru.m3u8
-CGTN 阿拉伯语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnar.m3u8
 CGTN 西班牙语,http://1mv3n3493d.apps.bot-hosting.cloud/cgtnes.m3u8
 CGTN 纪录,http://1mv3n3493d.apps.bot-hosting.cloud/cgtndoc.m3u8
-CCTV 风云剧场,http://1mv3n3493d.apps.bot-hosting.cloud/cctvfyjc.m3u8
-CCTV 怀旧剧场,http://1mv3n3493d.apps.bot-hosting.cloud/cctvhjjc.m3u8
-CETV-1,http://1mv3n3493d.apps.bot-hosting.cloud/cetv1.m3u8
 CCTV-1 综合,http://211.158.164.250:8888/udp/225.0.4.74:7980
-CCTV-1 综合,http://144.255.31.42:6688/udp/239.21.1.120:5002
 CCTV-1 综合,http://1.192.240.71:8188/rtp/239.16.20.1:10010
+CCTV-1 综合,http://144.255.31.42:6688/udp/239.21.1.120:5002
 CCTV-1 综合,http://45.192.97.170:8880/play/192.m3u8
 CCTV-2 财经,http://211.158.164.250:8888/udp/225.0.4.132:7980
 CCTV-2 财经,http://144.255.31.42:6688/udp/239.21.1.151:5002
@@ -1314,31 +1305,36 @@ CCTV-3 综艺,http://211.158.164.250:8888/udp/225.0.4.142:7980
 CCTV-3 综艺,http://1.192.240.71:8188/rtp/239.16.20.3:10030
 CCTV-3 综艺,http://144.255.31.42:6688/udp/239.21.2.45:5002
 CCTV-3 综艺,http://45.192.97.170:8880/play/194.m3u8
-CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.1.154:5002
 CCTV-4 中文国际,http://211.158.164.250:8888/udp/225.0.4.176:7980
-CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.2.29:5002
 CCTV-4 中文国际,http://1.192.240.71:8188/rtp/239.16.20.4:10040
+CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.2.29:5002
+CCTV-4 中文国际,http://144.255.31.42:6688/udp/239.21.1.154:5002
 CCTV-4 中文国际,http://45.192.97.170:8880/play/195.m3u8
 CCTV-5 体育,http://211.158.164.250:8888/udp/225.0.4.143:7980
-CCTV-5 体育,http://144.255.31.42:6688/udp/239.21.2.46:5002
 CCTV-5 体育,http://1.192.240.71:8188/rtp/239.16.20.53:10530
-CCTV-5+ 体育赛事,http://144.255.31.42:6688/udp/239.21.1.142:5002
+CCTV-5 体育,http://144.255.31.42:6688/udp/239.21.2.46:5002
+CCTV-5 体育,http://45.192.97.170:8880/play/196.m3u8
 CCTV-5+ 体育赛事,http://211.158.164.250:8888/udp/225.0.4.73:7980
 CCTV-5+ 体育赛事,http://1.192.240.71:8188/rtp/239.16.20.5:10050
+CCTV-5+ 体育赛事,http://144.255.31.42:6688/udp/239.21.1.142:5002
+CCTV-5+ 体育赛事,http://45.192.97.170:8880/play/197.m3u8
 CCTV-6 电影,http://211.158.164.250:8888/udp/225.0.4.144:7980
 CCTV-6 电影,http://144.255.31.42:6688/udp/239.21.2.47:5002
 CCTV-6 电影,http://1.192.240.71:8188/rtp/239.16.20.6:10060
-CCTV-7 国防军事,http://211.158.164.250:8888/udp/225.0.4.127:7980
+CCTV-6 电影,http://45.192.97.170:8880/play/198.m3u8
 CCTV-7 国防军事,http://144.255.31.42:6688/udp/239.21.1.152:5002
+CCTV-7 国防军事,http://211.158.164.250:8888/udp/225.0.4.127:7980
 CCTV-7 国防军事,http://1.192.240.71:8188/rtp/239.16.20.51:10510
-CCTV-8 电视剧,http://144.255.31.42:6688/udp/239.21.2.48:5002
+CCTV-7 国防军事,http://45.192.97.170:8880/play/199.m3u8
 CCTV-8 电视剧,http://211.158.164.250:8888/udp/225.0.4.137:7980
 CCTV-8 电视剧,http://1.192.240.71:8188/rtp/239.16.20.8:10080
+CCTV-8 电视剧,http://144.255.31.42:6688/udp/239.21.2.48:5002
 CCTV-9 纪录,http://211.158.164.250:8888/udp/225.0.4.131:7980
 CCTV-9 纪录,http://1.192.240.71:8188/rtp/239.16.20.9:10090
 CCTV-9 纪录,http://144.255.31.42:6688/udp/239.21.1.153:5002
-CCTV-10 科教,http://211.158.164.250:8888/udp/225.0.4.130:7980
+CCTV-9 纪录,http://45.192.97.170:8880/play/201.m3u8
 CCTV-10 科教,http://144.255.31.42:6688/udp/239.21.1.155:5002
+CCTV-10 科教,http://211.158.164.250:8888/udp/225.0.4.130:7980
 CCTV-10 科教,http://1.192.240.71:8188/rtp/239.16.20.10:10100
 CCTV-11 戏曲,http://211.158.164.250:8888/udp/225.0.4.218:7980
 CCTV-11 戏曲,http://1.192.240.71:8188/rtp/239.16.20.11:10110
@@ -1352,118 +1348,110 @@ CCTV-13 新闻,http://144.255.31.42:6688/udp/239.21.2.3:5002
 CCTV-14 少儿,http://211.158.164.250:8888/udp/225.0.4.128:7980
 CCTV-14 少儿,http://1.192.240.71:8188/rtp/239.16.20.14:10140
 CCTV-14 少儿,http://144.255.31.42:6688/udp/239.21.1.157:5002
-CCTV-15 音乐,http://211.158.164.250:8888/udp/225.0.4.220:7980
 CCTV-15 音乐,http://144.255.31.42:6688/udp/239.21.2.4:5002
 CCTV-15 音乐,http://1.192.240.71:8188/rtp/239.16.20.15:10150
-CCTV-17 农业农村,http://211.158.164.250:8888/udp/225.0.4.179:7980
+CCTV-15 音乐,http://211.158.164.250:8888/udp/225.0.4.220:7980
 CCTV-17 农业农村,http://1.192.240.71:8188/rtp/239.16.20.7:10070
+CCTV-17 农业农村,http://211.158.164.250:8888/udp/225.0.4.179:7980
 CCTV-17 农业农村,http://144.255.31.42:6688/udp/239.21.1.186:5002
 CGTN 纪录,http://45.192.97.170:8880/play/218.m3u8
-CCTV 风云剧场,http://45.192.97.170:8880/play/219.m3u8
-CCTV 第一剧场,http://45.192.97.170:8880/play/220.m3u8
-CCTV 怀旧剧场,http://45.192.97.170:8880/play/221.m3u8
 CETV-1,http://45.192.97.170:8880/play/222.m3u8
 国学频道,http://45.192.97.170:8880/play/223.m3u8
 备用·卫视频道,#genre#
-北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 北京卫视,http://211.158.164.250:8888/udp/225.0.4.78:7980
 北京卫视,http://1.192.240.71:8188/rtp/239.16.20.76:10760
+北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 北京卫视,http://1mv3n3493d.apps.bot-hosting.cloud/bjws.m3u8
 江苏卫视,http://211.158.164.250:8888/udp/225.0.4.79:7980
-江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 江苏卫视,http://1.192.240.71:8188/rtp/239.16.20.74:10740
-东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
+江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 东方卫视,http://144.255.31.42:6688/udp/239.21.1.111:5002
+东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
 东方卫视,http://1.192.240.71:8188/rtp/239.16.20.73:10730
-东方卫视,http://1mv3n3493d.apps.bot-hosting.cloud/dfws.m3u8
 浙江卫视,http://211.158.164.250:8888/udp/225.0.4.81:7980
-浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 浙江卫视,http://1.192.240.71:8188/rtp/239.16.20.71:10710
+浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 湖南卫视,http://211.158.164.250:8888/udp/225.0.4.75:7980
 湖南卫视,http://144.255.31.42:6688/udp/239.21.1.158:5002
 湖南卫视,http://1.192.240.71:8188/rtp/239.16.20.72:10720
 湖北卫视,http://144.255.31.42:6688/udp/239.21.1.163:5002
 湖北卫视,http://1.192.240.71:8188/rtp/239.16.20.87:10870
 广东卫视,http://211.158.164.250:8888/udp/225.0.4.84:7980
-广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广东卫视,http://144.255.31.42:6688/udp/239.21.1.92:5002
+广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广东卫视,http://1mv3n3493d.apps.bot-hosting.cloud/gdws.m3u8
 广西卫视,http://1.192.240.71:8188/rtp/239.16.20.84:10840
 广西卫视,http://1mv3n3493d.apps.bot-hosting.cloud/gxws.m3u8
 黑龙江卫视,http://211.158.164.250:8888/udp/225.0.4.201:7980
 黑龙江卫视,http://1.192.240.71:8188/rtp/239.16.20.99:10990
-黑龙江卫视,http://1mv3n3493d.apps.bot-hosting.cloud/hljws.m3u8
-海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
 海南卫视,http://144.255.31.42:6688/udp/239.21.2.14:5002
-海南卫视,http://1mv3n3493d.apps.bot-hosting.cloud/hainanws.m3u8
+海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
 重庆卫视,http://211.158.164.250:8888/udp/225.0.4.187:7980
 重庆卫视,http://144.255.31.42:6688/udp/239.21.1.233:5002
 重庆卫视,http://1.192.240.71:8188/rtp/239.16.20.79:10790
 重庆卫视,http://1mv3n3493d.apps.bot-hosting.cloud/cqws.m3u8
-深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
 深圳卫视,http://211.158.164.250:8888/udp/225.0.4.202:7980
 深圳卫视,http://1.192.240.71:8188/rtp/239.16.20.77:10770
-深圳卫视,http://1mv3n3493d.apps.bot-hosting.cloud/szws.m3u8
+深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
 四川卫视,http://211.158.164.250:8888/udp/225.0.4.204:7980
 四川卫视,http://144.255.31.42:6688/udp/239.21.2.15:5002
 四川卫视,http://1.192.240.71:8188/rtp/239.16.20.86:10860
-河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
+四川卫视,http://1mv3n3493d.apps.bot-hosting.cloud/scws.m3u8
 河南卫视,http://1.192.240.71:8188/rtp/239.16.20.21:10210
+河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
 河南卫视,http://1mv3n3493d.apps.bot-hosting.cloud/henanws.m3u8
 东南卫视,http://211.158.164.250:8888/udp/225.0.4.200:7980
 东南卫视,http://1.192.240.71:8188/rtp/239.16.20.82:10820
 东南卫视,http://144.255.31.42:6688/udp/239.21.1.113:5002
 东南卫视,http://1mv3n3493d.apps.bot-hosting.cloud/dnws.m3u8
+贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
 贵州卫视,http://211.158.164.250:8888/udp/225.0.4.175:7980
 贵州卫视,http://144.255.31.42:6688/udp/239.21.1.166:5002
-贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
 江西卫视,http://211.158.164.250:8888/udp/225.0.4.203:7980
-江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
 江西卫视,http://144.255.31.42:6688/udp/239.21.1.167:5002
+江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
 辽宁卫视,http://211.158.164.250:8888/udp/225.0.4.98:7980
 辽宁卫视,http://1.192.240.71:8188/rtp/239.16.20.95:10950
 辽宁卫视,http://144.255.31.42:6688/udp/239.21.1.164:5002
-辽宁卫视,http://1mv3n3493d.apps.bot-hosting.cloud/lnws.m3u8
-安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://144.255.31.42:6688/udp/239.21.1.159:5002
+安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://1.192.240.71:8188/rtp/239.16.20.75:10750
 安徽卫视,http://1mv3n3493d.apps.bot-hosting.cloud/ahws.m3u8
 河北卫视,http://211.158.164.250:8888/udp/225.0.4.174:7980
-河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
 河北卫视,http://144.255.31.42:6688/udp/239.21.1.168:5002
+河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
 山东卫视,http://211.158.164.250:8888/udp/225.0.4.199:7980
-山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
 山东卫视,http://144.255.31.42:6688/udp/239.21.1.87:5002
-山东卫视,http://1mv3n3493d.apps.bot-hosting.cloud/sdws.m3u8
+山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
 天津卫视,http://211.158.164.250:8888/udp/225.0.4.82:7980
-天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 天津卫视,http://1.192.240.71:8188/rtp/239.16.20.96:10960
-天津卫视,http://1mv3n3493d.apps.bot-hosting.cloud/tjws.m3u8
-吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
+天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 吉林卫视,http://1.192.240.71:8188/rtp/239.16.20.94:10940
+吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
+吉林卫视,http://1mv3n3493d.apps.bot-hosting.cloud/jlws.m3u8
 陕西卫视,http://1.192.240.71:8188/rtp/239.16.20.83:10830
+宁夏卫视,http://1mv3n3493d.apps.bot-hosting.cloud/nxws.m3u8
 云南卫视,http://1.192.240.71:8188/rtp/239.16.20.85:10850
 云南卫视,http://1mv3n3493d.apps.bot-hosting.cloud/ynws.m3u8
-青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
+山西卫视,http://1mv3n3493d.apps.bot-hosting.cloud/shanxiws.m3u8
 青海卫视,http://144.255.31.42:6688/udp/239.21.2.51:5002
-西藏卫视,http://1mv3n3493d.apps.bot-hosting.cloud/xizangws.m3u8
-新疆卫视,http://1mv3n3493d.apps.bot-hosting.cloud/xjws.m3u8
+青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
 北京卫视,http://51.68.34.78:20022/bjws.m3u8
-北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 北京卫视,http://211.158.164.250:8888/udp/225.0.4.78:7980
 北京卫视,http://1.192.240.71:8188/rtp/239.16.20.76:10760
+北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 江苏卫视,http://51.68.34.78:20022/jsws.m3u8
 江苏卫视,http://211.158.164.250:8888/udp/225.0.4.79:7980
-江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 江苏卫视,http://1.192.240.71:8188/rtp/239.16.20.74:10740
+江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 东方卫视,http://51.68.34.78:20022/dfws.m3u8
-东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
 东方卫视,http://144.255.31.42:6688/udp/239.21.1.111:5002
+东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
 东方卫视,http://1.192.240.71:8188/rtp/239.16.20.73:10730
 浙江卫视,http://51.68.34.78:20022/zjws.m3u8
 浙江卫视,http://211.158.164.250:8888/udp/225.0.4.81:7980
-浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 浙江卫视,http://1.192.240.71:8188/rtp/239.16.20.71:10710
+浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 湖南卫视,http://51.68.34.78:20022/hnws.m3u8
 湖南卫视,http://211.158.164.250:8888/udp/225.0.4.75:7980
 湖南卫视,http://144.255.31.42:6688/udp/239.21.1.158:5002
@@ -1473,66 +1461,66 @@ CETV-1,http://45.192.97.170:8880/play/222.m3u8
 湖北卫视,http://1.192.240.71:8188/rtp/239.16.20.87:10870
 广东卫视,http://51.68.34.78:20022/gdws.m3u8
 广东卫视,http://211.158.164.250:8888/udp/225.0.4.84:7980
-广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广东卫视,http://144.255.31.42:6688/udp/239.21.1.92:5002
+广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广西卫视,http://51.68.34.78:20022/gxws.m3u8
 广西卫视,http://1.192.240.71:8188/rtp/239.16.20.84:10840
 黑龙江卫视,http://51.68.34.78:20022/hljws.m3u8
 黑龙江卫视,http://211.158.164.250:8888/udp/225.0.4.201:7980
 黑龙江卫视,http://1.192.240.71:8188/rtp/239.16.20.99:10990
 海南卫视,http://51.68.34.78:20022/hainanws.m3u8
-海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
 海南卫视,http://144.255.31.42:6688/udp/239.21.2.14:5002
+海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
 重庆卫视,http://51.68.34.78:20022/cqws.m3u8
 重庆卫视,http://211.158.164.250:8888/udp/225.0.4.187:7980
 重庆卫视,http://144.255.31.42:6688/udp/239.21.1.233:5002
 重庆卫视,http://1.192.240.71:8188/rtp/239.16.20.79:10790
 深圳卫视,http://51.68.34.78:20022/szws.m3u8
-深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
 深圳卫视,http://211.158.164.250:8888/udp/225.0.4.202:7980
 深圳卫视,http://1.192.240.71:8188/rtp/239.16.20.77:10770
+深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
 四川卫视,http://51.68.34.78:20022/scws.m3u8
 四川卫视,http://211.158.164.250:8888/udp/225.0.4.204:7980
 四川卫视,http://144.255.31.42:6688/udp/239.21.2.15:5002
 四川卫视,http://1.192.240.71:8188/rtp/239.16.20.86:10860
 河南卫视,http://51.68.34.78:20022/henanws.m3u8
-河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
 河南卫视,http://1.192.240.71:8188/rtp/239.16.20.21:10210
+河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
 东南卫视,http://51.68.34.78:20022/dnws.m3u8
 东南卫视,http://211.158.164.250:8888/udp/225.0.4.200:7980
 东南卫视,http://1.192.240.71:8188/rtp/239.16.20.82:10820
 东南卫视,http://144.255.31.42:6688/udp/239.21.1.113:5002
 贵州卫视,http://51.68.34.78:20022/gzws.m3u8
+贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
 贵州卫视,http://211.158.164.250:8888/udp/225.0.4.175:7980
 贵州卫视,http://144.255.31.42:6688/udp/239.21.1.166:5002
-贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
 江西卫视,http://51.68.34.78:20022/jxws.m3u8
 江西卫视,http://211.158.164.250:8888/udp/225.0.4.203:7980
-江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
 江西卫视,http://144.255.31.42:6688/udp/239.21.1.167:5002
+江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
 辽宁卫视,http://51.68.34.78:20022/lnws.m3u8
 辽宁卫视,http://211.158.164.250:8888/udp/225.0.4.98:7980
 辽宁卫视,http://1.192.240.71:8188/rtp/239.16.20.95:10950
 辽宁卫视,http://144.255.31.42:6688/udp/239.21.1.164:5002
 安徽卫视,http://51.68.34.78:20022/ahws.m3u8
-安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://144.255.31.42:6688/udp/239.21.1.159:5002
+安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://1.192.240.71:8188/rtp/239.16.20.75:10750
 河北卫视,http://51.68.34.78:20022/hebws.m3u8
 河北卫视,http://211.158.164.250:8888/udp/225.0.4.174:7980
-河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
 河北卫视,http://144.255.31.42:6688/udp/239.21.1.168:5002
+河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
 山东卫视,http://51.68.34.78:20022/sdws.m3u8
 山东卫视,http://211.158.164.250:8888/udp/225.0.4.199:7980
-山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
 山东卫视,http://144.255.31.42:6688/udp/239.21.1.87:5002
+山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
 天津卫视,http://51.68.34.78:20022/tjws.m3u8
 天津卫视,http://211.158.164.250:8888/udp/225.0.4.82:7980
-天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 天津卫视,http://1.192.240.71:8188/rtp/239.16.20.96:10960
+天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 吉林卫视,http://51.68.34.78:20022/jlws.m3u8
-吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
 吉林卫视,http://1.192.240.71:8188/rtp/239.16.20.94:10940
+吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
 陕西卫视,http://51.68.34.78:20022/saxws.m3u8
 陕西卫视,http://1.192.240.71:8188/rtp/239.16.20.83:10830
 宁夏卫视,http://51.68.34.78:20022/nxws.m3u8
@@ -1541,25 +1529,25 @@ CETV-1,http://45.192.97.170:8880/play/222.m3u8
 云南卫视,http://1.192.240.71:8188/rtp/239.16.20.85:10850
 山西卫视,http://51.68.34.78:20022/shanxiws.m3u8
 青海卫视,http://51.68.34.78:20022/qhws.m3u8
-青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
 青海卫视,http://144.255.31.42:6688/udp/239.21.2.51:5002
+青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
 西藏卫视,http://51.68.34.78:20022/xizangws.m3u8
 新疆卫视,http://51.68.34.78:20022/xjws.m3u8
-北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 北京卫视,http://211.158.164.250:8888/udp/225.0.4.78:7980
 北京卫视,http://1.192.240.71:8188/rtp/239.16.20.76:10760
+北京卫视,http://144.255.31.42:6688/udp/239.21.1.88:5002
 北京卫视,http://45.192.97.170:8880/play/224.m3u8
 江苏卫视,http://211.158.164.250:8888/udp/225.0.4.79:7980
-江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 江苏卫视,http://1.192.240.71:8188/rtp/239.16.20.74:10740
+江苏卫视,http://144.255.31.42:6688/udp/239.21.1.89:5002
 江苏卫视,http://45.192.97.170:8880/play/225.m3u8
-东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
 东方卫视,http://144.255.31.42:6688/udp/239.21.1.111:5002
+东方卫视,http://211.158.164.250:8888/udp/225.0.4.80:7980
 东方卫视,http://1.192.240.71:8188/rtp/239.16.20.73:10730
 东方卫视,http://45.192.97.170:8880/play/226.m3u8
 浙江卫视,http://211.158.164.250:8888/udp/225.0.4.81:7980
-浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 浙江卫视,http://1.192.240.71:8188/rtp/239.16.20.71:10710
+浙江卫视,http://144.255.31.42:6688/udp/239.21.1.90:5002
 浙江卫视,http://45.192.97.170:8880/play/227.m3u8
 湖南卫视,http://211.158.164.250:8888/udp/225.0.4.75:7980
 湖南卫视,http://144.255.31.42:6688/udp/239.21.1.158:5002
@@ -1569,61 +1557,76 @@ CETV-1,http://45.192.97.170:8880/play/222.m3u8
 湖北卫视,http://1.192.240.71:8188/rtp/239.16.20.87:10870
 湖北卫视,http://45.192.97.170:8880/play/229.m3u8
 广东卫视,http://211.158.164.250:8888/udp/225.0.4.84:7980
-广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广东卫视,http://144.255.31.42:6688/udp/239.21.1.92:5002
+广东卫视,http://1.192.240.71:8188/rtp/239.16.20.98:10980
 广东卫视,http://45.192.97.170:8880/play/230.m3u8
 广西卫视,http://1.192.240.71:8188/rtp/239.16.20.84:10840
+广西卫视,http://45.192.97.170:8880/play/231.m3u8
 黑龙江卫视,http://211.158.164.250:8888/udp/225.0.4.201:7980
 黑龙江卫视,http://1.192.240.71:8188/rtp/239.16.20.99:10990
-海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
+黑龙江卫视,http://45.192.97.170:8880/play/232.m3u8
 海南卫视,http://144.255.31.42:6688/udp/239.21.2.14:5002
+海南卫视,http://1.192.240.71:8188/rtp/239.16.20.97:10970
+海南卫视,http://45.192.97.170:8880/play/233.m3u8
 重庆卫视,http://211.158.164.250:8888/udp/225.0.4.187:7980
 重庆卫视,http://144.255.31.42:6688/udp/239.21.1.233:5002
 重庆卫视,http://1.192.240.71:8188/rtp/239.16.20.79:10790
 重庆卫视,http://45.192.97.170:8880/play/234.m3u8
-深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
 深圳卫视,http://211.158.164.250:8888/udp/225.0.4.202:7980
 深圳卫视,http://1.192.240.71:8188/rtp/239.16.20.77:10770
+深圳卫视,http://144.255.31.42:6688/udp/239.21.1.93:5002
+深圳卫视,http://45.192.97.170:8880/play/235.m3u8
 四川卫视,http://211.158.164.250:8888/udp/225.0.4.204:7980
 四川卫视,http://144.255.31.42:6688/udp/239.21.2.15:5002
 四川卫视,http://1.192.240.71:8188/rtp/239.16.20.86:10860
-河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
+四川卫视,http://45.192.97.170:8880/play/236.m3u8
 河南卫视,http://1.192.240.71:8188/rtp/239.16.20.21:10210
+河南卫视,http://144.255.31.42:6688/udp/239.21.2.37:5002
+河南卫视,http://45.192.97.170:8880/play/237.m3u8
 东南卫视,http://211.158.164.250:8888/udp/225.0.4.200:7980
 东南卫视,http://1.192.240.71:8188/rtp/239.16.20.82:10820
 东南卫视,http://144.255.31.42:6688/udp/239.21.1.113:5002
+东南卫视,http://45.192.97.170:8880/play/238.m3u8
+贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
 贵州卫视,http://211.158.164.250:8888/udp/225.0.4.175:7980
 贵州卫视,http://144.255.31.42:6688/udp/239.21.1.166:5002
-贵州卫视,http://1.192.240.71:8188/rtp/239.16.20.81:10810
+贵州卫视,http://45.192.97.170:8880/play/239.m3u8
 江西卫视,http://211.158.164.250:8888/udp/225.0.4.203:7980
-江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
 江西卫视,http://144.255.31.42:6688/udp/239.21.1.167:5002
+江西卫视,http://1.192.240.71:8188/rtp/239.16.20.89:10890
+江西卫视,http://45.192.97.170:8880/play/240.m3u8
 辽宁卫视,http://211.158.164.250:8888/udp/225.0.4.98:7980
 辽宁卫视,http://1.192.240.71:8188/rtp/239.16.20.95:10950
+辽宁卫视,http://45.192.97.170:8880/play/241.m3u8
 辽宁卫视,http://144.255.31.42:6688/udp/239.21.1.164:5002
-安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://144.255.31.42:6688/udp/239.21.1.159:5002
+安徽卫视,http://211.158.164.250:8888/udp/225.0.4.133:7980
 安徽卫视,http://1.192.240.71:8188/rtp/239.16.20.75:10750
+安徽卫视,http://45.192.97.170:8880/play/242.m3u8
 河北卫视,http://211.158.164.250:8888/udp/225.0.4.174:7980
-河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
 河北卫视,http://144.255.31.42:6688/udp/239.21.1.168:5002
+河北卫视,http://1.192.240.71:8188/rtp/239.16.20.88:10880
+河北卫视,http://45.192.97.170:8880/play/243.m3u8
 山东卫视,http://211.158.164.250:8888/udp/225.0.4.199:7980
-山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
 山东卫视,http://144.255.31.42:6688/udp/239.21.1.87:5002
+山东卫视,http://1.192.240.71:8188/rtp/239.16.20.80:10800
+山东卫视,http://45.192.97.170:8880/play/244.m3u8
 天津卫视,http://211.158.164.250:8888/udp/225.0.4.82:7980
-天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 天津卫视,http://1.192.240.71:8188/rtp/239.16.20.96:10960
+天津卫视,http://144.255.31.42:6688/udp/239.21.1.165:5002
 天津卫视,http://45.192.97.170:8880/play/245.m3u8
-吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
 吉林卫视,http://1.192.240.71:8188/rtp/239.16.20.94:10940
+吉林卫视,http://144.255.31.42:6688/udp/239.21.2.49:5002
 吉林卫视,http://45.192.97.170:8880/play/246.m3u8
 陕西卫视,http://1.192.240.71:8188/rtp/239.16.20.83:10830
+陕西卫视,http://45.192.97.170:8880/play/247.m3u8
+宁夏卫视,http://45.192.97.170:8880/play/248.m3u8
 内蒙古卫视,http://45.192.97.170:8880/play/249.m3u8
 云南卫视,http://1.192.240.71:8188/rtp/239.16.20.85:10850
 云南卫视,http://45.192.97.170:8880/play/250.m3u8
 山西卫视,http://45.192.97.170:8880/play/251.m3u8
-青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
 青海卫视,http://144.255.31.42:6688/udp/239.21.2.51:5002
+青海卫视,http://1.192.240.71:8188/rtp/239.16.20.101:11010
 青海卫视,http://45.192.97.170:8880/play/252.m3u8
 西藏卫视,http://45.192.97.170:8880/play/253.m3u8
 新疆卫视,http://45.192.97.170:8880/play/254.m3u8
