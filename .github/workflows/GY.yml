@@ -24,9 +24,9 @@ jobs:
         run: |
           sudo tailscale up \
             --authkey="${TS_AUTHKEY}" \
-            --exit-node=immortalwrt \
+            --exit-node=100.72.39.7 \
             --accept-dns=false
-          sleep 5
+          sleep 8
           echo "✅ 当前出口IP："
           curl -4 --connect-timeout 10 ifconfig.me
 
