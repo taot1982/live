@@ -34,7 +34,7 @@ jobs:
         run: |
           python3 -m pip install requests
 
-      - name: 执行IPTV采集脚本，输出test.m3u
+      - name: 执行TVBox接口采集，输出test.m3u
         run: |
           python3 main.py
 
@@ -43,5 +43,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add test.m3u
-          git commit -m "Auto update test.m3u（Actions+上海宽带出口）" || echo "无更新，跳过提交"
+          git commit -m "Auto update test.m3u（TVBox源+上海宽带出口）" || echo "无更新，跳过提交"
           git push
