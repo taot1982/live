@@ -128,7 +128,7 @@ BesTV电影介绍,http://218.80.109.128:4022/rtp/233.18.204.116:5140
 无信号,http://218.80.109.128:4022/rtp/233.18.204.208:5140
 # AUTO_UPDATE_TIME: 2026-11-19 00:49:57
 上海频道,#genre#
-上海新闻综合,http://47.99.202.156:8014/daili/shxwhd.m3u8?v=llllvvw&line=0
+上海新闻综合,http://8.138.7.223/tv/5gtv.php?id=36
 上海新闻综合,http://47.99.202.156:8014/daili/shxwhd.m3u8?v=llllvvw&line=1
 上海新闻综合,http://47.99.202.156:8014/daili/shxwhd.m3u8?v=llllvvw&line=2
 东方影视,http://47.99.202.156:8014/daili/shdsjhd.m3u8?v=llllvvw&line=0
