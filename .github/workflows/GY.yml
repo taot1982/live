@@ -1,0 +1,47 @@
+name: IPTV采集(上海出口Tailscale)
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  iptv_task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
+          sudo systemctl enable --now tailscaled
+
+      - name: 接入Tailscale隧道，使用immortalwrt作为出口节点
+        env:
+          TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
+        run: |
+          sudo tailscale up \
+            --authkey="${TS_AUTHKEY}" \
+            --exit-node=100.72.39.7 \
+            --accept-dns=false
+          sleep 8
+          echo "✅ 当前出口IP："
+          curl -4 --connect-timeout 10 ifconfig.me
+
+      - name: 安装Python依赖
+        run: |
+          python3 -m pip install requests
+
+      - name: 执行TVBox接口采集，输出test.m3u
+        run: |
+          python3 main.py
+
+      - name: 提交 test.m3u 回仓库
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add test.m3u
+          git commit -m "Auto update test.m3u（TVBox源+上海宽带出口）" || echo "无更新，跳过提交"
+          git push
