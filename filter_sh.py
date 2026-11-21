@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#from datetime import datetime
+from datetime import datetime
 
 INPUT_FILE = "iptasd.txt"
 OUTPUT_FILE = "shiptv.txt"
@@ -40,5 +40,5 @@ def main():
             f.write(l + "\n")
     print(f"✅ 完成，已输出 {OUTPUT_FILE}，更新时间：{now_time}")
 
-if __name__ == "__main__":
-    main()
+＃if __name__ == "__main__":
+＃   main()
