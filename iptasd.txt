@@ -1,24 +1,4 @@
 央视频道,#genre#
-CCTV-1 综合,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv1
-CCTV-2 财经,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv2
-CCTV-3 综艺,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv3
-CCTV-4 中文国际,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv4
-CCTV-5 体育,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv5
-CCTV-5+ 体育赛事,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv5p
-CCTV-6 电影,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv6
-CCTV-7 国防军事,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv7
-CCTV-8 电视剧,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv8
-CCTV-9 纪录,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv9
-CCTV-10 科教,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv10
-CCTV-11 戏曲,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv11
-CCTV-12 社会与法,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv12
-CCTV-13 新闻,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv13
-CCTV-14 少儿,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv14
-CCTV-15 音乐,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv15
-CCTV-16 奥林匹克,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv16
-CCTV-17 农业农村,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv17
-CCTV-4 欧洲,http://43.249.195.224:7681/xin/xf/live.php?id=zhibo-zb-cctv4oz
-
 CCTV-1 综合,http://149.88.74.169:89/cctv/cntv.php?id=1
 CCTV-2 财经,http://149.88.74.169:89/cctv/cntv.php?id=2
 CCTV-3 综艺,http://149.88.74.169:89/cctv/cntv.php?id=3
@@ -2004,4 +1984,4 @@ CGTN广播,video://https://apicnrapp.cnr.cn/html/play.html?channelId=1120
 新疆柯语广播,video://https://apicnrapp.cnr.cn/html/play.html?channelId=509
 新疆兵团综合,video://https://apicnrapp.cnr.cn/html/play.html?channelId=512
 新疆绿色广播,video://https://apicnrapp.cnr.cn/html/play.html?channelId=1033
-# AUTO_UPDATE_TIME: 2026-11-20 12:57:16
+# AUTO_UPDATE_TIME: 2026-11-21 00:55:19
