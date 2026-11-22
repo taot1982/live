@@ -23,7 +23,7 @@ jobs:
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          sudo tailscale up --authkey $TAILSCALE_AUTHKEY --exit-node=你的OpenWrt的TailscaleIP
+          sudo tailscale up --authkey $TAILSCALE_AUTHKEY --exit-node=100.72.39.7
           sleep 10
           curl --interface ts0 ifconfig.me # 验证出口是否变成你家IP
 
