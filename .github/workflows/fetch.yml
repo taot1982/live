@@ -23,9 +23,13 @@ jobs:
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
+          sudo pkill tailscaled || true
+          sleep 2
+          sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
+          sleep 6
           sudo tailscale up --authkey $TAILSCALE_AUTHKEY --exit-node=100.72.39.7
-          sleep 10
-          curl --interface ts0 ifconfig.me # 验证出口是否变成你家IP
+          sleep 12
+          curl --interface ts0 ifconfig.me
 
       - name: Setup Python
         uses: actions/setup-python@v5
