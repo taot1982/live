@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'iptasd.txt'
+      - 'shiptv.txt'
   workflow_dispatch: # 保留手动触发
 
 jobs:
