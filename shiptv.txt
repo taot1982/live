@@ -11,4 +11,4 @@
 上海都市,http://58.38.21.24:4022/udp/233.18.204.53:5140
 生活时尚,http://8.138.7.223/tv/5gtv.php?id=230
 东方财经,http://8.138.7.223/tv/5gtv.php?id=227
-TVBS新闻,http://pro-pulltc-blive.baijiayun.com/live/356hfu253766mfgg.flv
+TVBS新闻,https://go.ottiptv.top/ott/%E9%A3%8E%E4%BA%91%E9%A2%91%E9%81%93/tv.php?id=TVBS%E6%96%B0%E8%81%9E&l=0&token=6503018312
