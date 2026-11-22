@@ -1,55 +1,47 @@
-name: Fetch IPTV Source
+name: IPTV Source Fetch
 on:
-  workflow_dispatch: # 支持手动点运行
+  workflow_dispatch:
   schedule:
-    - cron: '0 8 * * *' # 每天早8点定时，UTC时间，按需改
+    - cron: '0 8 * * *'
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y curl python3 python3-pip
+          pip3 install requests
 
       - name: Install Tailscale
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh
-          sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
-          sleep 5
 
-      - name: Connect Tailscale (ExitNode)
+      - name: Start Tailscale & connect Exit Node
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          sudo pkill tailscaled || true
+          sudo pkill -9 tailscaled || true
+          sudo rm -f /var/run/tailscale/tailscaled.sock
           sleep 2
           sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
-          sleep 6
+          sleep 8
           sudo tailscale up --authkey $TAILSCALE_AUTHKEY --exit-node=100.72.39.7
-          sleep 12
-          curl --interface ts0 ifconfig.me
+          sleep 15
+          # 测试是否成功走家里出口
+          curl --socks5 127.0.0.1:1055 ifconfig.me
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Run python script to get source and generate test.m3u
+        run: python3 fetch.py
 
-      - name: Install requests
-        run: pip install requests
-
-      - name: Run fetch script
-        run: python fetch.py
-
-      # 重点：采集完立刻断开tailscale，后面git不走家里隧道
-      - name: Disconnect Tailscale
-        run: sudo tailscale down
-
-      - name: Git config & commit
+      - name: Commit & Push
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add test.m3u
-          git commit -m "auto update test.m3u" || echo "无变更，跳过提交"
-          git push https://github.com/${{ github.repository }}.git HEAD:main
+          git commit -m "Auto update test.m3u" || echo "No change"
+          git push
