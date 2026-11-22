@@ -19,8 +19,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run filter_sh.py 生成 shiptv.txt
-        run: python3 filter_sh.py
+      #- name: Run filter_sh.py 生成 shiptv.txt
+      #  run: python3 filter_sh.py
 
       - name: Run merge.py 合并源
         run: python3 merge.py
