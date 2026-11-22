@@ -1,7 +1,7 @@
 # 更新时间: 2026-11-21 01:14:42
 上海频道,#genre#
 上海新闻综合,http://8.138.7.223/tv/5gtv.php?id=36
-五星体育,http://180.165.60.63:4022/udp/233.18.204.58:5140?req=179520yssy75094gpsk8
+五星体育,https://iptv.ekuai.asia/fengyun.php?id=103&s=11
 五星体育,http://58.38.21.24:4022/udp/233.18.204.58:5140
-五星体育,http://live-vrms.cqcyfey.cn/live/86ba2c3f4bdbff942a045d5d44d9f3d6.flv
+五星体育,
 TSN5,http://pull.live-plus.jlntv.cn/live/RxTfyRFzbf8FIhhZibHdTv5IHbDhvI.flv
