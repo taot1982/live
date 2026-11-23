@@ -1176,4 +1176,9 @@ CCTV16,https://cdn.qd.je/163189/cctv16-2
 
 
 //夸克搜源 http://8.138.7.223
-
+翡翠无线中天寰宇CM+,#genre#
+翡翠台,http://128.14.206.166/pull-f5.flive.douyincdn.com/live/jade.flv
+无线新闻台,http://128.14.206.166/pull-f5.flive.douyincdn.com/live/wxxw.flv
+中天新闻台,http://128.14.206.166/pull-f5-mptcp.flive.douyincdn.com/live/ztxw.flv
+寰宇新闻台,http://128.14.206.166/pull-f5-mptcp.flive.douyincdn.com/live/hyxw.flv
+CM+,http://128.14.206.166/pull-f5-mptcp.flive.douyincdn.com/live/cmt156.flv
