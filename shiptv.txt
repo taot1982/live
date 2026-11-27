@@ -14,7 +14,7 @@
 生活时尚,http://8.138.7.223/tv/5gtv.php?id=230
 东方财经,http://8.138.7.223/tv/5gtv.php?id=227
 北京体育,http://173.208.150.154:82/live/btv6.m3u8?jsbt=1795318793&jsbk=876f2694a054e848daf321aed2381348&from=jsbv2a&app=com.jiaoxiang.fangnale&version=2.3.4&ev=20250113
-北京体育,http://123.117.173.7:8118/udp/239.3.1.243:8000
+北京体育,http://123.117.173.7:8118/rtp/239.3.1.243:8000
 北京体育,http://114.252.116.128:7000/rtp/239.3.1.243:8000
 广东体育,http://14.145.187.71:4022/udp/239.77.0.112:5146
 广东体育,https://pull-rtmp.linkv.fun/live/JMPgZv9PiyN1Dun5FK5N84xHK1Yo80.flv
